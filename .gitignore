@@ -74,3 +74,6 @@ logs/
 # Supabase local artifacts
 supabase/.temp/
 supabase/.branches/
+
+#docs
+/docs
