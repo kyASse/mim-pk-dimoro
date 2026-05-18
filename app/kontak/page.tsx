@@ -10,6 +10,7 @@ import {
 import PageHeader from '@/components/shared/PageHeader';
 import ContactForm from '@/components/kontak/ContactForm';
 import { createClient } from "@/lib/supabase/server";
+import { SCHOOL_NAME } from '@/lib/school-config';
 
 // Function to validate trusted domains for Google Maps embed
 function isTrustedDomain(url: string | null | undefined): boolean {
@@ -48,7 +49,7 @@ export default async function ContactPage() {
         <div className="min-h-screen">
             <PageHeader
                 title="Kontak Kami"
-                description="Hubungi kami untuk informasi lebih lanjut"
+                description={`Hubungi kami untuk informasi lebih lanjut mengenai ${SCHOOL_NAME}`}
                 background="bg-primary/20"
             />
 
@@ -68,7 +69,7 @@ export default async function ContactPage() {
                                     <div>
                                         <h3 className="font-semibold text-lg">Alamat</h3>
                                         <p className="text-muted-foreground whitespace-pre-line">
-                                            {kontak?.alamat || 'Alamat tidak tersedia'}
+                                            {kontak?.alamat || 'Informasi alamat belum tersedia'}
                                         </p>
                                     </div>
                                 </div>
@@ -79,8 +80,8 @@ export default async function ContactPage() {
                                     </div>
                                     <div>
                                         <h3 className="font-semibold text-lg">Telepon</h3>
-                                        <p className="text-muted-foreground">{kontak?.whatsapp || 'Nomor tidak tersedia'}</p>
-                                        <p className="text-muted-foreground">{kontak?.whatsapp || 'Nomor tidak tersedia'} (WhatsApp)</p>
+                                        <p className="text-muted-foreground">{kontak?.whatsapp || 'Nomor telepon belum tersedia'}</p>
+                                        <p className="text-muted-foreground">{kontak?.whatsapp || 'Nomor WhatsApp belum tersedia'} (WhatsApp)</p>
                                     </div>
                                 </div>
                                 
@@ -90,8 +91,8 @@ export default async function ContactPage() {
                                     </div>
                                     <div>
                                         <h3 className="font-semibold text-lg">Email</h3>
-                                        <p className="text-muted-foreground">{kontak?.email_utama || 'Email tidak tersedia'}</p>
-                                        <p className="text-muted-foreground">{kontak?.email_admin || 'Email admin tidak tersedia'}</p>
+                                        <p className="text-muted-foreground">{kontak?.email_utama || 'Email utama belum tersedia'}</p>
+                                        <p className="text-muted-foreground">{kontak?.email_admin || 'Email admin belum tersedia'}</p>
                                     </div>
                                 </div>
                                 
@@ -102,7 +103,7 @@ export default async function ContactPage() {
                                     <div>
                                         <h3 className="font-semibold text-lg">Jam Operasional</h3>
                                         <p className="text-muted-foreground whitespace-pre-line">
-                                        {kontak?.jam_operasional || 'Jam operasional tidak tersedia'}
+                                        {kontak?.jam_operasional || 'Jam operasional belum tersedia'}
                                         </p>
                                     </div>
                                 </div>
@@ -128,7 +129,7 @@ export default async function ContactPage() {
                         allowFullScreen={true}
                         loading="lazy"
                         referrerPolicy="no-referrer-when-downgrade"
-                        title="Lokasi TK ABA Mertosanan"
+                        title={`Lokasi ${SCHOOL_NAME}`}
                     />
                 </div>
                 </div>
@@ -137,38 +138,34 @@ export default async function ContactPage() {
             {/* FAQ Section */}
             <section className="py-16 bg-accent/10">
                 <div className="container mx-auto px-4">
-                <h2 className="text-2xl font-bold mb-6 text-center">Pertanyaan Umum</h2>
+                <h2 className="text-2xl font-bold mb-6 text-center">Pertanyaan Umum (FAQ)</h2>
                 
                 <div className="max-w-3xl mx-auto space-y-4">
                     <div className="bg-white rounded-lg shadow-sm p-6">
-                    <h3 className="text-lg font-semibold mb-2">Bagaimana cara mendaftarkan anak saya di TK ABA Mertosanan?</h3>
+                    <h3 className="text-lg font-semibold mb-2">Bagaimana cara mendaftarkan siswa baru di {SCHOOL_NAME}?</h3>
                     <p className="text-muted-foreground">
-                        Anda dapat mendaftarkan anak melalui formulir online di website ini atau datang langsung ke sekolah 
-                        dengan membawa dokumen yang diperlukan seperti fotokopi KK, akte kelahiran, dan pas foto.
+                        Pendaftaran dapat dilakukan secara online melalui halaman Pendaftaran di website ini atau dengan datang langsung ke kantor madrasah kami pada jam operasional kerja.
                     </p>
                     </div>
                     
                     <div className="bg-white rounded-lg shadow-sm p-6">
-                    <h3 className="text-lg font-semibold mb-2">Apa saja program yang ditawarkan di TK ABA Mertosanan?</h3>
+                    <h3 className="text-lg font-semibold mb-2">Kurikulum apa yang diterapkan di {SCHOOL_NAME}?</h3>
                     <p className="text-muted-foreground">
-                        Kami menawarkan program Kelompok Bermain (3-4 tahun), TK A (4-5 tahun), dan TK B (5-6 tahun) 
-                        dengan kurikulum yang terintegrasi nilai-nilai islami dan fokus pada pengembangan motorik dan intelektual anak.
+                        Kami menerapkan Kurikulum Merdeka yang diintegrasikan dengan kurikulum ciri khas Muhammadiyah (ISMUBA: Al-Islam, Kemuhammadiyahan, dan Bahasa Arab) untuk membentuk karakter siswa yang unggul.
                     </p>
                     </div>
                     
                     <div className="bg-white rounded-lg shadow-sm p-6">
-                    <h3 className="text-lg font-semibold mb-2">Berapa biaya pendidikan di TK ABA Mertosanan?</h3>
+                    <h3 className="text-lg font-semibold mb-2">Berapa biaya pendidikan dan uang gedung?</h3>
                     <p className="text-muted-foreground">
-                        Biaya pendidikan bervariasi tergantung program yang dipilih. Silakan kunjungi halaman Pendaftaran 
-                        untuk informasi biaya terbaru atau hubungi kami untuk konsultasi lebih lanjut.
+                        Informasi lengkap mengenai rincian biaya pendidikan, SPP bulanan, dan uang gedung dapat Anda peroleh dengan menghubungi admin melalui WhatsApp atau berkunjung langsung ke madrasah.
                     </p>
                     </div>
                     
                     <div className="bg-white rounded-lg shadow-sm p-6">
-                    <h3 className="text-lg font-semibold mb-2">Apakah ada ekstrakurikuler di TK ABA Mertosanan?</h3>
+                    <h3 className="text-lg font-semibold mb-2">Apa saja kegiatan ekstrakurikuler yang tersedia?</h3>
                     <p className="text-muted-foreground">
-                        Ya, kami menyediakan berbagai kegiatan ekstrakurikuler seperti menari tradisional, melukis & kerajinan, 
-                        olahraga mini, dan little chef untuk mengembangkan minat dan bakat anak.
+                        Kami menyediakan berbagai pilihan ekstrakurikuler menarik seperti Tapak Suci, Hizbul Wathan (HW), Tahfidz Al-Qur'an, Seni Drumband, dan berbagai klub olahraga prestasi.
                     </p>
                     </div>
                 </div>
