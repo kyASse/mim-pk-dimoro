@@ -9,6 +9,12 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import {
+    SCHOOL_FULL_NAME,
+    SCHOOL_LOGO_PATH,
+    SCHOOL_LOGO_ALT,
+    SCHOOL_TAGLINE,
+} from "@/lib/school-config";
 
 
 export default function Footer() {
@@ -46,20 +52,20 @@ export default function Footer() {
                                 whileTap={{ scale: 0.95 }}
                             >
                                 <Image
-                                    src="/Logo-TK-ABA.png"
-                                    alt="TK ABA Mertosanan"
+                                    src={SCHOOL_LOGO_PATH}
+                                    alt={SCHOOL_LOGO_ALT}
                                     width={32}
                                     height={32}
                                     className="object-contain"
                                 />
                             </motion.div>
                             <div>
-                                <h3 className="text-lg font-bold">TK ABA Mertosanan</h3>
-                                <p className="text-sm">Pendidikan Anak Islami</p>
+                                <h3 className="text-lg font-bold">{SCHOOL_FULL_NAME}</h3>
+                                <p className="text-sm">{SCHOOL_TAGLINE}</p>
                             </div>
                         </div>
                         <p className="text-muted-foreground mb-4">
-                            Mewujudkan generasi Muslim yang cerdas, ceria, kreatif, mandiri dan bberakhlak mulia.
+                            {SCHOOL_TAGLINE}
                         </p>
                     </div>
 
@@ -112,15 +118,15 @@ export default function Footer() {
                         <ul className="space-y-3">
                             <li className="flex items-start">
                                 <MapPin className="w-5 h-5 mr-2 mt-0.5 text-attention" />
-                                <span>{kontak?.alamat || "Alamat tidak tersedia"}</span>
+                                <span>{kontak?.alamat || "Informasi alamat segera tersedia"}</span>
                             </li>
                             <li className="flex items-center">
                                 <Phone className="w-5 h-5 mr-2 text-primary" />
-                                <span>{kontak?.whatsapp || "Nomor tidak tersedia"}</span>
+                                <span>{kontak?.whatsapp || "Informasi nomor segera tersedia"}</span>
                             </li >
                             <li className="flex items-center">
                                 <Mail className="w-5 h-5 mr-2 text-accent" />
-                                <span>{kontak?.email_utama || "Email tidak tersedia"}</span>
+                                <span>{kontak?.email_utama || "Informasi email segera tersedia"}</span>
                             </li>
                         </ul>
                     </div>
@@ -136,14 +142,14 @@ export default function Footer() {
                                 <Calendar className="w-5 h-5 mr-2 mt-0.5 text-secondary-foreground" />
                                 <div>
                                     <p className="font-medium">Senin - Kamis</p>
-                                    <p className="text-muted-foreground">07:30 - 11:00 WIB</p>
+                                    <p className="text-muted-foreground">{kontak?.jam_operasional || "07:00 - 13:00 WIB"}</p>
                                 </div>
                             </li>
                             <li className="flex items-start">
                                 <Calendar className="w-5 h-5 mr-2 mt-0.5 text-secondary-foreground" />
                                 <div>
                                     <p className="font-medium">Jumat</p>
-                                    <p className="text-muted-foreground">07:30 - 10:30 WIB</p>
+                                    <p className="text-muted-foreground">07:00 - 11:00 WIB</p>
                                 </div>
                             </li>
                         </ul>
@@ -167,7 +173,7 @@ export default function Footer() {
 
                 <div className="border-t border-muted mt-8 pt-6 text-center text-sm text-muted-foreground">
                     <p>
-                        &copy; {new Date().getFullYear()} TK ABA Mertosanan. Semua Hak Dilindungi.
+                        &copy; {new Date().getFullYear()} {SCHOOL_FULL_NAME}. Semua Hak Dilindungi.
                     </p>
                 </div>
             </div>

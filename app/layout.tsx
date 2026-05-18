@@ -4,15 +4,12 @@ import ClientLayoutContent from "@/components/layout/ClientLayoutContent";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 import Script from "next/script";
-
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "http://localhost:3000";
+import { SCHOOL_NAME, SCHOOL_DESCRIPTION } from "@/lib/school-config";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(defaultUrl),
-  title: "TK ABA Mertosanan",
-  description: "Website resmi TK ABA Mertosanan: informasi sekolah, pendaftaran, berita, galeri, dan portal orang tua.",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+  title: SCHOOL_NAME,
+  description: SCHOOL_DESCRIPTION,
 };
 
 const geistSans = Geist({

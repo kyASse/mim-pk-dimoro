@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "motion/react";
 import { ThemeSwitcher } from "../theme-switcher";
 import { Button } from "../ui/button";
+import { SCHOOL_NAME, SCHOOL_LOGO_PATH, SCHOOL_LOGO_ALT } from "@/lib/school-config";
 
 const navLinks = [
     { name: 'Beranda', href: '/', icon: <School className="w-5 h-5" /> },
@@ -68,16 +69,15 @@ export default function Navbar() {
                         whileTap={{ scale: 0.95 }}
                     >
                         <Image
-                            src="/Logo-TK-ABA.png"
-                            alt="TK ABA Mertosanan"
+                            src={SCHOOL_LOGO_PATH}
+                            alt={SCHOOL_LOGO_ALT}
                             width={32}
                             height={32}
                             className="object-contain"
                         />
                     </motion.div>
                     <div>
-                        <h1 className="text-xl font-bold text-primary-foreground">TK ABA</h1>
-                        <p className="text-sm font-medium -mt-1">Mertosanan</p>
+                        <h1 className="text-xl font-bold text-foreground">{SCHOOL_NAME}</h1>
                     </div>
                 </Link>
 
@@ -89,7 +89,7 @@ export default function Navbar() {
                             href={link.href}
                             className={cn(
                                 "flex items-center space-x-2 px-3 py-2 transition-colors",
-                                "text-primary-foreground hover:text-primary",
+                                "text-foreground hover:text-primary",
                                 pathname === link.href && "active text-primary font-bold"
                             )}
                         >
@@ -119,8 +119,8 @@ export default function Navbar() {
                     aria-label="Toggle Menu"
                 >
                     {isOpen ?
-                        <X className="w-6 h-6 text-primary-foreground" /> :
-                        <Menu className="w-6 h-6 text-primary-foreground" />
+                        <X className="w-6 h-6 text-foreground" /> :
+                        <Menu className="w-6 h-6 text-foreground" />
                     }
                 </button>
             </div>
@@ -133,7 +133,7 @@ export default function Navbar() {
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="md:hidden bg-white shadow-md rounded-lg mt-2"
+                        className="md:hidden bg-white dark:bg-gray-900 shadow-md rounded-lg mt-2"
                     >
                         <div className="container mx-auto px-4 py-4 flex-col space-y-3">
                             {navLinks.map((link) => (
@@ -144,7 +144,7 @@ export default function Navbar() {
                                         "flex items-center space-x-2 p-2 rounded-lg transition-colors",
                                         pathname === link.href
                                             ? "bg-primary/20 text-primary font-semibold"
-                                            : "hover:bg-muted text-primary-foreground"
+                                            : "hover:bg-muted text-foreground"
                                     )}
                                 >
                                     {link.icon}
