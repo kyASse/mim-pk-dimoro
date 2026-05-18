@@ -6,22 +6,23 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button"; 
 import { ChevronRight, UserPlus, } from "lucide-react";
 import { motion } from "motion/react";
+import { SCHOOL_NAME, SCHOOL_TAGLINE } from "@/lib/school-config";
 
 const slides = [
     {
         id: 1,
-        image: "https://tk-aba-mertosanan.sch.id/wp-content/uploads/2024/06/foto.jpg",
-        alt: "Anak-anak belajar sambil bermain di TK ABA Mertosanan"
+        image: "https://placehold.co/1920x1080/059669/ffffff?text=MI+Muhammadiyah+Dimoro",
+        alt: `Kegiatan belajar di ${SCHOOL_NAME}`
     },
     {
         id: 2,
-        image: "https://tk-aba-mertosanan.sch.id/wp-content/uploads/2024/06/WhatsApp-Image-2024-06-13-at-11.31.53-1024x770.jpeg",
-        alt: "Kegiatan membaca di TK ABA Mertosanan"
+        image: "https://placehold.co/1920x1080/10b981/ffffff?text=Lingkungan+Islami",
+        alt: `Lingkungan Islami di ${SCHOOL_NAME}`
     },
     {
         id: 3,
-        image: "https://tk-aba-mertosanan.sch.id/wp-content/uploads/2024/06/2.jpg",
-        alt: "Kegiatan seni dan kreativitas di TK ABA Mertosanan"
+        image: "https://placehold.co/1920x1080/34d399/ffffff?text=Generasi+Berprestasi",
+        alt: `Siswa berprestasi di ${SCHOOL_NAME}`
     }
 ]
 
@@ -71,7 +72,7 @@ export default function HomeHero() {
                         transition={{ duration: 0.8, delay: 0.2 }}
                         className=" text-4xl md:text-5xl lg:text-6xl font-bold mb-4"
                     >
-                        TK ABA Mertosanan
+                        {SCHOOL_NAME}
                     </motion.h1>
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
@@ -79,7 +80,7 @@ export default function HomeHero() {
                         transition={{ duration: 0.8, delay: 0.4 }}
                         className=" text-xl md:text-2xl font-medium mb-2"
                     >
-                        Pendidikan Anak Berkualitas dengan Nilai Islami
+                        Madrasah Ibtidaiyah Program Khusus
                     </motion.p>
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
@@ -87,7 +88,7 @@ export default function HomeHero() {
                         transition={{ duration: 0.8, delay: 0.6 }}
                         className=" text-lg md:text-xl font-medium mb-8 text-white/90"
                     >
-                        Mencetak generasi Muslim yang cerdas, ceria, kreatif, mandiri dan berakhlak mulia.
+                        {SCHOOL_TAGLINE}
                     </motion.p>
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}

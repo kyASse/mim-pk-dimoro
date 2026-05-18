@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import NewsCard from './NewsCard';
+import { SCHOOL_NAME } from '@/lib/school-config';
 
 // Tipe untuk data berita
 type NewsItem = {
@@ -42,7 +43,7 @@ export default async function NewsSection() {
                     <div className="text-center mb-12">
                         <h2 className="text-3xl font-bold mb-4">Berita Terkini</h2>
                         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                            Informasi terbaru seputar kegiatan dan prestasi TK ABA Mertosanan
+                            Informasi terbaru seputar kegiatan dan prestasi di {SCHOOL_NAME}
                         </p>
                     </div>
                     
@@ -60,7 +61,7 @@ export default async function NewsSection() {
                 <div className="text-center mb-12">
                     <h2 className="text-3xl font-bold mb-4">Berita Terkini</h2>
                     <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                        Informasi terbaru seputar kegiatan dan prestasi TK ABA Mertosanan
+                        Informasi terbaru seputar kegiatan dan prestasi di {SCHOOL_NAME}
                     </p>
                 </div>
                 

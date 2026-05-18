@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import TestimonialCard from "./TestimonialCard";
+import { SCHOOL_NAME } from "@/lib/school-config";
 
 async function fetchData() {
     const supabase = await createClient();
@@ -25,7 +26,7 @@ export default async function TestimonialsSection() {
                 <div className="text-center mb-12">
                     <h2 className="text-3xl md:text-4xl font-bold mb-4">Apa Kata Orang Tua</h2>
                     <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                        Dengarkan pengalaman para orang tua yang telah mempercayakan pendidikan anak mereka pada TK ABA Mertosanan
+                        Dengarkan pengalaman para orang tua yang telah mempercayakan pendidikan anak mereka pada {SCHOOL_NAME}
                     </p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

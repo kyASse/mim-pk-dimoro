@@ -7,30 +7,30 @@ import { Users, GraduationCap, Award, Palette } from "lucide-react";
 const stats = [
     {
         title: "Siswa Aktif",
-        value: "120+",
+        value: "250+",
         icon: <Users className="h-6 w-6 text-primary" />,
-        description: "Jumlah siswa yang aktif dan terdaftar.",
+        description: "Jumlah siswa yang aktif belajar di madrasah.",
         color: "primary"
     },
     {
         title: "Guru & Staff",
-        value: "15",
+        value: "20+",
         icon: <GraduationCap className="h-6 w-6 text-secondary dark:text-white" />,
-        description: "Tenaga pendidik profesional.",
+        description: "Tenaga pendidik profesional dan berdedikasi.",
         color: "secondary"
     },
     {
         title: "Prestasi",
-        value: "50+",
+        value: "100+",
         icon: <Award className="h-6 w-6 text-accent dark:text-white" />,
-        description: "Penghargaan akademik & non-akademik.",
+        description: "Penghargaan di tingkat kabupaten hingga nasional.",
         color: "accent"
     },
     {
         title: "Ekstrakurikuler",
-        value: "8",
+        value: "12",
         icon: <Palette className="h-6 w-6 text-info" />,
-        description: "Kegiatan pengembangan bakat.",
+        description: "Kegiatan pengembangan bakat dan minat.",
         color: "destructive"
     }
 ]

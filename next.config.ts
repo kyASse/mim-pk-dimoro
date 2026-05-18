@@ -43,17 +43,25 @@ const nextConfig: NextConfig = {
   },
 
   images: {
-    domains: ["tk-aba-mertosanan.sch.id", "images.pexels.com"],
-    remotePatterns: supabaseHostname
-      ? [
-          {
-            protocol: 'https',
-            hostname: supabaseHostname,
-            port: '',
-            pathname: '/storage/v1/object/public/**',
-          },
-        ]
-      : [],
+    domains: ["tk-aba-mertosanan.sch.id", "images.pexels.com", "placehold.co"],
+    remotePatterns: [
+      ...(supabaseHostname
+        ? [
+            {
+              protocol: 'https' as const,
+              hostname: supabaseHostname,
+              port: '',
+              pathname: '/storage/v1/object/public/**',
+            },
+          ]
+        : []),
+      {
+        protocol: 'https' as const,
+        hostname: 'placehold.co',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
 };
 
