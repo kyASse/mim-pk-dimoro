@@ -1,9 +1,9 @@
 import type { MetadataRoute } from "next";
 import { createClient } from "@/lib/supabase/server";
+import { SCHOOL_DOMAIN } from "@/lib/school-config";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const vercelUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || vercelUrl || "http://localhost:3000";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || SCHOOL_DOMAIN;
 
   // Static public routes; dynamic content like berita/[id] can be added later from DB
   const routes = [
