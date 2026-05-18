@@ -7,7 +7,10 @@ import {
     Activity,
     ChefHat,
     Shapes,
-    Leaf
+    Leaf,
+    Shield,
+    Users,
+    Book
 } from "lucide-react"
 import { motion } from "framer-motion"
 
@@ -40,6 +43,12 @@ export default function ExtraActivity({
                 return <Shapes className="h-6 w-6" />;
             case 'leaf':
                 return <Leaf className="h-6 w-6" />;
+            case 'shield':
+                return <Shield className="h-6 w-6" />;
+            case 'users':
+                return <Users className="h-6 w-6" />;
+            case 'book':
+                return <Book className="h-6 w-6" />;
             default:
                 return <Activity className="h-6 w-6" />;
         }
