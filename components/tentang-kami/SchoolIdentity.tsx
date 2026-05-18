@@ -6,27 +6,31 @@ import {
     Calendar,
     Award,
     School2,
-    MapPin
+    MapPin,
+    Hash
 } from "lucide-react"
 
+import { SCHOOL_NAME } from "@/lib/school-config"
+
 const identityData = [
-    { label: "NPSN", value: "20123456" },
-    { label: "Tanggal Berdiri", value: "15 Juli 1985" },
+    { label: "NPSN", value: "60711720" },
+    { label: "NSM", value: "111233110050" },
+    { label: "Tanggal Berdiri", value: "1 September 1967" },
     { label: "Status Sekolah", value: "Swasta" },
     { label: "Akreditasi", value: "A" },
-    { label: "Bentuk Pendidikan", value: "TK/PAUD" },
-    { label: "Alamat", value: "Jl. Mertosanan Wetan" },
-    { label: "Desa/Kelurahan", value: "Potorono" },
-    { label: "Kecamatan", value: "Banguntapan" },
-    { label: "Kabupaten", value: "Bantul" },
-    { label: "Provinsi", value: "D.I. Yogyakarta" },
+    { label: "Bentuk Pendidikan", value: "Madrasah Ibtidaiyah" },
+    { label: "Alamat", value: "Sudimoro, RT.003/RW.X" },
+    { label: "Desa/Kelurahan", value: "Parangjoro" },
+    { label: "Kecamatan", value: "Grogol" },
+    { label: "Kabupaten", value: "Sukoharjo" },
+    { label: "Provinsi", value: "Jawa Tengah" },
 ]
 
 export default function SchoolIdentity() {
     return (
         <section className="py-16 bg-accent/10">
             <div className="container mx-auto px-4">
-                <h2 className="text-3xl font-bold text-center mb-6">Identitas Sekolah</h2>
+                <h2 className="text-3xl font-bold text-center mb-6">Identitas {SCHOOL_NAME}</h2>
                 <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-md p-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {identityData.map((item, index) => (
@@ -39,12 +43,13 @@ export default function SchoolIdentity() {
                                 className="flex items-start space-x-3"
                             >
                                 <div className="bg-primary/10 p-2 rounded-full">
-                                    {index === 0 && <Building2 className="w-5 h-5 text-primary-foreground"/>}
-                                    {index === 1 && <Calendar className="w-5 h-5 text-primary-foreground"/>}
-                                    {index === 2 && <School2 className="w-5 h-5 text-primary-foreground"/>}
-                                    {index === 3 && <Award className="w-5 h-5 text-primary-foreground"/>}
-                                    {index === 4 && <School2 className="w-5 h-5 text-primary-foreground"/>}
-                                    {index > 4 && <MapPin className="w-5 h-5 text-primary-foreground"/>}
+                                    {item.label === "NPSN" && <Hash className="w-5 h-5 text-primary-foreground"/>}
+                                    {item.label === "NSM" && <Hash className="w-5 h-5 text-primary-foreground"/>}
+                                    {item.label === "Tanggal Berdiri" && <Calendar className="w-5 h-5 text-primary-foreground"/>}
+                                    {item.label === "Status Sekolah" && <School2 className="w-5 h-5 text-primary-foreground"/>}
+                                    {item.label === "Akreditasi" && <Award className="w-5 h-5 text-primary-foreground"/>}
+                                    {item.label === "Bentuk Pendidikan" && <Building2 className="w-5 h-5 text-primary-foreground"/>}
+                                    {["Alamat", "Desa/Kelurahan", "Kecamatan", "Kabupaten", "Provinsi"].includes(item.label) && <MapPin className="w-5 h-5 text-primary-foreground"/>}
                                 </div>
                                 <div>
                                     <p className="text-sm text-muted-foreground">{item.label}</p>

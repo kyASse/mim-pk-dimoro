@@ -2,15 +2,13 @@
 
 /**
  * Nama tampilan sekolah — digunakan di UI, judul halaman, hero section.
- * Ganti nilai ini saat nama tampilan final tersedia.
  */
-export const SCHOOL_NAME = "MI Muhammadiyah Dimoro";
+export const SCHOOL_NAME = "MIM Dimoro";
 
 /**
  * Nama resmi lengkap — digunakan di footer, halaman Tentang Kami, teks formal.
  */
-export const SCHOOL_FULL_NAME =
-  "Madrasah Ibtidaiyah Muhammadiyah Dimoro";
+export const SCHOOL_FULL_NAME = "Madrasah Ibtidaiyah Muhammadiyah Dimoro";
 
 /**
  * Singkatan resmi sekolah.
@@ -32,8 +30,7 @@ export const SCHOOL_ABOUT_DESCRIPTION =
   "dikembangkan melalui kurikulum terpadu antara ilmu umum dan ilmu agama.";
 
 /**
- * Path logo di folder public/. Nama file tetap agar penggantian logo final
- * cukup dengan replace file tanpa ubah kode.
+ * Path logo di folder public/.
  */
 export const SCHOOL_LOGO_PATH = "/logo-mim-pk-dimoro.svg";
 
