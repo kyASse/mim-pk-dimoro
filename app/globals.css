@@ -25,17 +25,17 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
 
-    /* Primary: Cheerful Yellow */
-    --primary: 49 100% 75%;
-    --primary-foreground: 20 14.3% 25.1%;
+    /* Primary: Medium Green */
+    --primary: 142 70% 40%;
+    --primary-foreground: 0 0% 0%;
 
     /* Secondary: Soft Green */
-    --secondary: 142 70% 85%;
-    --secondary-foreground: 142 76% 36%;
+    --secondary: 142 50% 88%;
+    --secondary-foreground: 142 70% 25%;
 
     /* Accent: Sky Blue */
-    --accent: 199 89% 75%;
-    --accent-foreground: 199 84% 36%;
+    --accent: 199 70% 65%;
+    --accent-foreground: 199 80% 25%;
 
     /* Muted: Pastel Backgrounds */
     --muted: 210 40% 96.1%;
@@ -54,7 +54,7 @@
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 142 70% 40%;
     --radius: 1rem;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -73,10 +73,10 @@
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --primary: 142 60% 50%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 142 30% 20%;
+    --secondary-foreground: 142 50% 85%;
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
     --muted: 217.2 32.6% 17.5%;
