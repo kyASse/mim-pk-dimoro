@@ -76,8 +76,8 @@ const formSchema = z.object({
     wali_hubungan: z.string().optional(),
     wali_pekerjaan: z.string().optional(),
     
-    memiliki_kebutuhan_khusus: z.boolean().default(false),
-    jenis_kebutuhan_khusus: z.array(z.string()).default([]),
+    memiliki_kebutuhan_khusus: z.boolean(),
+    jenis_kebutuhan_khusus: z.array(z.string()),
     deskripsi_kebutuhan_khusus: z.string().optional(),
     dokumen_pendukung: z.any().optional(),
 });
@@ -95,8 +95,8 @@ export default function PendaftaranForm() {
         defaultValues: {
             nama_lengkap: "",
             nama_panggilan: "",
-            jenis_kelamin: undefined,
-            kewarganegaraan: undefined,
+            jenis_kelamin: "" as any,
+            kewarganegaraan: "" as any,
             tempat_lahir: "",
             tanggal_lahir: "",
             agama: "",
