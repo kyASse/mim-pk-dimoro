@@ -1,17 +1,16 @@
-"use client"
-
 import Link from "next/link"
 import { Button } from "../ui/button"
 import { UserPlus, Phone } from "lucide-react"
+import { SCHOOL_NAME } from "@/lib/school-config"
 
 export default function CTASection() {
     return (
         <section className="py-16 bg-primary/20">
             <div className="container mx-auto px-4 text-center">
-                <h2 className="text-3xl  md:text-4xl font-bold mb-6"> Mari bergabung bersama TK ABA Mertosanan </h2>
+                <h2 className="text-3xl  md:text-4xl font-bold mb-6"> Mari bergabung bersama {SCHOOL_NAME} </h2>
                 <p className="text-lg mb-8 max-w-3xl mx-auto">
-                    Berikan pendidikan terbaik untuk buah hati Anda di TK ABA Mertosanan.
-                    Kami membuka pendaftaran untuk sekolah anak usia dini. Bergabunglah sekarang dan dapatkan pengalaman pendidikan berkualitas.
+                    Berikan pendidikan terbaik untuk buah hati Anda di {SCHOOL_NAME}.
+                    Kami membuka pendaftaran untuk siswa baru tahun ajaran ini. Bergabunglah sekarang dan dapatkan pengalaman pendidikan berkualitas yang memadukan ilmu umum dan agama.
                 </p>
                 <div className="flex flex-col md:flex-row gap-4 justify-center">
                     <Link href={"/pendaftaran"}>

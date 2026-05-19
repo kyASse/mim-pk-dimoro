@@ -3,34 +3,34 @@
 import { motion } from "motion/react";
 import { Users, GraduationCap, Award, Palette } from "lucide-react";
 
-// using data dumy for stats before data from API is available
+// Official stats from docs/data-yang-diperlukan.md (April 2026)
 const stats = [
     {
         title: "Siswa Aktif",
-        value: "120+",
+        value: "201",
         icon: <Users className="h-6 w-6 text-primary" />,
-        description: "Jumlah siswa yang aktif dan terdaftar.",
+        description: "Jumlah siswa aktif (L: 104, P: 97).",
         color: "primary"
     },
     {
         title: "Guru & Staff",
-        value: "15",
+        value: "18",
         icon: <GraduationCap className="h-6 w-6 text-secondary dark:text-white" />,
-        description: "Tenaga pendidik profesional.",
+        description: "Tenaga pendidik profesional dan berdedikasi.",
         color: "secondary"
     },
     {
-        title: "Prestasi",
-        value: "50+",
+        title: "Pengalaman",
+        value: "59th",
         icon: <Award className="h-6 w-6 text-accent dark:text-white" />,
-        description: "Penghargaan akademik & non-akademik.",
+        description: "Berdiri sejak 1 September 1967.",
         color: "accent"
     },
     {
         title: "Ekstrakurikuler",
-        value: "8",
+        value: "10+",
         icon: <Palette className="h-6 w-6 text-info" />,
-        description: "Kegiatan pengembangan bakat.",
+        description: "Kegiatan pengembangan bakat dan minat.",
         color: "destructive"
     }
 ]

@@ -1,4 +1,3 @@
-// components/Pendaftaran/PendaftaranForm.tsx
 'use client';
 
 import { useForm } from "react-hook-form";
@@ -28,7 +27,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2 } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Loader2, User, Users, Home, Heart, FileText, Send } from "lucide-react";
+import { SCHOOL_NAME, SCHOOL_WHATSAPP } from "@/lib/school-config";
 
 // Definisikan opsi kebutuhan khusus
 const jenisKebutuhanKhususItems = [
@@ -76,21 +77,21 @@ const formSchema = z.object({
     wali_pekerjaan: z.string().optional(),
     
     memiliki_kebutuhan_khusus: z.boolean().default(false),
-    jenis_kebutuhan_khusus: z.array(z.string()).optional(),
+    jenis_kebutuhan_khusus: z.array(z.string()).default([]),
     deskripsi_kebutuhan_khusus: z.string().optional(),
     dokumen_pendukung: z.any().optional(),
 });
 
-
+type FormValues = z.infer<typeof formSchema>;
 
 export default function PendaftaranForm() {
     const [isSuccess, setIsSuccess] = useState(false);
     const supabase = createClient();
     const [isUploading, setIsUploading] = useState(false);
 
-    const form = useForm({
+    const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
-        mode: "onSubmit" as const,
+        mode: "onSubmit",
         defaultValues: {
             nama_lengkap: "",
             nama_panggilan: "",
@@ -124,6 +125,7 @@ export default function PendaftaranForm() {
             memiliki_kebutuhan_khusus: false,
             jenis_kebutuhan_khusus: [],
             deskripsi_kebutuhan_khusus: "",
+            dokumen_pendukung: undefined,
         },
     });
 
@@ -133,11 +135,11 @@ export default function PendaftaranForm() {
         if (isSuccess) {
             toast.success("Pendaftaran Berhasil", {
                 description: (
-                    <div>
+                    <div className="flex flex-col gap-2">
                         <p className="text-muted-foreground">
-                            Terima kasih. Langkah selanjutnya, silakan konfirmasi pendaftaran ke nomor WhatsApp sekolah di <strong>0812-3456-7890</strong> (ganti nomor) dengan format:
+                            Terima kasih. Langkah selanjutnya, silakan konfirmasi pendaftaran ke nomor WhatsApp <strong>{SCHOOL_NAME}</strong> di <strong>{SCHOOL_WHATSAPP}</strong> dengan format:
                         </p>
-                        <pre className="text-muted-foreground p-4 rounded mt-2 border border-muted-200 whitespace-pre-wrap break-words">
+                        <pre className="bg-muted p-3 rounded-md border text-xs whitespace-pre-wrap break-words font-mono">
                             KONFIRMASI PENDAFTARAN - {form.getValues("nama_lengkap")}
                         </pre>
                     </div>
@@ -150,7 +152,7 @@ export default function PendaftaranForm() {
         }
     }, [isSuccess, form]);
 
-    async function onSubmit(values: z.infer<typeof formSchema>): Promise<void> {
+    async function onSubmit(values: FormValues): Promise<void> {
         // Notify developers about form submission in non-production environments
         if (process.env.NODE_ENV !== 'production') {
             console.debug('=== FORM SUBMIT STARTED ===');
@@ -236,21 +238,26 @@ export default function PendaftaranForm() {
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-8">
-                <fieldset className="flex flex-col gap-4 border border-gray-200 rounded-lg p-6">
-                    <legend className="font-bold text-lg px-2 text-gray-700">A. Keterangan Anak</legend>
-                    <div className="grid md:grid-cols-2 gap-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-10">
+                {/* A. Keterangan Anak */}
+                <div className="flex flex-col gap-6">
+                    <div className="flex items-center gap-2">
+                        <User className="w-5 h-5 text-primary" />
+                        <h3 className="text-lg font-semibold tracking-tight">A. Keterangan Anak (Data Siswa)</h3>
+                    </div>
+                    <Separator />
+                    <div className="grid md:grid-cols-2 gap-6">
                         <FormField control={form.control} name="nama_lengkap" render={({ field }) => (
                             <FormItem>
-                                <FormLabel>1. Nama Lengkap</FormLabel>
-                                <FormControl><Input {...field} /></FormControl>
+                                <FormLabel>Nama Lengkap</FormLabel>
+                                <FormControl><Input placeholder="Sesuai akta kelahiran" {...field} /></FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}/>
                         <FormField control={form.control} name="nama_panggilan" render={({ field }) => (
                             <FormItem>
-                                <FormLabel>2. Nama Panggilan</FormLabel>
-                                <FormControl><Input {...field} /></FormControl>
+                                <FormLabel>Nama Panggilan</FormLabel>
+                                <FormControl><Input placeholder="Nama panggilan anak" {...field} /></FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}/>
@@ -259,7 +266,7 @@ export default function PendaftaranForm() {
                             name="jenis_kelamin"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>3. Jenis Kelamin</FormLabel>
+                                    <FormLabel>Jenis Kelamin</FormLabel>
                                     <FormControl>
                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                                             <SelectTrigger>
@@ -275,16 +282,16 @@ export default function PendaftaranForm() {
                                 </FormItem>
                             )}
                         />
-                        <div className="flex gap-4">
+                        <div className="grid grid-cols-2 gap-4">
                             <FormField control={form.control} name="tempat_lahir" render={({ field }) => (
-                                <FormItem className="flex-1">
-                                    <FormLabel>4. Tempat Lahir</FormLabel>
-                                    <FormControl><Input {...field} /></FormControl>
+                                <FormItem>
+                                    <FormLabel>Tempat Lahir</FormLabel>
+                                    <FormControl><Input placeholder="Kota/Kabupaten" {...field} /></FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}/>
                             <FormField control={form.control} name="tanggal_lahir" render={({ field }) => (
-                                <FormItem className="flex-1">
+                                <FormItem>
                                     <FormLabel>Tanggal Lahir</FormLabel>
                                     <FormControl><Input type="date" {...field} /></FormControl>
                                     <FormMessage />
@@ -293,7 +300,7 @@ export default function PendaftaranForm() {
                         </div>
                         <FormField control={form.control} name="agama" render={({ field }) => (
                             <FormItem>
-                                <FormLabel>5. Agama</FormLabel>
+                                <FormLabel>Agama</FormLabel>
                                 <FormControl><Input {...field} /></FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -303,7 +310,7 @@ export default function PendaftaranForm() {
                             name="kewarganegaraan"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>6. Kewarganegaraan</FormLabel>
+                                    <FormLabel>Kewarganegaraan</FormLabel>
                                     <FormControl>
                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                                             <SelectTrigger>
@@ -319,44 +326,46 @@ export default function PendaftaranForm() {
                                 </FormItem>
                             )}
                         />
-                        <FormField control={form.control} name="anak_ke" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>7. Anak ke</FormLabel>
-                                <FormControl><Input type="number" {...field} /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}/>
-                        <FormField control={form.control} name="jumlah_saudara_kandung" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>8. Jumlah saudara kandung</FormLabel>
-                                <FormControl><Input type="number" {...field} /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}/>
+                        <div className="grid grid-cols-2 gap-4">
+                            <FormField control={form.control} name="anak_ke" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Anak ke</FormLabel>
+                                    <FormControl><Input type="number" {...field} /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}/>
+                            <FormField control={form.control} name="jumlah_saudara_kandung" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Jumlah Saudara</FormLabel>
+                                    <FormControl><Input type="number" {...field} /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}/>
+                        </div>
                         <FormField control={form.control} name="status_anak" render={({ field }) => (
                             <FormItem>
-                                <FormLabel>9. Status Anak</FormLabel>
+                                <FormLabel>Status Anak</FormLabel>
                                 <FormControl><Input placeholder="Contoh: Anak Kandung" {...field} /></FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}/>
                         <FormField control={form.control} name="bahasa_sehari_hari" render={({ field }) => (
                             <FormItem>
-                                <FormLabel>10. Bahasa sehari-hari</FormLabel>
+                                <FormLabel>Bahasa Sehari-hari</FormLabel>
                                 <FormControl><Input {...field} /></FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}/>
-                        <div className="flex gap-4">
+                        <div className="grid grid-cols-2 gap-4">
                             <FormField control={form.control} name="berat_badan" render={({ field }) => (
-                                <FormItem className="flex-1">
-                                    <FormLabel>11. Berat Badan (Kg)</FormLabel>
+                                <FormItem>
+                                    <FormLabel>Berat Badan (Kg)</FormLabel>
                                     <FormControl><Input type="number" {...field} /></FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}/>
                             <FormField control={form.control} name="tinggi_badan" render={({ field }) => (
-                                <FormItem className="flex-1">
+                                <FormItem>
                                     <FormLabel>Tinggi Badan (Cm)</FormLabel>
                                     <FormControl><Input type="number" {...field} /></FormControl>
                                     <FormMessage />
@@ -368,7 +377,7 @@ export default function PendaftaranForm() {
                             name="golongan_darah"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>12. Golongan Darah</FormLabel>
+                                    <FormLabel>Golongan Darah</FormLabel>
                                     <FormControl>
                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                                             <SelectTrigger>
@@ -388,38 +397,43 @@ export default function PendaftaranForm() {
                         />
                         <FormField control={form.control} name="cita_cita" render={({ field }) => (
                             <FormItem>
-                                <FormLabel>14. Cita-cita</FormLabel>
-                                <FormControl><Input {...field} /></FormControl>
+                                <FormLabel>Cita-cita</FormLabel>
+                                <FormControl><Input placeholder="Apa impian anak?" {...field} /></FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}/>
                         <FormField control={form.control} name="alamat_lengkap" render={({ field }) => (
                             <FormItem>
-                                <FormLabel>15. Alamat Tempat Tinggal</FormLabel>
-                                <FormControl><Textarea rows={3} {...field} /></FormControl>
+                                <FormLabel>Alamat Tempat Tinggal</FormLabel>
+                                <FormControl><Textarea rows={3} placeholder="Alamat lengkap saat ini" {...field} /></FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}/>
                         <FormField control={form.control} name="nomor_telepon" render={({ field }) => (
                             <FormItem>
-                                <FormLabel>16. Nomor Telepon/HP</FormLabel>
-                                <FormControl><Input type="tel" {...field} /></FormControl>
+                                <FormLabel>Nomor Telepon/HP (WhatsApp)</FormLabel>
+                                <FormControl><Input type="tel" placeholder="08..." {...field} /></FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}/>
                         <FormField control={form.control} name="jarak_tempat_tinggal" render={({ field }) => (
                             <FormItem>
-                                <FormLabel>17. Jarak tempat tinggal</FormLabel>
+                                <FormLabel>Jarak ke Sekolah</FormLabel>
                                 <FormControl><Input placeholder="Contoh: ± 1 Km" {...field} /></FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}/>
                     </div>
-                </fieldset>
+                </div>
 
-                <fieldset className="border border-gray-200 rounded-lg p-6">
-                    <legend className="font-bold text-lg px-2 text-gray-700">B. Orang Tua</legend>
-                    <div className="grid md:grid-cols-2 gap-4">
+                {/* B. Orang Tua */}
+                <div className="flex flex-col gap-6">
+                    <div className="flex items-center gap-2">
+                        <Users className="w-5 h-5 text-primary" />
+                        <h3 className="text-lg font-semibold tracking-tight">B. Orang Tua (Data Ayah & Ibu)</h3>
+                    </div>
+                    <Separator />
+                    <div className="grid md:grid-cols-2 gap-6">
                         <FormField control={form.control} name="nama_ayah_kandung" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Nama Ayah Kandung</FormLabel>
@@ -437,14 +451,14 @@ export default function PendaftaranForm() {
                         <FormField control={form.control} name="pendidikan_ayah" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Pendidikan Ayah</FormLabel>
-                                <FormControl><Input {...field} /></FormControl>
+                                <FormControl><Input placeholder="Contoh: S1 Teknik" {...field} /></FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}/>
                         <FormField control={form.control} name="pendidikan_ibu" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Pendidikan Ibu</FormLabel>
-                                <FormControl><Input {...field} /></FormControl>
+                                <FormControl><Input placeholder="Contoh: D3 Akuntansi" {...field} /></FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}/>
@@ -463,18 +477,25 @@ export default function PendaftaranForm() {
                             </FormItem>
                         )}/>
                         <FormField control={form.control} name="email" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Alamat Email (untuk Portal Orang Tua)</FormLabel>
-                                <FormControl><Input type="email" placeholder="contoh@email.com" {...field} /></FormControl>
+                            <FormItem className="md:col-span-2">
+                                <FormLabel>Alamat Email</FormLabel>
+                                <FormControl><Input type="email" placeholder="email@contoh.com" {...field} /></FormControl>
+                                <FormDescription>Digunakan untuk akses ke Portal Orang Tua {SCHOOL_NAME}</FormDescription>
                                 <FormMessage />
                             </FormItem>
                         )}/>
                     </div>
-                </fieldset>
+                </div>
 
-                <fieldset className="border border-gray-200 rounded-lg p-6">
-                    <legend className="font-bold text-lg px-2 text-gray-700">C. Wali Anak (diisi jika tinggal bersama wali)</legend>
-                    <div className="grid md:grid-cols-2 gap-4">
+                {/* C. Wali Anak */}
+                <div className="flex flex-col gap-6">
+                    <div className="flex items-center gap-2">
+                        <Home className="w-5 h-5 text-primary" />
+                        <h3 className="text-lg font-semibold tracking-tight">C. Wali Anak</h3>
+                    </div>
+                    <p className="text-sm text-muted-foreground -mt-4">Diisi hanya jika calon siswa tidak tinggal bersama orang tua kandung.</p>
+                    <Separator />
+                    <div className="grid md:grid-cols-2 gap-6">
                         <FormField control={form.control} name="wali_nama" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Nama Wali</FormLabel>
@@ -484,7 +505,7 @@ export default function PendaftaranForm() {
                         )}/>
                         <FormField control={form.control} name="wali_pendidikan" render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Pendidikan Tertinggi Wali</FormLabel>
+                                <FormLabel>Pendidikan Wali</FormLabel>
                                 <FormControl><Input {...field} /></FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -492,7 +513,7 @@ export default function PendaftaranForm() {
                         <FormField control={form.control} name="wali_hubungan" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Hubungan dengan Wali</FormLabel>
-                                <FormControl><Input {...field} /></FormControl>
+                                <FormControl><Input placeholder="Contoh: Paman, Kakek" {...field} /></FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}/>
@@ -504,134 +525,154 @@ export default function PendaftaranForm() {
                             </FormItem>
                         )}/>
                     </div>
-                </fieldset>
+                </div>
 
-                <fieldset className="flex flex-col gap-6 border border-gray-200 rounded-lg p-6">
-                    <legend className="font-bold text-lg px-2 text-gray-700">D. Kebutuhan Khusus</legend>
-                    <FormField
-                        control={form.control}
-                        name="memiliki_kebutuhan_khusus"
-                        render={({ field }) => (
-                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                                <div className="space-y-0.5">
-                                    <FormLabel className="text-base">
-                                        Apakah calon siswa memiliki kebutuhan khusus?
-                                    </FormLabel>
-                                    <FormDescription>
-                                        Jika "Ya", mohon lengkapi informasi di bawah ini.
-                                    </FormDescription>
-                                </div>
-                                <FormControl>
-                                    <Switch
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                    />
-                                </FormControl>
-                            </FormItem>
-                        )}
-                    />
-
-                    {hasSpecialNeeds && (
-                        <div className="flex flex-col gap-4 pl-4 border-l-2 border-primary/20">
-                            <FormField
-                                control={form.control}
-                                name="jenis_kebutuhan_khusus"
-                                render={() => (
-                                    <FormItem>
-                                        <div className="mb-4">
-                                            <FormLabel className="text-base">Jenis Kebutuhan Khusus</FormLabel>
-                                            <FormDescription>
-                                                Pilih satu atau lebih yang sesuai.
-                                            </FormDescription>
-                                        </div>
-                                        {jenisKebutuhanKhususItems.map((item) => (
-                                            <FormField
-                                                key={item.id}
-                                                control={form.control}
-                                                name="jenis_kebutuhan_khusus"
-                                                render={({ field }) => {
-                                                    return (
-                                                        <FormItem
-                                                            key={item.id}
-                                                            className="flex flex-row items-start space-x-3 space-y-0"
-                                                        >
-                                                            <FormControl>
-                                                                <Checkbox
-                                                                    checked={field.value?.includes(item.id)}
-                                                                    onCheckedChange={(checked) => {
-                                                                        return checked
-                                                                            ? field.onChange([...(field.value || []), item.id])
-                                                                            : field.onChange(
-                                                                                field.value?.filter(
-                                                                                    (value) => value !== item.id
-                                                                                )
-                                                                            )
-                                                                    }}
-                                                                />
-                                                            </FormControl>
-                                                            <FormLabel className="font-normal">
-                                                                {item.label}
-                                                            </FormLabel>
-                                                        </FormItem>
-                                                    )
-                                                }}
-                                            />
-                                        ))}
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="deskripsi_kebutuhan_khusus"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Deskripsi Rinci</FormLabel>
-                                        <FormControl>
-                                            <Textarea
-                                                placeholder="Jelaskan secara singkat kebutuhan khusus, riwayat penanganan, atau rekomendasi dari ahli (jika ada)."
-                                                className="resize-y"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            
-                            <FormField
-                                control={form.control}
-                                name="dokumen_pendukung"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Unggah Dokumen Pendukung (Opsional)</FormLabel>
-                                        <FormControl>
-                                            <Input 
-                                                type="file" 
-                                                accept=".pdf,.jpg,.jpeg,.png"
-                                                onChange={(e) => field.onChange(e.target.files)}
-                                            />
-                                        </FormControl>
+                {/* D. Kebutuhan Khusus */}
+                <div className="flex flex-col gap-6">
+                    <div className="flex items-center gap-2">
+                        <Heart className="w-5 h-5 text-primary" />
+                        <h3 className="text-lg font-semibold tracking-tight">D. Kebutuhan Khusus</h3>
+                    </div>
+                    <Separator />
+                    <div className="flex flex-col gap-6">
+                        <FormField
+                            control={form.control}
+                            name="memiliki_kebutuhan_khusus"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-row items-center justify-between rounded-xl border p-5 bg-muted/30">
+                                    <div className="flex flex-col gap-1">
+                                        <FormLabel className="text-base">
+                                            Apakah calon siswa memiliki kebutuhan khusus?
+                                        </FormLabel>
                                         <FormDescription>
-                                            Contoh: Surat keterangan psikolog, laporan medis. (Maks. 5MB)
+                                            Kami berkomitmen memberikan pendidikan yang inklusif.
                                         </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-                    )}
-                </fieldset>
+                                    </div>
+                                    <FormControl>
+                                        <Switch
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                        />
+                                    </FormControl>
+                                </FormItem>
+                            )}
+                        />
 
-                <Button 
-                    type="submit" 
-                    className="w-full mt-4" 
-                    disabled={form.formState.isSubmitting || isUploading}
-                >
-                    {(form.formState.isSubmitting || isUploading) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    {(form.formState.isSubmitting || isUploading) ? "Mengirim..." : "Daftar Sekarang"}
-                </Button>
+                        {hasSpecialNeeds && (
+                            <div className="flex flex-col gap-8 pl-6 border-l-2 border-primary/30 animate-in fade-in slide-in-from-left-4 duration-300">
+                                <FormField
+                                    control={form.control}
+                                    name="jenis_kebutuhan_khusus"
+                                    render={() => (
+                                        <FormItem>
+                                            <fieldset>
+                                                <div className="mb-4">
+                                                    <legend className="text-base font-medium">Jenis Kebutuhan Khusus</legend>
+                                                    <FormDescription>
+                                                        Anda dapat memilih lebih dari satu opsi.
+                                                    </FormDescription>
+                                                </div>
+                                                <div className="grid sm:grid-cols-2 gap-3">
+                                                    {jenisKebutuhanKhususItems.map((item) => (
+                                                        <FormField
+                                                            key={item.id}
+                                                            control={form.control}
+                                                            name="jenis_kebutuhan_khusus"
+                                                            render={({ field }) => (
+                                                                <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-2 rounded-md hover:bg-muted/50 transition-colors">
+                                                                    <FormControl>
+                                                                        <Checkbox
+                                                                            checked={(field.value as string[])?.includes(item.id)}
+                                                                            onCheckedChange={(checked) => {
+                                                                                const value = (field.value as string[]) || [];
+                                                                                return checked
+                                                                                    ? field.onChange([...value, item.id])
+                                                                                    : field.onChange(
+                                                                                        value.filter((v) => v !== item.id)
+                                                                                    )
+                                                                            }}
+                                                                        />
+                                                                    </FormControl>
+                                                                    <FormLabel className="text-sm font-normal leading-tight cursor-pointer">
+                                                                        {item.label}
+                                                                    </FormLabel>
+                                                                </FormItem>
+                                                            )}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </fieldset>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="deskripsi_kebutuhan_khusus"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Deskripsi Lengkap</FormLabel>
+                                            <FormControl>
+                                                <Textarea
+                                                    placeholder="Mohon jelaskan kondisi spesifik, riwayat penanganan, atau kebutuhan khusus lainnya agar kami dapat melayani dengan baik."
+                                                    className="min-h-[120px] resize-none"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                
+                                <FormField
+                                    control={form.control}
+                                    name="dokumen_pendukung"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <FileText className="w-4 h-4 text-muted-foreground" />
+                                                <FormLabel>Dokumen Pendukung (Opsional)</FormLabel>
+                                            </div>
+                                            <FormControl>
+                                                <div className="grid w-full max-w-sm items-center gap-1.5">
+                                                    <Input 
+                                                        type="file" 
+                                                        accept=".pdf,.jpg,.jpeg,.png"
+                                                        onChange={(e) => field.onChange(e.target.files)}
+                                                        className="cursor-pointer"
+                                                    />
+                                                </div>
+                                            </FormControl>
+                                            <FormDescription>
+                                                Format: PDF, JPG, PNG (Maks. 5MB). Contoh: Hasil psikotes, surat medis.
+                                            </FormDescription>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="pt-4">
+                    <Button 
+                        type="submit" 
+                        size="lg"
+                        className="w-full text-base font-semibold h-12 shadow-lg shadow-primary/20" 
+                        disabled={form.formState.isSubmitting || isUploading}
+                    >
+                        {form.formState.isSubmitting || isUploading ? (
+                            <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Mengirim data...</>
+                        ) : (
+                            <><Send className="mr-2 h-5 w-5" /> Kirim Formulir Pendaftaran</>
+                        )}
+                    </Button>
+                    <p className="text-center text-xs text-muted-foreground mt-4">
+                        Dengan mengirimkan formulir ini, Anda menyetujui bahwa data yang diberikan adalah benar dan sah.
+                    </p>
+                </div>
             </form>
         </Form>
     );

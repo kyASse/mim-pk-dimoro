@@ -35,7 +35,7 @@ export default async function GaleriPublikPage({
             <div className="min-h-screen">
                 <PageHeader
                     title="Galeri"
-                    description="Melihat keseruan anak-anak belajar dan bermain di TK ABA Mertosanan"
+                    description="Melihat keseruan anak-anak belajar dan bermain di MIM PK Dimoro"
                     background="bg-highlight/20"
                 />
                 <div className="container mx-auto px-4 py-16">
@@ -59,7 +59,7 @@ export default async function GaleriPublikPage({
             <div className="min-h-screen">
                 <PageHeader
                     title="Galeri"
-                    description="Melihat keseruan anak-anak belajar dan bermain di TK ABA Mertosanan"
+                    description="Melihat keseruan anak-anak belajar dan bermain di MIM PK Dimoro"
                     background="bg-highlight/20"
                 />
                 <div className="container mx-auto px-4 py-16">
@@ -72,9 +72,9 @@ export default async function GaleriPublikPage({
     }
 
     // Ekstrak kategori unik
-    const uniqueKategori: string[] = [...new Set(
-        kategoriData?.map(item => item.kategori).filter(Boolean) || []
-    )];
+    const uniqueKategori = Array.from(new Set(
+        kategoriData?.map(item => item.kategori).filter((k): k is string => !!k) || []
+    ));
 
     // Transform data galeri untuk komponen client
     const transformedGaleri = galeri?.map(item => ({
@@ -90,7 +90,7 @@ export default async function GaleriPublikPage({
         <div className="min-h-screen">
             <PageHeader
                 title="Galeri"
-                description="Melihat keseruan anak-anak belajar dan bermain di TK ABA Mertosanan"
+                description="Melihat keseruan anak-anak belajar dan bermain di MIM PK Dimoro"
                 background="bg-highlight/20"
             />
 
@@ -107,7 +107,7 @@ export default async function GaleriPublikPage({
         <div className="min-h-screen">
             <PageHeader
                 title="Galeri"
-                description="Melihat keseruan anak-anak belajar dan bermain di TK ABA Mertosanan"
+                description="Melihat keseruan anak-anak belajar dan bermain di MIM PK Dimoro"
                 background="bg-highlight/20"
             />
             <div className="container mx-auto px-4 py-16">

@@ -2,19 +2,18 @@ import Image from "next/image";
 import Link from "next/link";
 import PageHeader from "@/components/shared/PageHeader";
 import ProgramDetails from "@/components/program/ProgramDetails";
-import ActivityCard from "@/components/program/ActivityCard";
 import ExtraActivity from "@/components/program/ExtraActivity";
-import KalenderAkademik from "@/components/kalender/KalenderAkademik";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Award, BookOpen, Calendar, ChevronRight, Phone } from "lucide-react";
+import { Award, BookOpen, ChevronRight, Phone, Star } from "lucide-react";
+import { SCHOOL_NAME, SCHOOL_FULL_NAME } from "@/lib/school-config";
 
 export default function Program() {
     return (
         <div className="min-h-screen">
             <PageHeader 
                 title="Program & Pendidikan"
-                description="Mengenal program pendidikan di TK ABA Mertosanan"
+                description={`Mengenal kurikulum dan program unggulan di ${SCHOOL_NAME}`}
                 background="bg-accent/20"
             />
 
@@ -23,10 +22,10 @@ export default function Program() {
                 <div className="container mx-auto px-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                         <div>
-                            <h2 className="text-3xl font-bold mb-6"> Program Pendidikan</h2>
+                            <h2 className="text-3xl font-bold mb-6"> Kurikulum & Program</h2>
                             <p className="text-muted-foreground mb-6">
-                                TK ABA Mertosanan menyediakan program pendidikan yang komprehensif untuk mendukung perkembangan anak secara holistik.
-                                Kurikulum kami dirancang untuk mengembangkan aspek kognitif, afektif, dan psikomotorik anak dengan pendekatan yang menyenangkan.
+                                {SCHOOL_FULL_NAME} menyelenggarakan pendidikan dasar dengan Kurikulum Merdeka yang diperkaya dengan muatan lokal Al-Islam, Kemuhammadiyahan, dan Bahasa Arab (ISMUBA).
+                                Kami berkomitmen mencetak generasi yang unggul secara akademik dan kokoh secara spiritual.
                             </p>
                             <div className="space-y-4">
                                 <div className="flex items-start">
@@ -34,17 +33,17 @@ export default function Program() {
                                         <BookOpen className="h-5 w-5 text-accent-foreground"/>
                                     </div>
                                     <div className="ml-4">
-                                        <h3 className="font-semibold text-lg">Pendidikan Berkualitas</h3>
-                                        <p className="text-muted-foreground">Kurikulum nasional yang terintegrasi dengan nilai islami</p>
+                                        <h3 className="font-semibold text-lg">Kurikulum Terpadu</h3>
+                                        <p className="text-muted-foreground">Integrasi Kurikulum Nasional dengan nilai-nilai Keislaman.</p>
                                     </div>
                                 </div>
                                 <div className="flex items-start">
                                     <div className="mt-1 bg-primary/20 p-2 rounded-full">
-                                        <Calendar className="h-5 w-5 text-accent-foreground"/>
+                                        <Star className="h-5 w-5 text-primary-foreground"/>
                                     </div>
                                     <div className="ml-4">
-                                        <h3 className="font-semibold text-lg">Jadwal Fleksibel</h3>
-                                        <p className="text-muted-foreground">Jadwal pendidikan yang fleksibel sesuai dengan kebutuhan anak</p>
+                                        <h3 className="font-semibold text-lg">Program Unggulan</h3>
+                                        <p className="text-muted-foreground">Fokus pada Tahfidz Al-Qur'an dan pembentukan karakter Islami.</p>
                                     </div>
                                 </div>
                                 <div className="flex items-start">
@@ -52,8 +51,8 @@ export default function Program() {
                                         <Award className="h-5 w-5 text-accent-foreground"/>
                                     </div>
                                     <div className="ml-4">
-                                        <h3 className="font-semibold text-lg">Guru Berkualitas</h3>
-                                        <p className="text-muted-foreground">Didukung oleh tenaga pendidik berkualitas yang memahami nilai-nilai islami</p>
+                                        <h3 className="font-semibold text-lg">Pendidik Berkompeten</h3>
+                                        <p className="text-muted-foreground">Dibimbing oleh guru-guru yang berdedikasi dan ahli di bidangnya.</p>
                                     </div>
                                 </div>
                             </div>
@@ -62,10 +61,10 @@ export default function Program() {
                             <div className="absolute -top-4 -left-4 w-24 h-24 bg-primary rounded-full -z-10"></div>
                             <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-accent rounded-full -z-10"></div>
                             <Image
-                                src={"https://images.pexels.com/photos/8535185/pexels-photo-8535185.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"}
-                                alt="Kegiatan di TK ABA Mertosanan"
+                                src="https://placehold.co/600x400/059669/ffffff?text=Program+Pendidikan"
+                                alt={`Kegiatan di ${SCHOOL_NAME}`}
                                 width={600}
-                                height={50}
+                                height={400}
                                 className="w-full h-80 md:h-96 object-cover rounded-2xl shadow-lg"
                             />
                         </div>
@@ -73,73 +72,53 @@ export default function Program() {
                 </div>
             </section>
 
+            {/* Program Kelas */}
             <section className="py-16 bg-secondary/20">
                 <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold text-center mb-8">Program Kelas</h2>
+                    <h2 className="text-3xl font-bold text-center mb-8">Struktur Kurikulum</h2>
                 
-                    <Tabs defaultValue="play-group" className="max-w-5xl mx-auto">
-                        <TabsList className="grid w-full grid-cols-3 mb-8">
-                            <TabsTrigger value="play-group">
-                                <span className="hidden md:inline">Kelompok Bermain</span>
-                                <span className="md:hidden">KB</span>
-                            </TabsTrigger>
-                            <TabsTrigger value="tk-a">TK A</TabsTrigger>
-                            <TabsTrigger value="tk-b">TK B</TabsTrigger>
+                    <Tabs defaultValue="kelas-bawah" className="max-w-5xl mx-auto">
+                        <TabsList className="grid w-full grid-cols-2 mb-8">
+                            <TabsTrigger value="kelas-bawah">Kelas Bawah (1-3)</TabsTrigger>
+                            <TabsTrigger value="kelas-atas">Kelas Atas (4-6)</TabsTrigger>
                         </TabsList>
                         
-                        <TabsContent value="play-group" id="kelompok-bermain">
+                        <TabsContent value="kelas-bawah">
                             <ProgramDetails 
-                                title="Kelompok Bermain (3-4 tahun)"
-                                description="Program pengenalan pendidikan untuk anak usia 3-4 tahun dengan pendekatan bermain sambil belajar."
-                                imageUrl="https://images.pexels.com/photos/8613089/pexels-photo-8613089.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                                title="Fase A & B (Kelas 1-3)"
+                                description="Fokus pada penguatan literasi dasar, numerasi, dan pembiasaan adab serta ibadah harian."
+                                imageUrl="https://placehold.co/800x600/10b981/ffffff?text=Kelas+Bawah+1-3"
                                 schedule={[
-                                { day: "Senin - Jumat", hours: "07:30 - 10:30 WIB" },
-                                { day: "Sabtu", hours: "07:30 - 09:30 WIB" }
+                                    { day: "Senin - Kamis", hours: "07:00 - 13:00 WIB" },
+                                    { day: "Jumat", hours: "07:00 - 11:00 WIB" }
                                 ]}
                                 features={[
-                                "Pengenalan huruf hijaiyah dan doa sehari-hari",
-                                "Pengembangan motorik kasar dan halus",
-                                "Pengenalan konsep sederhana",
-                                "Kegiatan sosial dan bermain bersama",
-                                "Stimulasi kreativitas melalui seni dan musik"
+                                    "ISMUBA (Al-Qur'an Hadis, Akidah Akhlak, Fikih, Bahasa Arab)",
+                                    "Pendidikan Pancasila & Bahasa Indonesia",
+                                    "Matematika & Seni Budaya",
+                                    "PJOK & Muatan Lokal",
+                                    "Pembiasaan Sholat Dhuha & Dzuhur Berjamaah",
+                                    "Tahfidz Juz 30"
                                 ]}
                             />
                         </TabsContent>
-                            
-                        <TabsContent value="tk-a" id="tk-a">
+                        
+                        <TabsContent value="kelas-atas">
                             <ProgramDetails 
-                                title="TK A (4-5 tahun)"
-                                description="Program pendidikan untuk anak usia 4-5 tahun dengan kurikulum yang mendukung perkembangan holistik."
-                                imageUrl="https://images.pexels.com/photos/8535185/pexels-photo-8535185.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                                title="Fase B & C (Kelas 4-6)"
+                                description="Pengembangan kemampuan berpikir kritis, kemandirian, dan persiapan menuju jenjang pendidikan menengah."
+                                imageUrl="https://placehold.co/800x600/059669/ffffff?text=Kelas+Atas+4-6"
                                 schedule={[
-                                { day: "Senin - Jumat", hours: "07:30 - 10:45 WIB" },
-                                { day: "Sabtu", hours: "07:30 - 10:00 WIB" }
+                                    { day: "Senin - Kamis", hours: "07:00 - 14:00 WIB" },
+                                    { day: "Jumat", hours: "07:00 - 11:00 WIB" }
                                 ]}
                                 features={[
-                                "Pengenalan membaca Iqro dan hafalan surat pendek",
-                                "Pengenalan angka dan huruf",
-                                "Kegiatan seni, musik, dan gerakan kreatif",
-                                "Pembelajaran tentang lingkungan sekitar",
-                                "Pengembangan keterampilan sosial dan emosional"
-                                ]}
-                            />
-                        </TabsContent>
-                    
-                        <TabsContent value="tk-b" id="tk-b">
-                            <ProgramDetails 
-                                title="TK B (5-6 tahun)"
-                                description="Program persiapan masuk Sekolah Dasar untuk anak usia 5-6 tahun dengan fokus pada kemandirian."
-                                imageUrl="https://images.pexels.com/photos/8535227/pexels-photo-8535227.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                                schedule={[
-                                { day: "Senin - Jumat", hours: "07:30 - 11:00 WIB" },
-                                { day: "Sabtu", hours: "07:30 - 10:30 WIB" }
-                                ]}
-                                features={[
-                                "Penguatan bacaan Iqro dan hafalan surat-surat pendek",
-                                "Pengembangan kemampuan membaca, menulis, dan berhitung",
-                                "Penguatan keterampilan motorik halus",
-                                "Pengenalan sains dan eksperimen sederhana",
-                                "Persiapan fisik dan mental untuk memasuki Sekolah Dasar"
+                                    "Mata Pelajaran Dasar + SKI (Sejarah Kebudayaan Islam)",
+                                    "IPAS (Ilmu Pengetahuan Alam dan Sosial)",
+                                    "Bahasa Inggris & Teknologi Informasi (Koding)",
+                                    "Penyelesaian Target Tahfidz Al-Qur'an",
+                                    "Latihan Kepemimpinan & Organisasi Dasar",
+                                    "Bimbingan Persiapan Ujian Akhir"
                                 ]}
                             />
                         </TabsContent>
@@ -147,124 +126,65 @@ export default function Program() {
                 </div>
             </section>
 
-            {/* Daily Activities */}
+            {/* Ekstrakurikuler */}
             <section className="py-16">
                 <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold text-center mb-4">Kegiatan Harian</h2>
-                    <p className="text-lg text-muted-foreground text-center max-w-3xl mx-auto mb-12">
-                        Aktivitas harian di TK ABA Mertosanan dirancang untuk menstimulasi berbagai aspek perkembangan anak
-                    </p>
-                    
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                        <ActivityCard 
-                            time="07:30 - 08:00"
-                            title="Penyambutan & Ikrar"
-                            description="Anak-anak disambut dengan senyuman dan ikrar pagi untuk memulai kegiatan"
-                            icon="sun"
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl font-bold mb-4">Ekstrakurikuler</h2>
+                        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                            Mengembangkan minat, bakat, dan potensi diri siswa di luar jam pelajaran akademik.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <ExtraActivity 
+                            title="Tapak Suci"
+                            description="Seni bela diri khas Muhammadiyah untuk melatih ketangkasan, kedisiplinan, dan keberanian."
+                            icon="shield"
+                            schedule="Sabtu, 08:00 - 10:00 WIB"
+                            imageUrl="https://placehold.co/600x400/059669/ffffff?text=Tapak+Suci"
                         />
-                        <ActivityCard 
-                            time="08:00 - 08:30"
-                            title="Kegiatan Religius"
-                            description="Doa bersama, hafalan surat pendek, dan pengenalan nilai-nilai islami"
+                        <ExtraActivity 
+                            title="Hizbul Wathan (HW)"
+                            description="Kepanduan Islami untuk membentuk jiwa kepemimpinan, kemandirian, dan cinta tanah air."
+                            icon="users"
+                            schedule="Jumat, 14:00 - 16:00 WIB"
+                            imageUrl="https://placehold.co/600x400/10b981/ffffff?text=Hizbul+Wathan"
+                        />
+                        <ExtraActivity 
+                            title="Tahfidz Qur'an"
+                            description="Program khusus bagi siswa yang ingin mendalami dan menambah hafalan Al-Qur'an secara intensif."
                             icon="book"
+                            schedule="Selasa & Kamis, 14:00 - 15:30 WIB"
+                            imageUrl="https://placehold.co/600x400/34d399/ffffff?text=Tahfidz+Quran"
                         />
-                        <ActivityCard 
-                            time="08:30 - 09:15"
-                            title="Kegiatan Inti I"
-                            description="Pembelajaran tematik sesuai dengan kurikulum yang telah ditetapkan"
-                            icon="brain"
-                        />
-                        <ActivityCard 
-                            time="09:15 - 09:45"
-                            title="Istirahat & Makan"
-                            description="Waktu makan snack bersama dan istirahat dengan tetap dalam pengawasan"
-                            icon="utensils"
-                        />
-                        <ActivityCard 
-                            time="09:45 - 10:30"
-                            title="Kegiatan Inti II"
-                            description="Pembelajaran tematik lanjutan dengan pendekatan yang berbeda"
-                            icon="activity"
-                        />
-                        <ActivityCard 
-                            time="10:30 - 11:00"
-                            title="Recap & Pulang"
-                            description="Mengulang pembelajaran hari ini dan persiapan pulang"
-                            icon="home"
-                        />
-                    </div>
-                </div>
-            </section>
-
-            {/* Extracurricular */}
-            <section className="py-16 bg-highlight/20">
-                <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold text-center mb-4">Kegiatan Ekstrakurikuler</h2>
-                    <p className="text-lg text-muted-foreground text-center max-w-3xl mx-auto mb-12">
-                        Kami menyediakan berbagai kegiatan ekstrakurikuler untuk mengembangkan minat dan bakat anak
-                    </p>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                         <ExtraActivity 
-                            title="Menari Tradisional"
-                            description="Pengenalan seni tari tradisional untuk menumbuhkan cinta budaya dan melatih koordinasi gerak"
+                            title="Seni & Drumband"
+                            description="Pengembangan kreativitas melalui musik, olah vokal, dan seni pertunjukan."
                             icon="music"
-                            schedule="Senin, 10:00 - 11:00"
-                            imageUrl="https://images.pexels.com/photos/3662824/pexels-photo-3662824.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                        />
-                        <ExtraActivity 
-                            title="Melukis & Kerajinan"
-                            description="Mengembangkan kreativitas dan motorik halus melalui kegiatan seni rupa dan kerajinan tangan"
-                            icon="paintbrush"
-                            schedule="Selasa, 10:00 - 11:00"
-                            imageUrl="https://images.pexels.com/photos/8613317/pexels-photo-8613317.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                        />
-                        <ExtraActivity 
-                            title="Olahraga Mini"
-                            description="Aktivitas fisik yang menyenangkan untuk mengembangkan kemampuan motorik kasar dan kerjasama tim"
-                            icon="activity"
-                            schedule="Rabu, 10:00 - 11:00"
-                            imageUrl="https://images.pexels.com/photos/8535233/pexels-photo-8535233.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                        />
-                        <ExtraActivity 
-                            title="Little Chef"
-                            description="Kegiatan memasak sederhana untuk mengenalkan anak pada makanan sehat dan proses pembuatannya"
-                            icon="chef-hat"
-                            schedule="Kamis, 10:00 - 11:00"
-                            imageUrl="https://images.pexels.com/photos/4147035/pexels-photo-4147035.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                            schedule="Rabu, 14:00 - 16:00 WIB"
+                            imageUrl="https://placehold.co/600x400/6ee7b7/ffffff?text=Seni+Musik"
                         />
                     </div>
-                </div>
-            </section>
-
-            {/* Interactive Calendar */}
-            <section className="py-16 bg-gray-50">
-                <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold text-center mb-4">Kalender Akademik</h2>
-                    <p className="text-lg text-muted-foreground text-center max-w-3xl mx-auto mb-12">
-                        Lihat dan jelajahi kalender akademik secara interaktif untuk informasi kegiatan yang lebih detail
-                    </p>
-                    
-                    <KalenderAkademik />
                 </div>
             </section>
 
             {/* CTA */}
             <section className="py-16 bg-primary/20">
                 <div className="container mx-auto px-4 text-center">
-                    <h2 className="text-3xl font-bold mb-4">Tertarik dengan Program Kami?</h2>
+                    <h2 className="text-3xl font-bold mb-4">Ingin Tahu Lebih Lanjut?</h2>
                     <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-                        Daftarkan anak Anda sekarang di TK ABA Mertosanan untuk memberikan pendidikan terbaik sejak usia dini.
+                        Dapatkan informasi lengkap mengenai kurikulum, biaya pendidikan, dan prosedur pendaftaran dengan menghubungi tim admin kami.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link href="/pendaftaran">
-                            <Button className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground">
-                                Daftar Sekarang <ChevronRight className="ml-2 h-4 w-4" />
+                        <Link href="/kontak">
+                            <Button className="rounded-full bg-primary hover:bg-primary/80 text-primary-foreground">
+                                Hubungi Kami <ChevronRight className="ml-2 h-4 w-4" />
                             </Button>
                         </Link>
-                        <Link href="/kontak">
+                        <Link href="/pendaftaran">
                             <Button variant="outline" className="rounded-full border-primary text-primary hover:bg-primary/10">
-                                <Phone className="mr-2 h-5 w-5" /> Hubungi Kami
+                                <Phone className="mr-2 h-5 w-5"/> Daftar Sekarang
                             </Button>
                         </Link>
                     </div>

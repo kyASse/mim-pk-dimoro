@@ -7,43 +7,45 @@ import Link from "next/link";
 import { ChevronRight, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+import { SCHOOL_NAME } from "@/lib/school-config";
+
 // data masih statis, perlu diganti dengan data dinamis dari Supabase
 const galleryImages = [
     {
         id: 1,
         src: "https://images.pexels.com/photos/8535214/pexels-photo-8535214.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        alt: "Anak-anak belajar di kelas",
+        alt: "Siswa belajar di kelas",
         category: "Kegiatan Belajar"
     }, 
     {
         id: 2,
         src: "https://images.pexels.com/photos/8535186/pexels-photo-8535186.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        alt: "Bermain di luar ruangan",
-        category: "Bermain"
+        alt: "Kegiatan luar ruangan",
+        category: "Ekstrakurikuler"
     },
     {
         id: 3,
         src: "https://images.pexels.com/photos/8535227/pexels-photo-8535227.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        alt: "Kegiatan kesenian",
-        category: "Seni & Kreativitas"
+        alt: "Kreativitas siswa",
+        category: "Seni & Budaya"
     },
     {
         id: 4,
         src: "https://images.pexels.com/photos/8422152/pexels-photo-8422152.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        alt: "Kegiatan beribadah",
-        category: "Ibadah Bersama"
+        alt: "Pembiasaan ibadah",
+        category: "Ibadah"
     },
     {
         id: 5,
         src: "https://images.pexels.com/photos/8535188/pexels-photo-8535188.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        alt: "Membaca buku bersama",
+        alt: "Kegiatan literasi",
         category: "Literasi"
     },
     {
         id: 6,
         src: "https://images.pexels.com/photos/8613066/pexels-photo-8613066.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        alt: "Mencuci tangan",
-        category: "Kemandirian"
+        alt: "Kemandirian siswa",
+        category: "Karakter"
     }
 ]
 
@@ -56,7 +58,7 @@ export default function GalleryPreview(){
                 <div className="text-center mb-12">
                     <h2 className="text-3xl md:text-4xl font-bold mb-4">Galeri Kegiatan</h2>
                     <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                        Lihat keseruan anak-anak belajar dan bermain di TK ABA Mertosanan.
+                        Lihat berbagai momen berharga dan aktivitas seru siswa di {SCHOOL_NAME}.
                     </p>
                 </div>
 

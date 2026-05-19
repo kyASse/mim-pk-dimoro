@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import PendaftaranForm from "@/components/Pendaftaran/PendaftaranForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SCHOOL_NAME } from "@/lib/school-config";
 import {
     Card,
     CardContent,
@@ -9,17 +10,30 @@ import {
     CardTitle
 } from "@/components/ui/card";
 import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+    TableFooter
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import {
     CalendarIcon,
     FileText,
     User,
-    School,
     Info,
     MapPin,
     Download,
     MessageCircle,
     CreditCard,
-    UserCheck,
-    ArrowRight
+    ArrowRight,
+    ClipboardCheck,
+    Upload,
+    CheckCircle2,
+    CalendarDays
 } from "lucide-react";
 import PageHeader from "@/components/shared/PageHeader";
 
@@ -69,7 +83,7 @@ export default async function PendaftaranPage() {
         <div className="min-h-screen">
             <PageHeader
                 title="Pendaftaran Siswa Baru"
-                description="Formulir pendaftaran siswa baru TK ABA Mertosanan"
+                description={`Formulir pendaftaran siswa baru ${SCHOOL_NAME}`}
                 background="bg-accent/20"
             />
 
@@ -84,281 +98,265 @@ export default async function PendaftaranPage() {
                                 </TabsList>
 
                                 <TabsContent value="requirements">
-                                    <Card>
+                                    <Card className="border-none shadow-sm bg-card">
                                         <CardHeader>
-                                            <CardTitle className="flex items-center">
-                                                <FileText className="mr-2 h-5 w-5 text-primary" />
+                                            <CardTitle className="flex items-center text-2xl">
+                                                <FileText className="mr-2 h-6 w-6 text-primary" />
                                                 Persyaratan Pendaftaran
                                             </CardTitle>
                                             <CardDescription>Informasi tentang persyaratan, jadwal, dan biaya pendaftaran siswa baru</CardDescription>
                                         </CardHeader>
-                                        <CardContent className="space-y-8">
-                                            <div>
-                                                <h3 
-                                                    className="text-lg font-semibold mb-3 flex items-center"
-                                                >
-                                                    <Info className="mr-2 h-5 w-5 text-accent" />
+                                        <CardContent className="space-y-10 pt-6">
+                                            {/* Document Requirements */}
+                                            <div className="relative pl-0 md:pl-4 border-l-0 md:border-l-2 border-primary/20">
+                                                <h3 className="text-xl font-bold mb-4 flex items-center text-foreground">
+                                                    <span className="hidden md:flex absolute -left-[11px] bg-primary rounded-full p-1 text-primary-foreground shadow-sm">
+                                                        <ClipboardCheck className="h-4 w-4" />
+                                                    </span>
                                                     {persyaratan?.persyaratan.judul || 'Persyaratan Dokumen'}
                                                 </h3>
-                                                <ul className="ml-7 space-y-2 list-disc text-muted-foreground">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     {persyaratan?.persyaratan.items.map((item, index) => (
-                                                        <li key={`syarat-${index}`}>{item}</li>
+                                                        <div key={`syarat-${index}`} className="flex items-center space-x-3 bg-muted/40 p-3 rounded-lg border border-border/50 transition-colors hover:bg-muted/60">
+                                                            <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0" />
+                                                            <span className="text-sm md:text-base">{item}</span>
+                                                        </div>
                                                     ))}
-                                                </ul>
+                                                </div>
                                             </div>
 
-                                            <div>
-                                                <h3 
-                                                    className="text-lg font-semibold mb-3 flex items-center"
-                                                >
-                                                    <CalendarIcon className="mr-2 h-5 w-5 text-highlight" />
+                                            {/* Schedule */}
+                                            <div className="relative pl-0 md:pl-4 border-l-0 md:border-l-2 border-accent/20">
+                                                <h3 className="text-xl font-bold mb-4 flex items-center text-foreground">
+                                                    <span className="hidden md:flex absolute -left-[11px] bg-accent rounded-full p-1 text-accent-foreground shadow-sm">
+                                                        <CalendarDays className="h-4 w-4" />
+                                                    </span>
                                                     {persyaratan?.jadwal.judul || 'Jadwal Pendaftaran'}
                                                 </h3>
-                                                <div className="bg-muted rounded-lg p-4">
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                        {persyaratan?.jadwal.items.map((item, index) => (
-                                                            <div key={`jadwal-${index}`}>
-                                                                <h4 className="font-medium">{item.tahap}</h4>
-                                                                <p className="text-muted-foreground">{item.periode}</p>
-                                                            </div>
-                                                        ))}
-                                                    </div>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    {persyaratan?.jadwal.items.map((item, index) => (
+                                                        <Card key={`jadwal-${index}`} className="bg-muted/30 border-dashed">
+                                                            <CardContent className="p-4">
+                                                                <Badge variant="outline" className="mb-2 bg-accent/10 text-accent border-accent/20">
+                                                                    {item.tahap}
+                                                                </Badge>
+                                                                <p className="font-semibold text-foreground flex items-center">
+                                                                    <CalendarIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+                                                                    {item.periode}
+                                                                </p>
+                                                            </CardContent>
+                                                        </Card>
+                                                    ))}
                                                 </div>
-                                                <p className="text-sm text-muted-foreground mt-2">Jadwal pendaftaran dapat berubah sewaktu-waktu. Jika sudah melewati jadwal pendaftaran, silakan hubungi pihak sekolah.</p>
+                                                <div className="mt-4 flex items-start p-3 bg-blue-50/50 dark:bg-blue-900/10 rounded-lg border border-blue-100 dark:border-blue-900/30">
+                                                    <Info className="h-5 w-5 text-blue-500 mr-2 shrink-0 mt-0.5" />
+                                                    <p className="text-sm text-blue-700 dark:text-blue-300">
+                                                        Jadwal pendaftaran dapat berubah sewaktu-waktu. Jika sudah melewati jadwal pendaftaran, silakan hubungi pihak sekolah.
+                                                    </p>
+                                                </div>
                                             </div>
 
-                                            <div>
-                                                <h3 
-                                                    className="text-lg font-semibold mb-3 flex items-center"
-                                                >
-                                                    <School 
-                                                        className="mr-2 h-5 w-5 text-primary" 
-                                                    />
+                                            {/* Fees Table */}
+                                            <div className="relative pl-0 md:pl-4 border-l-0 md:border-l-2 border-primary/20">
+                                                <h3 className="text-xl font-bold mb-4 flex items-center text-foreground">
+                                                    <span className="hidden md:flex absolute -left-[11px] bg-primary rounded-full p-1 text-primary-foreground shadow-sm">
+                                                        <CreditCard className="h-4 w-4" />
+                                                    </span>
                                                     Biaya Pendaftaran
                                                 </h3>
-                                                <div className="overflow-x-auto">
-                                                    <table className="w-full border-collapse">
-                                                        <thead>
-                                                            <tr className="bg-muted">
-                                                                <th className="border px-4 py-2 text-left">Komponen Biaya</th>
-                                                                <th className="border px-4 py-2 text-left">PUTRA (Rp)</th>
-                                                                <th className="border px-4 py-2 text-left">PUTRI (Rp)</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
+                                                <div className="rounded-xl border border-border overflow-hidden shadow-sm">
+                                                    <Table>
+                                                        <TableHeader className="bg-muted/50">
+                                                            <TableRow>
+                                                                <TableHead className="font-bold py-4">Komponen Biaya</TableHead>
+                                                                <TableHead className="text-right font-bold">PUTRA (Rp)</TableHead>
+                                                                <TableHead className="text-right font-bold">PUTRI (Rp)</TableHead>
+                                                            </TableRow>
+                                                        </TableHeader>
+                                                        <TableBody>
                                                             {biaya?.map((item: BiayaItem, index) => (
-                                                                <tr key={index}>
-                                                                    <td className="border px-4 py-2 font-medium">{item.komponen_biaya}</td>
-                                                                    <td className="border px-4 py-2">{item.biaya_putra?.toLocaleString('id-ID')}</td>
-                                                                    <td className="border px-4 py-2">{item.biaya_putri?.toLocaleString('id-ID')}</td>
-                                                                </tr>
+                                                                <TableRow key={index} className="hover:bg-muted/30 transition-colors">
+                                                                    <TableCell className="font-medium py-3">{item.komponen_biaya}</TableCell>
+                                                                    <TableCell className="text-right">{item.biaya_putra?.toLocaleString('id-ID')}</TableCell>
+                                                                    <TableCell className="text-right">{item.biaya_putri?.toLocaleString('id-ID')}</TableCell>
+                                                                </TableRow>
                                                             ))}
-                                                            <tr className="font-semibold bg-muted/50">
-                                                                <td className="border px-4 py-2 font-bold">Total Biaya</td>
-                                                                <td className="border px-4 py-2">{totalPutra?.toLocaleString('id-ID')}</td>
-                                                                <td className="border px-4 py-2">{totalPutri?.toLocaleString('id-ID')}</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
+                                                        </TableBody>
+                                                        <TableFooter className="bg-muted/50">
+                                                            <TableRow>
+                                                                <TableCell className="font-bold text-base">Total Biaya</TableCell>
+                                                                <TableCell className="text-right font-bold text-primary text-base">
+                                                                    {totalPutra?.toLocaleString('id-ID')}
+                                                                </TableCell>
+                                                                <TableCell className="text-right font-bold text-primary text-base">
+                                                                    {totalPutri?.toLocaleString('id-ID')}
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        </TableFooter>
+                                                    </Table>
                                                 </div>
                                             </div>
 
-                                            <div>
-                                                <h3 className="text-lg font-semibold mb-3 flex items-center">
-                                                    <Info className="mr-2 h-5 w-5 text-primary" />
+                                            {/* SPP Notes */}
+                                            <div className="relative pl-0 md:pl-4 border-l-0 md:border-l-2 border-accent/20">
+                                                <h3 className="text-xl font-bold mb-4 flex items-center text-foreground">
+                                                    <span className="hidden md:flex absolute -left-[11px] bg-accent rounded-full p-1 text-accent-foreground shadow-sm">
+                                                        <Info className="h-4 w-4" />
+                                                    </span>
                                                     Catatan SPP
                                                 </h3>
-                                                <div className="bg-muted rounded-lg p-4">
-                                                    <p className="text-muted-foreground">{catatanSpp?.catatan}</p>
-                                                </div>
+                                                <Card className="bg-muted/30 border-none">
+                                                    <CardContent className="p-4">
+                                                        <p className="text-muted-foreground leading-relaxed italic">
+                                                            &quot;{catatanSpp?.catatan}&quot;
+                                                        </p>
+                                                    </CardContent>
+                                                </Card>
                                             </div>
                                         </CardContent>
                                     </Card>
                                 </TabsContent>
-                                <TabsContent value="flow">
-                                    <Card>
-                                        <CardHeader>
-                                            <CardTitle className="flex items-center">
-                                                <UserCheck className="mr-2 h-5 w-5 text-primary" />
-                                                Alur Pendaftaran Siswa Baru
-                                            </CardTitle>
-                                            <CardDescription>
-                                                Panduan langkah demi langkah untuk melakukan pendaftaran siswa baru
-                                            </CardDescription>
-                                        </CardHeader>
-                                        <CardContent className="space-y-8">
-                                            {/* Online Registration Flow */}
-                                            <div>
-                                                <h3 className="text-lg font-semibold mb-4 flex items-center">
-                                                    <MessageCircle className="mr-2 h-5 w-5 text-blue-500" />
-                                                    Pendaftaran Online
-                                                </h3>
-                                                <div className="space-y-4">
-                                                    <div className="flex items-start space-x-4 p-4 border rounded-lg">
-                                                        <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold">
-                                                            1
-                                                        </div>
-                                                        <div className="flex-1">
-                                                            <h4 className="font-medium mb-1">Siapkan Dokumen</h4>
-                                                            <p className="text-muted-foreground text-sm">
-                                                                Siapkan semua dokumen yang diperlukan sesuai dengan persyaratan pendaftaran
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div className="flex items-start space-x-4 p-4 border rounded-lg">
-                                                        <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold">
-                                                            2
-                                                        </div>
-                                                        <div className="flex-1">
-                                                            <h4 className="font-medium mb-1">Isi Formulir Online</h4>
-                                                            <p className="text-muted-foreground text-sm">
-                                                                Lengkapi formulir pendaftaran dengan data yang benar dan lengkap
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div className="flex items-start space-x-4 p-4 border rounded-lg">
-                                                        <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold">
-                                                            3
-                                                        </div>
-                                                        <div className="flex-1">
-                                                            <h4 className="font-medium mb-1">Upload Dokumen</h4>
-                                                            <p className="text-muted-foreground text-sm">
-                                                                Upload scan atau foto dokumen dengan kualitas yang jelas dan dapat dibaca
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div className="flex items-start space-x-4 p-4 border rounded-lg">
-                                                        <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold">
-                                                            4
-                                                        </div>
-                                                        <div className="flex-1">
-                                                            <h4 className="font-medium mb-1">Submit Pendaftaran</h4>
-                                                            <p className="text-muted-foreground text-sm">
-                                                                Periksa kembali data yang telah diisi, lalu klik tombol &quot;Daftar Sekarang&quot;
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div className="flex items-start space-x-4 p-4 border rounded-lg">
-                                                        <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold">
-                                                            5
-                                                        </div>
-                                                        <div className="flex-1">
-                                                            <h4 className="font-medium mb-1">Konfirmasi & Pembayaran</h4>
-                                                            <p className="text-muted-foreground text-sm">
-                                                                Tunggu konfirmasi dari pihak sekolah dan lakukan pembayaran sesuai instruksi
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
 
-                                            {/* Offline Registration Flow */}
-                                            <div>
-                                                <h3 className="text-lg font-semibold mb-4 flex items-center">
-                                                    <MapPin className="mr-2 h-5 w-5 text-green-500" />
-                                                    Pendaftaran Offline
-                                                </h3>
-                                                <div className="space-y-4">
-                                                    <div className="flex items-start space-x-4 p-4 border rounded-lg">
-                                                        <div className="flex-shrink-0 w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center font-semibold">
-                                                            1
+                                <TabsContent value="flow">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        {/* Online Registration Flow */}
+                                        <Card className="border-none shadow-sm bg-card overflow-hidden">
+                                            <CardHeader className="bg-blue-500/5 border-b border-blue-500/10">
+                                                <CardTitle className="flex items-center text-blue-600">
+                                                    <div className="p-2 bg-blue-500 text-white rounded-lg mr-3 shadow-md">
+                                                        <MessageCircle className="h-5 w-5" />
+                                                    </div>
+                                                    Pendaftaran Online
+                                                </CardTitle>
+                                                <CardDescription>Melalui formulir digital di website</CardDescription>
+                                            </CardHeader>
+                                            <CardContent className="pt-8 relative">
+                                                <Separator orientation="vertical" className="absolute left-10 top-8 bottom-8 w-[2px] bg-blue-100 dark:bg-blue-900/30 z-0" />
+                                                <div className="space-y-8 relative z-10">
+                                                    {[
+                                                        { title: "Siapkan Dokumen", desc: "Siapkan semua dokumen yang diperlukan sesuai dengan persyaratan", icon: <FileText className="h-4 w-4" /> },
+                                                        { title: "Isi Formulir Online", desc: "Lengkapi formulir pendaftaran dengan data yang benar dan lengkap", icon: <ClipboardCheck className="h-4 w-4" /> },
+                                                        { title: "Upload Dokumen", desc: "Upload scan atau foto dokumen dengan kualitas yang jelas", icon: <Upload className="h-4 w-4" /> },
+                                                        { title: "Submit Pendaftaran", desc: "Periksa kembali data lalu klik tombol \"Daftar Sekarang\"", icon: <CheckCircle2 className="h-4 w-4" /> },
+                                                        { title: "Konfirmasi & Bayar", desc: "Tunggu konfirmasi dan lakukan pembayaran sesuai instruksi", icon: <CreditCard className="h-4 w-4" /> }
+                                                    ].map((step, idx) => (
+                                                        <div key={idx} className="flex items-start">
+                                                            <div className="relative z-20 flex-shrink-0">
+                                                                <Badge className="w-10 h-10 rounded-full bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center font-bold border-4 border-card shadow-sm text-lg p-0">
+                                                                    {idx + 1}
+                                                                </Badge>
+                                                            </div>
+                                                            <div className="ml-4">
+                                                                <h4 className="font-bold text-foreground flex items-center">
+                                                                    {step.title}
+                                                                </h4>
+                                                                <p className="text-sm text-muted-foreground mt-1">
+                                                                    {step.desc}
+                                                                </p>
+                                                            </div>
                                                         </div>
-                                                        <div className="flex-1">
-                                                            <h4 className="font-medium mb-1">Siapkan Dokumen Asli</h4>
-                                                            <p className="text-muted-foreground text-sm">
-                                                                Bawa semua dokumen asli dan fotokopi sesuai persyaratan
-                                                            </p>
+                                                    ))}
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+
+                                        {/* Offline Registration Flow */}
+                                        <Card className="border-none shadow-sm bg-card overflow-hidden">
+                                            <CardHeader className="bg-green-500/5 border-b border-green-500/10">
+                                                <CardTitle className="flex items-center text-green-600">
+                                                    <div className="p-2 bg-green-500 text-white rounded-lg mr-3 shadow-md">
+                                                        <MapPin className="h-5 w-5" />
+                                                    </div>
+                                                    Pendaftaran Offline
+                                                </CardTitle>
+                                                <CardDescription>Datang langsung ke lokasi sekolah</CardDescription>
+                                            </CardHeader>
+                                            <CardContent className="pt-8 relative">
+                                                <Separator orientation="vertical" className="absolute left-10 top-8 bottom-8 w-[2px] bg-green-100 dark:bg-green-900/30 z-0" />
+                                                <div className="space-y-8 relative z-10">
+                                                    <div className="flex items-start">
+                                                        <div className="relative z-20 flex-shrink-0">
+                                                            <Badge className="w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 text-white flex items-center justify-center font-bold border-4 border-card shadow-sm text-lg p-0">1</Badge>
+                                                        </div>
+                                                        <div className="ml-4">
+                                                            <h4 className="font-bold text-foreground">Siapkan Dokumen Asli</h4>
+                                                            <p className="text-sm text-muted-foreground mt-1">Bawa semua dokumen asli dan fotokopi sesuai persyaratan</p>
                                                         </div>
                                                     </div>
-                                                    
-                                                    <div className="flex items-start space-x-4 p-4 border rounded-lg">
-                                                        <div className="flex-shrink-0 w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center font-semibold">
-                                                            2
+
+                                                    <div className="flex items-start">
+                                                        <div className="relative z-20 flex-shrink-0">
+                                                            <Badge className="w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 text-white flex items-center justify-center font-bold border-4 border-card shadow-sm text-lg p-0">2</Badge>
                                                         </div>
-                                                        <div className="flex-1">
-                                                            <h4 className="font-medium mb-1 flex items-center">
+                                                        <div className="ml-4">
+                                                            <h4 className="font-bold text-foreground flex items-center">
                                                                 Download Formulir
-                                                                <Download className="ml-2 h-4 w-4" />
+                                                                <Download className="ml-2 h-4 w-4 text-green-500" />
                                                             </h4>
-                                                            <p className="text-muted-foreground text-sm mb-3">
-                                                                Download dan isi formulir pendaftaran, atau ambil di kantor sekolah
-                                                            </p>
+                                                            <p className="text-sm text-muted-foreground mt-1 mb-3">Isi formulir dari rumah untuk mempercepat proses</p>
                                                             <a 
-                                                                href="/Formulir Pendaftaran TK ABA Mertosanan.pdf" 
-                                                                download="Formulir Pendaftaran TK ABA Mertosanan.pdf"
-                                                                className="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
+                                                                href="/Formulir Pendaftaran MIM PK Dimoro.pdf" 
+                                                                download={`Formulir Pendaftaran ${SCHOOL_NAME}.pdf`}
+                                                                className="inline-flex items-center px-4 py-1.5 text-xs font-semibold text-green-700 bg-green-100 hover:bg-green-200 rounded-full transition-all"
                                                             >
-                                                                <Download className="mr-2 h-4 w-4" />
+                                                                <Download className="mr-1.5 h-3.5 w-3.5" />
                                                                 Download PDF
                                                             </a>
                                                         </div>
                                                     </div>
-                                                    
-                                                    <div className="flex items-start space-x-4 p-4 border rounded-lg">
-                                                        <div className="flex-shrink-0 w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center font-semibold">
-                                                            3
+
+                                                    <div className="flex items-start">
+                                                        <div className="relative z-20 flex-shrink-0">
+                                                            <Badge className="w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 text-white flex items-center justify-center font-bold border-4 border-card shadow-sm text-lg p-0">3</Badge>
                                                         </div>
-                                                        <div className="flex-1">
-                                                            <h4 className="font-medium mb-1">Kunjungi Sekolah</h4>
-                                                            <p className="text-muted-foreground text-sm">
-                                                                Datang langsung ke TK ABA Mertosanan pada jam kerja (07:30 - 11:30 WIB)
-                                                            </p>
+                                                        <div className="ml-4">
+                                                            <h4 className="font-bold text-foreground">Kunjungi Sekolah</h4>
+                                                            <p className="text-sm text-muted-foreground mt-1">Datang ke {SCHOOL_NAME} pada jam kerja (07:30 - 11:30 WIB)</p>
                                                         </div>
                                                     </div>
-                                                    
-                                                    <div className="flex items-start space-x-4 p-4 border rounded-lg">
-                                                        <div className="flex-shrink-0 w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center font-semibold">
-                                                            4
+
+                                                    <div className="flex items-start">
+                                                        <div className="relative z-20 flex-shrink-0">
+                                                            <Badge className="w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 text-white flex items-center justify-center font-bold border-4 border-card shadow-sm text-lg p-0">4</Badge>
                                                         </div>
-                                                        <div className="flex-1">
-                                                            <h4 className="font-medium mb-1">Serahkan Dokumen</h4>
-                                                            <p className="text-muted-foreground text-sm">
-                                                                Serahkan formulir dan dokumen lengkap kepada petugas pendaftaran
-                                                            </p>
+                                                        <div className="ml-4">
+                                                            <h4 className="font-bold text-foreground">Serahkan Dokumen</h4>
+                                                            <p className="text-sm text-muted-foreground mt-1">Berikan berkas lengkap kepada petugas pendaftaran</p>
                                                         </div>
                                                     </div>
-                                                    
-                                                    <div className="flex items-start space-x-4 p-4 border rounded-lg">
-                                                        <div className="flex-shrink-0 w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center font-semibold">
-                                                            5
+
+                                                    <div className="flex items-start">
+                                                        <div className="relative z-20 flex-shrink-0">
+                                                            <Badge className="w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 text-white flex items-center justify-center font-bold border-4 border-card shadow-sm text-lg p-0">5</Badge>
                                                         </div>
-                                                        <div className="flex-1">
-                                                            <h4 className="font-medium mb-1 flex items-center">
-                                                                Pembayaran
-                                                                <CreditCard className="ml-2 h-4 w-4" />
-                                                            </h4>
-                                                            <p className="text-muted-foreground text-sm">
-                                                                Lakukan pembayaran biaya pendaftaran sesuai dengan ketentuan yang berlaku
-                                                            </p>
+                                                        <div className="ml-4">
+                                                            <h4 className="font-bold text-foreground">Pembayaran</h4>
+                                                            <p className="text-sm text-muted-foreground mt-1">Lakukan pembayaran biaya pendaftaran di loket sekolah</p>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </CardContent>
+                                        </Card>
+                                    </div>
 
-                                            {/* Important Notes */}
-                                            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                                                <h3 className="text-lg font-semibold mb-3 flex items-center text-yellow-800">
-                                                    <Info className="mr-2 h-5 w-5" />
-                                                    Catatan Penting
-                                                </h3>
-                                                <ul className="space-y-2 text-yellow-700 text-sm">
-                                                    <li className="flex items-start">
-                                                        <ArrowRight className="mr-2 h-4 w-4 flex-shrink-0 mt-0.5" />
-                                                        Pastikan semua dokumen yang diberikan adalah asli dan masih berlaku
-                                                    </li>
-                                                    <li className="flex items-start">
-                                                        <ArrowRight className="mr-2 h-4 w-4 flex-shrink-0 mt-0.5" />
-                                                        Pendaftaran online akan mendapat prioritas pemrosesan lebih cepat
-                                                    </li>
-                                                    <li className="flex items-start">
-                                                        <ArrowRight className="mr-2 h-4 w-4 flex-shrink-0 mt-0.5" />
-                                                        Hubungi kami jika mengalami kesulitan dalam proses pendaftaran
-                                                    </li>
-                                                </ul>
+                                    {/* Important Notes */}
+                                    <Card className="mt-8 bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-900/30">
+                                        <CardContent className="p-6">
+                                            <h3 className="text-lg font-bold mb-4 flex items-center text-amber-800 dark:text-amber-400">
+                                                <Info className="mr-2 h-5 w-5" />
+                                                Catatan Penting
+                                            </h3>
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                                {[
+                                                    "Pastikan semua dokumen asli dan masih berlaku",
+                                                    "Pendaftaran online mendapat prioritas pemrosesan",
+                                                    "Hubungi admin jika mengalami kesulitan"
+                                                ].map((note, i) => (
+                                                    <div key={i} className="flex items-start bg-white/50 dark:bg-black/20 p-3 rounded-lg border border-amber-200/50 dark:border-amber-900/50">
+                                                        <ArrowRight className="mr-2 h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+                                                        <span className="text-sm text-amber-900 dark:text-amber-200/80">{note}</span>
+                                                    </div>
+                                                ))}
                                             </div>
                                         </CardContent>
                                     </Card>
