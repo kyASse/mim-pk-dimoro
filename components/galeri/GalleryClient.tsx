@@ -146,7 +146,6 @@ export default function GalleryClient({
         {/* Lightbox Modal using Dialog */}
         <Dialog open={selectedImageIndex !== null} onOpenChange={(open) => !open && setSelectedImageIndex(null)}>
             <DialogContent className="max-w-5xl p-0 overflow-hidden border-none bg-black/95 sm:rounded-3xl gap-0">
-                <DialogTitle className="sr-only">Detail Foto: {selectedImage?.title}</DialogTitle>
                 <div className="relative flex flex-col md:flex-row h-full max-h-[90vh] md:max-h-[80vh]">
                     {/* Image Area */}
                     <div className="relative flex-1 bg-black flex items-center justify-center group/nav">
@@ -169,6 +168,7 @@ export default function GalleryClient({
                                 <Button
                                     variant="ghost"
                                     size="icon"
+                                    aria-label="Foto sebelumnya"
                                     className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 hover:bg-white/20 text-white opacity-0 group-hover/nav:opacity-100 transition-opacity"
                                     onClick={handlePrevImage}
                                 >
@@ -177,6 +177,7 @@ export default function GalleryClient({
                                 <Button
                                     variant="ghost"
                                     size="icon"
+                                    aria-label="Foto berikutnya"
                                     className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 hover:bg-white/20 text-white opacity-0 group-hover/nav:opacity-100 transition-opacity"
                                     onClick={handleNextImage}
                                 >
