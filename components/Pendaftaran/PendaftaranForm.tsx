@@ -82,14 +82,12 @@ const formSchema = z.object({
     dokumen_pendukung: z.any().optional(),
 });
 
-type FormValues = z.infer<typeof formSchema>;
-
 export default function PendaftaranForm() {
     const [isSuccess, setIsSuccess] = useState(false);
     const supabase = createClient();
     const [isUploading, setIsUploading] = useState(false);
 
-    const form = useForm<FormValues>({
+    const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         mode: "onSubmit",
         defaultValues: {
@@ -106,7 +104,7 @@ export default function PendaftaranForm() {
             bahasa_sehari_hari: "",
             berat_badan: "",
             tinggi_badan: "",
-            golongan_darah: "",
+            golongan_darah: "" as any,
             cita_cita: "",
             alamat_lengkap: "",
             nomor_telepon: "",
@@ -152,7 +150,7 @@ export default function PendaftaranForm() {
         }
     }, [isSuccess, form]);
 
-    async function onSubmit(values: FormValues): Promise<void> {
+    async function onSubmit(values: z.infer<typeof formSchema>): Promise<void> {
         // Notify developers about form submission in non-production environments
         if (process.env.NODE_ENV !== 'production') {
             console.debug('=== FORM SUBMIT STARTED ===');
