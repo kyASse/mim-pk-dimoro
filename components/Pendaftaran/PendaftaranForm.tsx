@@ -1,4 +1,3 @@
-// components/Pendaftaran/PendaftaranForm.tsx
 'use client';
 
 import { useForm } from "react-hook-form";
@@ -30,7 +29,7 @@ import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Loader2, User, Users, Home, Heart, FileText, Send } from "lucide-react";
-import { SCHOOL_NAME } from "@/lib/school-config";
+import { SCHOOL_NAME, SCHOOL_WHATSAPP } from "@/lib/school-config";
 
 // Definisikan opsi kebutuhan khusus
 const jenisKebutuhanKhususItems = [
@@ -78,21 +77,21 @@ const formSchema = z.object({
     wali_pekerjaan: z.string().optional(),
     
     memiliki_kebutuhan_khusus: z.boolean().default(false),
-    jenis_kebutuhan_khusus: z.array(z.string()).optional(),
+    jenis_kebutuhan_khusus: z.array(z.string()).default([]),
     deskripsi_kebutuhan_khusus: z.string().optional(),
     dokumen_pendukung: z.any().optional(),
 });
 
-
+type FormValues = z.infer<typeof formSchema>;
 
 export default function PendaftaranForm() {
     const [isSuccess, setIsSuccess] = useState(false);
     const supabase = createClient();
     const [isUploading, setIsUploading] = useState(false);
 
-    const form = useForm({
+    const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
-        mode: "onSubmit" as const,
+        mode: "onSubmit",
         defaultValues: {
             nama_lengkap: "",
             nama_panggilan: "",
@@ -126,6 +125,7 @@ export default function PendaftaranForm() {
             memiliki_kebutuhan_khusus: false,
             jenis_kebutuhan_khusus: [],
             deskripsi_kebutuhan_khusus: "",
+            dokumen_pendukung: undefined,
         },
     });
 
@@ -135,9 +135,9 @@ export default function PendaftaranForm() {
         if (isSuccess) {
             toast.success("Pendaftaran Berhasil", {
                 description: (
-                    <div className="space-y-2">
+                    <div className="flex flex-col gap-2">
                         <p className="text-muted-foreground">
-                            Terima kasih. Langkah selanjutnya, silakan konfirmasi pendaftaran ke nomor WhatsApp <strong>{SCHOOL_NAME}</strong> di <strong>0812-3456-7890</strong> dengan format:
+                            Terima kasih. Langkah selanjutnya, silakan konfirmasi pendaftaran ke nomor WhatsApp <strong>{SCHOOL_NAME}</strong> di <strong>{SCHOOL_WHATSAPP}</strong> dengan format:
                         </p>
                         <pre className="bg-muted p-3 rounded-md border text-xs whitespace-pre-wrap break-words font-mono">
                             KONFIRMASI PENDAFTARAN - {form.getValues("nama_lengkap")}
@@ -152,7 +152,7 @@ export default function PendaftaranForm() {
         }
     }, [isSuccess, form]);
 
-    async function onSubmit(values: z.infer<typeof formSchema>): Promise<void> {
+    async function onSubmit(values: FormValues): Promise<void> {
         // Notify developers about form submission in non-production environments
         if (process.env.NODE_ENV !== 'production') {
             console.debug('=== FORM SUBMIT STARTED ===');
@@ -238,9 +238,9 @@ export default function PendaftaranForm() {
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-10">
                 {/* A. Keterangan Anak */}
-                <div className="space-y-6">
+                <div className="flex flex-col gap-6">
                     <div className="flex items-center gap-2">
                         <User className="w-5 h-5 text-primary" />
                         <h3 className="text-lg font-semibold tracking-tight">A. Keterangan Anak (Data Siswa)</h3>
@@ -427,7 +427,7 @@ export default function PendaftaranForm() {
                 </div>
 
                 {/* B. Orang Tua */}
-                <div className="space-y-6">
+                <div className="flex flex-col gap-6">
                     <div className="flex items-center gap-2">
                         <Users className="w-5 h-5 text-primary" />
                         <h3 className="text-lg font-semibold tracking-tight">B. Orang Tua (Data Ayah & Ibu)</h3>
@@ -488,7 +488,7 @@ export default function PendaftaranForm() {
                 </div>
 
                 {/* C. Wali Anak */}
-                <div className="space-y-6">
+                <div className="flex flex-col gap-6">
                     <div className="flex items-center gap-2">
                         <Home className="w-5 h-5 text-primary" />
                         <h3 className="text-lg font-semibold tracking-tight">C. Wali Anak</h3>
@@ -528,19 +528,19 @@ export default function PendaftaranForm() {
                 </div>
 
                 {/* D. Kebutuhan Khusus */}
-                <div className="space-y-6">
+                <div className="flex flex-col gap-6">
                     <div className="flex items-center gap-2">
                         <Heart className="w-5 h-5 text-primary" />
                         <h3 className="text-lg font-semibold tracking-tight">D. Kebutuhan Khusus</h3>
                     </div>
                     <Separator />
-                    <div className="space-y-6">
+                    <div className="flex flex-col gap-6">
                         <FormField
                             control={form.control}
                             name="memiliki_kebutuhan_khusus"
                             render={({ field }) => (
                                 <FormItem className="flex flex-row items-center justify-between rounded-xl border p-5 bg-muted/30">
-                                    <div className="space-y-1">
+                                    <div className="flex flex-col gap-1">
                                         <FormLabel className="text-base">
                                             Apakah calon siswa memiliki kebutuhan khusus?
                                         </FormLabel>
@@ -559,46 +559,49 @@ export default function PendaftaranForm() {
                         />
 
                         {hasSpecialNeeds && (
-                            <div className="space-y-8 pl-6 border-l-2 border-primary/30 animate-in fade-in slide-in-from-left-4 duration-300">
+                            <div className="flex flex-col gap-8 pl-6 border-l-2 border-primary/30 animate-in fade-in slide-in-from-left-4 duration-300">
                                 <FormField
                                     control={form.control}
                                     name="jenis_kebutuhan_khusus"
                                     render={() => (
                                         <FormItem>
-                                            <div className="mb-4">
-                                                <FormLabel className="text-base font-medium">Jenis Kebutuhan Khusus</FormLabel>
-                                                <FormDescription>
-                                                    Anda dapat memilih lebih dari satu opsi.
-                                                </FormDescription>
-                                            </div>
-                                            <div className="grid sm:grid-cols-2 gap-3">
-                                                {jenisKebutuhanKhususItems.map((item) => (
-                                                    <FormField
-                                                        key={item.id}
-                                                        control={form.control}
-                                                        name="jenis_kebutuhan_khusus"
-                                                        render={({ field }) => (
-                                                            <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-2 rounded-md hover:bg-muted/50 transition-colors">
-                                                                <FormControl>
-                                                                    <Checkbox
-                                                                        checked={field.value?.includes(item.id)}
-                                                                        onCheckedChange={(checked) => {
-                                                                            return checked
-                                                                                ? field.onChange([...(field.value || []), item.id])
-                                                                                : field.onChange(
-                                                                                    field.value?.filter((v) => v !== item.id)
-                                                                                )
-                                                                        }}
-                                                                    />
-                                                                </FormControl>
-                                                                <FormLabel className="text-sm font-normal leading-tight cursor-pointer">
-                                                                    {item.label}
-                                                                </FormLabel>
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                ))}
-                                            </div>
+                                            <fieldset>
+                                                <div className="mb-4">
+                                                    <legend className="text-base font-medium">Jenis Kebutuhan Khusus</legend>
+                                                    <FormDescription>
+                                                        Anda dapat memilih lebih dari satu opsi.
+                                                    </FormDescription>
+                                                </div>
+                                                <div className="grid sm:grid-cols-2 gap-3">
+                                                    {jenisKebutuhanKhususItems.map((item) => (
+                                                        <FormField
+                                                            key={item.id}
+                                                            control={form.control}
+                                                            name="jenis_kebutuhan_khusus"
+                                                            render={({ field }) => (
+                                                                <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-2 rounded-md hover:bg-muted/50 transition-colors">
+                                                                    <FormControl>
+                                                                        <Checkbox
+                                                                            checked={(field.value as string[])?.includes(item.id)}
+                                                                            onCheckedChange={(checked) => {
+                                                                                const value = (field.value as string[]) || [];
+                                                                                return checked
+                                                                                    ? field.onChange([...value, item.id])
+                                                                                    : field.onChange(
+                                                                                        value.filter((v) => v !== item.id)
+                                                                                    )
+                                                                            }}
+                                                                        />
+                                                                    </FormControl>
+                                                                    <FormLabel className="text-sm font-normal leading-tight cursor-pointer">
+                                                                        {item.label}
+                                                                    </FormLabel>
+                                                                </FormItem>
+                                                            )}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </fieldset>
                                             <FormMessage />
                                         </FormItem>
                                     )}

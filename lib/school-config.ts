@@ -54,3 +54,14 @@ export const SCHOOL_LEVEL = "Madrasah Ibtidaiyah";
  */
 export const SCHOOL_TAGLINE =
   "Mencetak generasi Muslim yang cerdas, berakhlak mulia, dan berprestasi.";
+
+/**
+ * Nomor WhatsApp sekolah untuk konfirmasi pendaftaran.
+ */
+export const SCHOOL_WHATSAPP = "0812-3456-7890";
+
+/**
+ * Alamat email resmi sekolah.
+ */
+export const SCHOOL_EMAIL = "admin@mimpkdimoro.sch.id";
+
