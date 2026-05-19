@@ -12,7 +12,7 @@
     "audit:exports": "ts-prune -p tsconfig.json"
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.1.1",
+    "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-alert-dialog": "^1.1.14",
     "@radix-ui/react-aspect-ratio": "^1.1.8",
