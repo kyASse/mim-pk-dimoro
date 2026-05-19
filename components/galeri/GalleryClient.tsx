@@ -1,10 +1,21 @@
 'use client';
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ImageIcon } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+} from "@/components/ui/dialog";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 // Tipe untuk item galeri yang sudah ditransform
 interface GalleryItem {
@@ -27,17 +38,28 @@ export default function GalleryClient({
     kategoriList, 
     currentKategori 
 }: GalleryClientProps) {
-    const [selectedImage, setSelectedImage] = useState<number | null>(null);
+    const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+    const router = useRouter();
 
-    const handlePrevImage = () => {
-    if (selectedImage !== null) {
-        setSelectedImage(selectedImage > 0 ? selectedImage - 1 : galeriData.length - 1);
-    }
+    const handlePrevImage = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (selectedImageIndex !== null) {
+            setSelectedImageIndex(selectedImageIndex > 0 ? selectedImageIndex - 1 : galeriData.length - 1);
+        }
     };
 
-    const handleNextImage = () => {
-        if (selectedImage !== null) {
-            setSelectedImage(selectedImage < galeriData.length - 1 ? selectedImage + 1 : 0);
+    const handleNextImage = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (selectedImageIndex !== null) {
+            setSelectedImageIndex(selectedImageIndex < galeriData.length - 1 ? selectedImageIndex + 1 : 0);
+        }
+    };
+
+    const handleCategoryChange = (value: string) => {
+        if (!value || value === "all") {
+            router.push("/galeri");
+        } else {
+            router.push(`/galeri?kategori=${encodeURIComponent(value)}`);
         }
     };
 
@@ -45,165 +67,158 @@ export default function GalleryClient({
         return (
             <section className="py-16">
                 <div className="container mx-auto px-4 text-center">
-                    <p className="text-muted-foreground text-lg">
-                        Belum ada foto yang tersedia saat ini.
-                    </p>
+                    <div className="flex flex-col items-center justify-center gap-4 py-20 border-2 border-dashed rounded-3xl border-muted">
+                        <ImageIcon className="size-16 text-muted-foreground" />
+                        <p className="text-muted-foreground text-lg">
+                            Belum ada foto yang tersedia saat ini.
+                        </p>
+                    </div>
                 </div>
             </section>
         );
     }
 
+    const selectedImage = selectedImageIndex !== null ? galeriData[selectedImageIndex] : null;
+
     return (
     <>
-        <section className="py-16">
+        <section className="py-12">
             <div className="container mx-auto px-4">
                 {/* Filter Buttons */}
-                <div className="flex justify-center mb-8">
-                    <div className="flex flex-wrap gap-2">
-                        <Link href="/galeri">
-                            <button 
-                                className={`px-4 py-2 rounded-full transition-colors ${
-                                    !currentKategori 
-                                    ? 'bg-highlight text-highlight-foreground' 
-                                    : 'bg-muted hover:bg-muted/80'
-                                }`}
-                                >
-                                Semua Foto
-                            </button>
-                        </Link>
+                <div className="flex justify-center mb-12">
+                    <ToggleGroup 
+                        type="single" 
+                        value={currentKategori || "all"} 
+                        onValueChange={handleCategoryChange}
+                        className="flex flex-wrap gap-2"
+                    >
+                        <ToggleGroupItem 
+                            value="all" 
+                            className="rounded-full px-6 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                        >
+                            Semua Foto
+                        </ToggleGroupItem>
                         {kategoriList.map(kategori => (
-                            <Link 
-                                href={`/galeri?kategori=${encodeURIComponent(kategori)}`} 
+                            <ToggleGroupItem 
                                 key={kategori}
+                                value={kategori} 
+                                className="rounded-full px-6 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                             >
-                                <button 
-                                    className={`px-4 py-2 rounded-full transition-colors ${
-                                    currentKategori === kategori 
-                                        ? 'bg-highlight text-highlight-foreground' 
-                                        : 'bg-muted hover:bg-muted/80'
-                                    }`}
-                                >
-                                    {kategori.charAt(0).toUpperCase() + kategori.slice(1)}
-                                </button>
-                            </Link>
+                                {kategori.charAt(0).toUpperCase() + kategori.slice(1)}
+                            </ToggleGroupItem>
                         ))}
-                    </div>
+                    </ToggleGroup>
                 </div>
 
                 {/* Gallery Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {galeriData.map((item, index) => (
-                        <motion.div
+                        <Card 
                             key={item.id}
-                            layout
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3, delay: index * 0.1 }}
-                            className="relative cursor-pointer overflow-hidden rounded-xl shadow-md group h-64"
-                            onClick={() => setSelectedImage(index)}
+                            className="overflow-hidden border-none shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer group rounded-2xl"
+                            onClick={() => setSelectedImageIndex(index)}
                         >
-                            <Image
-                                src={item.src}
-                                alt={item.title}
-                                fill
-                                className="object-cover transition-transform duration-300 group-hover:scale-105"
-                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <div className="absolute bottom-4 left-4 text-white">
-                                    <span className="px-2 py-1 bg-primary/80 rounded-full text-xs mb-2 inline-block">
+                            <CardContent className="p-0 relative">
+                                <AspectRatio ratio={4 / 3}>
+                                    <Image
+                                        src={item.src}
+                                        alt={item.title}
+                                        fill
+                                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                                    />
+                                </AspectRatio>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                                    <Badge variant="secondary" className="w-fit mb-2 bg-white/20 text-white backdrop-blur-md border-none">
                                         {item.category}
-                                    </span>
-                                    <h3 className="text-lg font-semibold line-clamp-2">{item.title}</h3>
+                                    </Badge>
+                                    <h3 className="text-white font-medium line-clamp-2 text-lg leading-tight">
+                                        {item.title}
+                                    </h3>
                                 </div>
-                            </div>
-                        </motion.div>
+                            </CardContent>
+                        </Card>
                     ))}
                 </div>
-
-                {/* Empty State */}
             </div>
         </section>
 
-        {/* Lightbox Modal */}
-        <AnimatePresence>
-            {selectedImage !== null && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
-                    onClick={() => setSelectedImage(null)}
-                >
-                    <motion.div
-                        initial={{ scale: 0.9, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.9, opacity: 0 }}
-                        className="relative max-w-4xl mx-auto w-full"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        {/* Close Button */}
-                        <button
-                            className="absolute -top-12 right-0 text-white hover:text-primary transition-colors z-10"
-                            onClick={() => setSelectedImage(null)}
-                            aria-label="Close lightbox"
-                        >
-                            <X className="w-8 h-8" />
-                        </button>
-
-                        {/* Image */}
-                        <div className="relative h-[70vh] w-full">
-                            <Image
-                                src={galeriData[selectedImage].src}
-                                alt={galeriData[selectedImage].title}
-                                fill
-                                className="object-contain"
-                                sizes="100vw"
-                                priority
-                            />
-                        </div>
-
-                        {/* Image Info */}
-                        <div className="bg-white p-4 rounded-b-xl">
-                            <h3 className="font-bold text-xl text-gray-900">
-                                {galeriData[selectedImage].title}
-                            </h3>
-                            <p className="text-gray-600 mt-2">
-                                {galeriData[selectedImage].description}
-                            </p>
-                            <span className="inline-block mt-2 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
-                                {galeriData[selectedImage].category}
-                            </span>
-                        </div>
+        {/* Lightbox Modal using Dialog */}
+        <Dialog open={selectedImageIndex !== null} onOpenChange={(open) => !open && setSelectedImageIndex(null)}>
+            <DialogContent className="max-w-5xl p-0 overflow-hidden border-none bg-black/95 sm:rounded-3xl gap-0">
+                <DialogTitle className="sr-only">Detail Foto: {selectedImage?.title}</DialogTitle>
+                <div className="relative flex flex-col md:flex-row h-full max-h-[90vh] md:max-h-[80vh]">
+                    {/* Image Area */}
+                    <div className="relative flex-1 bg-black flex items-center justify-center group/nav">
+                        {selectedImage && (
+                            <div className="relative w-full h-full min-h-[300px] md:min-h-[500px]">
+                                <Image
+                                    src={selectedImage.src}
+                                    alt={selectedImage.title}
+                                    fill
+                                    className="object-contain"
+                                    sizes="100vw"
+                                    priority
+                                />
+                            </div>
+                        )}
                         
                         {/* Navigation Buttons */}
                         {galeriData.length > 1 && (
-                            <div className="absolute left-4 right-4 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none">
-                                <button
-                                    className="bg-white/20 hover:bg-white/40 w-12 h-12 rounded-full flex items-center justify-center transition-colors pointer-events-auto"
+                            <>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 hover:bg-white/20 text-white opacity-0 group-hover/nav:opacity-100 transition-opacity"
                                     onClick={handlePrevImage}
-                                    aria-label="Previous image"
                                 >
-                                    <ChevronLeft className="w-6 h-6 text-white" />
-                                </button>
-                                <button
-                                    className="bg-white/20 hover:bg-white/40 w-12 h-12 rounded-full flex items-center justify-center transition-colors pointer-events-auto"
+                                    <ChevronLeft className="size-6" />
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 hover:bg-white/20 text-white opacity-0 group-hover/nav:opacity-100 transition-opacity"
                                     onClick={handleNextImage}
-                                    aria-label="Next image"
                                 >
-                                    <ChevronRight className="w-6 h-6 text-white" />
-                                </button>
-                            </div>
+                                    <ChevronRight className="size-6" />
+                                </Button>
+                            </>
                         )}
 
-                        {/* Image Counter */}
-                        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-                            {selectedImage + 1} / {galeriData.length}
+                        {/* Counter */}
+                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/10 text-white/80 px-3 py-1 rounded-full text-xs backdrop-blur-sm">
+                            {selectedImageIndex !== null && selectedImageIndex + 1} / {galeriData.length}
                         </div>
-                    </motion.div>
-                </motion.div>
-            )}
-        </AnimatePresence>
-        </>
+                    </div>
+
+                    {/* Info Area */}
+                    <div className="w-full md:w-80 bg-background p-8 flex flex-col gap-4">
+                        <DialogHeader>
+                            <Badge className="w-fit mb-2">{selectedImage?.category}</Badge>
+                            <DialogTitle className="text-2xl font-bold leading-tight">
+                                {selectedImage?.title}
+                            </DialogTitle>
+                            <DialogDescription className="text-base leading-relaxed mt-4">
+                                {selectedImage?.description || "Tidak ada deskripsi tambahan."}
+                            </DialogDescription>
+                        </DialogHeader>
+                        
+                        <div className="mt-auto pt-6 border-t">
+                            <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold">
+                                Tanggal Unggah
+                            </p>
+                            <p className="text-sm font-medium mt-1">
+                                {selectedImage && new Date(selectedImage.created_at).toLocaleDateString('id-ID', {
+                                    day: 'numeric',
+                                    month: 'long',
+                                    year: 'numeric'
+                                })}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </DialogContent>
+        </Dialog>
+    </>
     );
 }
