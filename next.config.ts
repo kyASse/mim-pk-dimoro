@@ -10,7 +10,6 @@ const supabaseHostname = (() => {
 })();
 
 const nextConfig: NextConfig = {
-  output: "standalone",
   // Properti lain yang mungkin sudah Anda miliki bisa tetap ada di sini
   // Enforce ESLint during builds
   eslint: {},
