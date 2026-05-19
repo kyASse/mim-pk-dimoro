@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import PendaftaranForm from "@/components/Pendaftaran/PendaftaranForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SCHOOL_NAME } from "@/lib/school-config";
 import {
     Card,
     CardContent,
@@ -84,7 +85,7 @@ export default async function PendaftaranPage() {
         <div className="min-h-screen">
             <PageHeader
                 title="Pendaftaran Siswa Baru"
-                description="Formulir pendaftaran siswa baru MIM PK Dimoro"
+                description={`Formulir pendaftaran siswa baru ${SCHOOL_NAME}`}
                 background="bg-accent/20"
             />
 
@@ -297,7 +298,7 @@ export default async function PendaftaranPage() {
                                                             <p className="text-sm text-muted-foreground mt-1 mb-3">Isi formulir dari rumah untuk mempercepat proses</p>
                                                             <a 
                                                                 href="/Formulir Pendaftaran MIM PK Dimoro.pdf" 
-                                                                download="Formulir Pendaftaran MIM PK Dimoro.pdf"
+                                                                download={`Formulir Pendaftaran ${SCHOOL_NAME}.pdf`}
                                                                 className="inline-flex items-center px-4 py-1.5 text-xs font-semibold text-green-700 bg-green-100 hover:bg-green-200 rounded-full transition-all"
                                                             >
                                                                 <Download className="mr-1.5 h-3.5 w-3.5" />
@@ -312,7 +313,7 @@ export default async function PendaftaranPage() {
                                                         </div>
                                                         <div className="ml-4">
                                                             <h4 className="font-bold text-foreground">Kunjungi Sekolah</h4>
-                                                            <p className="text-sm text-muted-foreground mt-1">Datang ke MIM PK Dimoro pada jam kerja (07:30 - 11:30 WIB)</p>
+                                                            <p className="text-sm text-muted-foreground mt-1">Datang ke {SCHOOL_NAME} pada jam kerja (07:30 - 11:30 WIB)</p>
                                                         </div>
                                                     </div>
 
