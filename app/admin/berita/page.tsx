@@ -6,6 +6,7 @@ import { Eye, Edit } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import DeleteButton from './DeleteButton';
+import { SCHOOL_NAME } from "@/lib/school-config";
 
 type Berita = {
     id: number;
@@ -40,7 +41,7 @@ export default async function KelolaBeritaPage() {
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
                     <div>
                         <h1 className="text-3xl font-bold text-gray-900">Daftar Berita</h1>
-                        <p className="text-gray-600 mt-1">Daftar artikel berita situs web {schoolConfig.shortName}</p>
+                        <p className="text-gray-600 mt-1">Daftar artikel berita situs web {SCHOOL_NAME}</p>
                     </div>
                     <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
                         <Link href="/admin/berita/tambah">
