@@ -39,12 +39,10 @@ function JSONRenderer({ data }: { data: string }) {
 type EditPageProps = { params: Promise<{ slug: string }> };
 
 interface KontenItem {
-    id: number;
     slug: string;
     judul: string | null;
     isi: Record<string, unknown> | null; // JSONB field - can be any JSON structure
     created_at: string;
-    updated_at: string;
 }
 
 export default function EditKontenPage({ params }: EditPageProps) {
@@ -110,8 +108,7 @@ export default function EditKontenPage({ params }: EditPageProps) {
                 .from('konten_halaman')
                 .update({
                     judul: formData.judul,
-                    isi: isiData,
-                    updated_at: new Date().toISOString()
+                    isi: isiData
                 })
                 .eq('slug', konten.slug);
 
@@ -252,7 +249,7 @@ export default function EditKontenPage({ params }: EditPageProps) {
                                 <div className="flex items-center justify-between pt-4 border-t">
                                     <div className="text-sm text-gray-500 flex items-center gap-2">
                                         <Calendar className="w-4 h-4" />
-                                        Terakhir diperbarui: {new Date(konten.updated_at).toLocaleDateString('id-ID')}
+                                        Dibuat pada: {new Date(konten.created_at).toLocaleDateString('id-ID')}
                                     </div>
                                     <Button 
                                         type="submit" 

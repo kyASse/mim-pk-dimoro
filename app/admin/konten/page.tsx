@@ -8,10 +8,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ArrowLeft, FileText, Edit, Calendar, Hash, MapPin, Phone, Mail, Clock, Edit3, Plus } from "lucide-react";
 
 type KontenItem = {
-    id: number;
     slug: string;
     judul: string | null;
-    updated_at: string;
+    created_at: string;
 };
 
 type KontakSekolahItem = {
@@ -33,7 +32,7 @@ export default async function KelolaKontenPage() {
 
     const { data: konten, error } = await supabase
         .from('konten_halaman')
-        .select('id, slug, judul, updated_at')
+        .select('slug, judul, created_at')
         .order('judul', { ascending: true });
 
     const { data: kontakSekolah, error: kontakError } = await supabase
@@ -61,11 +60,11 @@ export default async function KelolaKontenPage() {
 
     // Hitung statistik
     const totalKonten = konten?.length || 0;
-    const recentlyUpdated = konten?.filter(item => {
-        const updated = new Date(item.updated_at);
+    const recentlyCreated = konten?.filter(item => {
+        const created = new Date(item.created_at);
         const weekAgo = new Date();
         weekAgo.setDate(weekAgo.getDate() - 7);
-        return updated >= weekAgo;
+        return created >= weekAgo;
     }).length || 0;
 
     return (
@@ -103,8 +102,8 @@ export default async function KelolaKontenPage() {
                             <Calendar className="w-6 h-6 text-green-600" />
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-gray-600">Diperbarui Minggu Ini</p>
-                            <p className="text-2xl font-bold text-gray-900">{recentlyUpdated}</p>
+                            <p className="text-sm font-medium text-gray-600">Dibuat Minggu Ini</p>
+                            <p className="text-2xl font-bold text-gray-900">{recentlyCreated}</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -206,13 +205,13 @@ export default async function KelolaKontenPage() {
                                 <TableRow>
                                     <TableHead>Konten</TableHead>
                                     <TableHead>Slug</TableHead>
-                                    <TableHead>Terakhir Diperbarui</TableHead>
+                                    <TableHead>Tanggal Dibuat</TableHead>
                                     <TableHead className="w-[140px]">Aksi</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {konten.map((item: KontenItem) => (
-                                    <TableRow key={item.id}>
+                                    <TableRow key={item.slug}>
                                         <TableCell className="font-medium">
                                             <div className="flex items-center gap-2">
                                                 <FileText className="w-4 h-4 text-blue-600" />
@@ -230,7 +229,7 @@ export default async function KelolaKontenPage() {
                                         <TableCell>
                                             <div className="flex items-center gap-1 text-sm text-gray-600">
                                                 <Calendar className="w-3 h-3" />
-                                                {new Date(item.updated_at).toLocaleDateString('id-ID', {
+                                                {new Date(item.created_at).toLocaleDateString('id-ID', {
                                                     year: 'numeric',
                                                     month: 'short',
                                                     day: 'numeric',
