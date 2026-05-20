@@ -53,8 +53,8 @@ export default async function KelolaSiswaPage() {
               <Input name="nama_lengkap" id="nama_lengkap" required />
             </div>
             <div>
-              <Label htmlFor="kelompok">Kelompok</Label>
-              <Input name="kelompok" id="kelompok" placeholder="TK A / TK B / dst" />
+              <Label htmlFor="kelompok">Kelompok/Kelas</Label>
+              <Input name="kelompok" id="kelompok" placeholder="Kelas 1 / Kelas 2 / dst" />
             </div>
             <div className="flex items-end">
               <Button type="submit">Tambah</Button>
@@ -78,8 +78,8 @@ export default async function KelolaSiswaPage() {
                     <input type="hidden" name="pendaftar_id" value={p.id} />
                   </div>
                   <div>
-                    <Label htmlFor={`kelompok-import-${p.id}`}>Kelompok</Label>
-                    <Input id={`kelompok-import-${p.id}`} name="kelompok" placeholder="TK A / TK B / dst" />
+                    <Label htmlFor={`kelompok-import-${p.id}`}>Kelompok/Kelas</Label>
+                    <Input id={`kelompok-import-${p.id}`} name="kelompok" placeholder="Kelas 1 / Kelas 2 / dst" />
                   </div>
                   <div className="md:justify-self-end">
                     <Button type="submit">Tambah sebagai Siswa</Button>

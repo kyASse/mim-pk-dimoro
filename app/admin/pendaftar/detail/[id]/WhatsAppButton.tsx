@@ -24,7 +24,7 @@ export default function WhatsAppButton({ namaOrangTua: _namaOrangTua, namaAnak, 
     const formattedNomor = nomorTelepon.replace(/[\s-]/g, '').replace(/^0/, '62');
 
     // Template pesan
-    const templatePesan = `Assalamu’alaikum Wr. Wb.,\n\nSaya, tim administrasi TK ABA Mertosanan, ingin memberikan konfirmasi bahwa kami telah menerima data pendaftaran untuk ananda *${namaAnak || '(Nama Anak)'}*.\n\nSelanjutnya, kami akan melakukan verifikasi data. Mohon ditunggu informasi berikutnya.\n\nTerima kasih.\nWassalamu’alaikum Wr. Wb.`;
+    const templatePesan = `Assalamu’alaikum Wr. Wb.,\n\nSaya, tim administrasi ${schoolConfig.shortName}, ingin memberikan konfirmasi bahwa kami telah menerima data pendaftaran untuk ananda *${namaAnak || '(Nama Anak)'}*.\n\nSelanjutnya, kami akan melakukan verifikasi data. Mohon ditunggu informasi berikutnya.\n\nTerima kasih.\nWassalamu’alaikum Wr. Wb.`;
     
     // Encode pesan agar aman untuk URL
     const encodedPesan = encodeURIComponent(templatePesan);
