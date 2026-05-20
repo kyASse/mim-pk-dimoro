@@ -25,8 +25,9 @@ import { createClient } from "@/lib/supabase/client"
 import { useEffect, useState } from "react"
 import { User } from "@supabase/supabase-js"
 import Image from "next/image"
+import { SCHOOL_NAME } from "@/lib/school-config"
 
-// Data menu admin yang sesuai dengan aplikasi TK ABA
+// Data menu admin yang sesuai dengan aplikasi MIM PK Dimoro
 const navMainData = [
   {
     title: "Dashboard",
@@ -244,15 +245,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <div className="flex items-center gap-2 px-2 py-2">
             <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-white overflow-hidden">
               <Image
-                src="/Logo-TK-ABA.png"
-                alt="TK ABA Mertosanan"
+                src="/logo-mim-pk-dimoro.svg"
+                alt={SCHOOL_NAME}
                 width={32}
                 height={32}
                 className="object-contain"
               />
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">MIM PK DIMORO</span>
+              <span className="truncate font-semibold">{SCHOOL_NAME}</span>
               <span className="truncate text-xs">Admin Panel</span>
             </div>
           </div>
@@ -275,15 +276,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <div className="flex items-center gap-2 px-2 py-2">
             <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-white overflow-hidden">
               <Image
-                src="/Logo-TK-ABA.png"
-                alt="TK ABA Mertosanan"
+                src="/logo-mim-pk-dimoro.svg"
+                alt={SCHOOL_NAME}
                 width={32}
                 height={32}
                 className="object-contain"
               />
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">TK ABA Mertosanan</span>
+              <span className="truncate font-semibold">{SCHOOL_NAME}</span>
               <span className="truncate text-xs">Admin Panel</span>
             </div>
           </div>
@@ -301,7 +302,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const userData = {
     name: profile?.nama_lengkap || user?.email?.split('@')[0] || 'Admin',
-    email: user?.email || 'admin@tkabamertosanan.sch.id',
+    email: user?.email || 'admin@mimpkdimoro.sch.id',
     avatar: profile?.avatar_url || '/avatar-man-placeholder.png',
   }
 
@@ -311,15 +312,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <div className="flex items-center gap-2 px-2 py-2">
           <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-white overflow-hidden">
             <Image
-              src="/Logo-TK-ABA.png"
-              alt="TK ABA Mertosanan"
+              src="/logo-mim-pk-dimoro.svg"
+              alt={SCHOOL_NAME}
               width={32}
               height={32}
               className="object-contain"
             />
           </div>
           <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-semibold">TK ABA Mertosanan</span>
+            <span className="truncate font-semibold">{SCHOOL_NAME}</span>
             <span className="truncate text-xs">Admin Panel</span>
           </div>
         </div>
