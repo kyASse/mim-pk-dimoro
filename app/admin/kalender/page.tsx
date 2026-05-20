@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { categoryColors } from '@/lib/constants/calendar';
 import DeleteKegiatanButton from "./DeleteKegiatanButton";
+import { SCHOOL_NAME } from "@/lib/school-config";
 
 type KegiatanAkademik = {
     id: number;
@@ -40,7 +41,7 @@ export default async function KelolaKalenderPage() {
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
                     <div>
                         <h1 className="text-3xl font-bold text-gray-900">Manajemen Kalender Akademik</h1>
-                        <p className="text-gray-600 mt-1">Kelola jadwal kegiatan dan acara akademik {schoolConfig.shortName}</p>
+                        <p className="text-gray-600 mt-1">Kelola jadwal kegiatan dan acara akademik {SCHOOL_NAME}</p>
                     </div>
                     <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
                         <Link href="/admin/kalender/tambah">
