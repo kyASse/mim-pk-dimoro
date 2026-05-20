@@ -106,7 +106,7 @@ export default function TambahTestimoniPage() {
                                 <Input
                                     id="status"
                                     type="text"
-                                    placeholder="Contoh: Orang Tua Siswa TK A"
+                                    placeholder="Contoh: Orang Tua Siswa Kelas 1"
                                     value={status}
                                     onChange={(e) => setStatus(e.target.value)}
                                     required

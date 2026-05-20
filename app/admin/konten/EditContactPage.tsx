@@ -235,7 +235,7 @@ export default function EditContactPage() {
                                             type="email"
                                             value={formData.email_utama}
                                             onChange={(e) => handleInputChange('email_utama', e.target.value)}
-                                            placeholder="email@tkabamertosanan.com"
+                                            placeholder="contoh@mimpkdimoro.sch.id"
                                             required
                                         />
                                     </div>
@@ -251,7 +251,7 @@ export default function EditContactPage() {
                                             type="email"
                                             value={formData.email_admin}
                                             onChange={(e) => handleInputChange('email_admin', e.target.value)}
-                                            placeholder="admin@tkabamertosanan.com"
+                                            placeholder="admin@mimpkdimoro.sch.id"
                                             required
                                         />
                                     </div>

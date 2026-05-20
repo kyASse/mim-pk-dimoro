@@ -3,13 +3,15 @@
 import { LoginForm } from '@/components/login-form'
 import PageHeader from '@/components/shared/PageHeader'
 import { Users, FileText, BarChart3 } from 'lucide-react'
+import { SCHOOL_NAME } from '@/lib/school-config'
+
 
 export default function LoginPage() {
   return (
     <div className="min-h-screen">
       <PageHeader
         title="Login Admin"
-        description="Akses panel administrasi TK ABA Mertosanan"
+        description={`Akses panel administrasi ${SCHOOL_NAME}`}
         background="bg-accent/20"
       />
 
@@ -23,7 +25,7 @@ export default function LoginPage() {
               <div className='bg-highlight/10 rounded-xl p-6'>
                 <h3 className='text-xl font-bold mb-4'>Panel Admin</h3>
                 <p className='text-muted-foreground mb-6'>
-                  Panel administrasi TK ABA Mertosanan untuk mengelola data sekolah, 
+                  Panel administrasi {SCHOOL_NAME} untuk mengelola data sekolah, 
                   siswa, konten website, dan berbagai aspek operasional sekolah.
                 </p>
                 
