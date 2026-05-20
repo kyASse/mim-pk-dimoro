@@ -252,7 +252,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               />
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">TK ABA Mertosanan</span>
+              <span className="truncate font-semibold">MIM PK DIMORO</span>
               <span className="truncate text-xs">Admin Panel</span>
             </div>
           </div>
