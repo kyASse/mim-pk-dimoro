@@ -9,6 +9,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ArrowLeft, Plus, DollarSign, Trophy, Edit, ExternalLink } from "lucide-react";
 import DeletePrestasiButton from "./DeletePrestasiButton";
 
+import { parseCatatanSpp } from "@/app/admin/konten/edit/[slug]/utils";
+
 type BiayaItem = { id: number; komponen_biaya: string | null; biaya_putra: number | null; biaya_putri: number | null; };
 type PrestasiItem = { id: number; tahun: number | null; nama_siswa: string | null; nama_prestasi: string | null; tingkat: string | null; dokumentasi_url: string | null;};
 
@@ -41,6 +43,7 @@ export default async function KelolaAkademikPage() {
 
     const totalPutra = biaya?.reduce((acc: number, item: BiayaItem) => acc + (item.biaya_putra || 0), 0) || 0;
     const totalPutri = biaya?.reduce((acc: number, item: BiayaItem) => acc + (item.biaya_putri || 0), 0) || 0;
+    const parsedSpp = parseCatatanSpp(catatanSpp?.isi).catatan;
 
     return (
         <div className="space-y-6">
@@ -116,22 +119,10 @@ export default async function KelolaAkademikPage() {
                             )}
                         </TableBody>
                     </Table>
-                    {catatanSpp?.isi && (
+                    {parsedSpp && (
                         <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                            <p className="text-sm text-blue-800 font-medium">
-                                {(() => {
-                                    if (typeof catatanSpp.isi === 'string') {
-                                        return catatanSpp.isi;
-                                    } else if (typeof catatanSpp.isi === 'object' && catatanSpp.isi !== null) {
-                                        // Handle JSONB object
-                                        if ('catatan' in catatanSpp.isi) {
-                                            return catatanSpp.isi.catatan;
-                                        }
-                                        // If it's an object but no 'catatan' property, stringify it
-                                        return JSON.stringify(catatanSpp.isi);
-                                    }
-                                    return 'Data catatan tidak tersedia';
-                                })()}
+                            <p className="text-sm text-blue-800 font-medium whitespace-pre-wrap">
+                                {parsedSpp}
                             </p>
                         </div>
                     )}
