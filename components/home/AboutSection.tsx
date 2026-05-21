@@ -57,7 +57,7 @@ export default function AboutSection() {
                             <div className="absolute -top-4 -left-4 w-24 h-24 bg-primary rounded-full -z-10"></div>
                             <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-primary rounded-full -z-10"></div>
                             <Image
-                            src="https://placehold.co/600x400/059669/ffffff?text=Profil+Sekolah"
+                            src="https://placehold.co/600x400/059669/ffffff.png?text=Profil+Sekolah"
                             alt={`Kegiatan di ${SCHOOL_NAME}`}
                             width={600}
                             height={400}

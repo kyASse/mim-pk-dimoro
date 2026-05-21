@@ -37,7 +37,7 @@ export default async function ContactPage() {
     const { data: kontakData, error } = await supabase
         .from('kontak_sekolah')
         .select('alamat, whatsapp, email_utama, email_admin, jam_operasional, maps_embed_url')
-        .single();
+        .maybeSingle();
 
     // Gunakan data dari database atau fallback ke default
     const kontak = kontakData;

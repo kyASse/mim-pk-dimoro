@@ -51,7 +51,7 @@ export default function AboutUs() {
                             <div className="absolute -bottom-4 -left-4 w-28 h-28 bg-secondary rounded-full -z-10"></div>
                             <div className="absolute -top-4 -right-4 w-24 h-24 bg-accent rounded-full -z-10"></div>
                             <Image 
-                                src="https://placehold.co/600x600/059669/ffffff?text=Visi+dan+Misi"
+                                src="https://placehold.co/600x600/059669/ffffff.png?text=Visi+dan+Misi"
                                 alt={`Kegiatan di ${SCHOOL_NAME}`}
                                 width={600}
                                 height={600}
