@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { ArrowLeft, Save, FileText, Calendar, Eye, EyeOff, Trash2, Plus, ClipboardCheck, CheckCircle2, CalendarDays, Info } from "lucide-react";
 import { toast } from "sonner";
 
@@ -197,7 +196,11 @@ export default function EditKontenPage({ params }: EditPageProps) {
             );
         }
 
-        return null;
+        return (
+            <div className="p-4 bg-yellow-50 text-yellow-700 rounded border border-yellow-200 text-sm">
+                Preview tidak tersedia untuk tipe konten ini.
+            </div>
+        );
     };
 
     const renderFormFields = () => {
@@ -412,7 +415,11 @@ export default function EditKontenPage({ params }: EditPageProps) {
             );
         }
 
-        return null;
+        return (
+            <div className="p-4 bg-yellow-50 text-yellow-700 rounded border border-yellow-200 text-sm">
+                Tipe konten ini tidak dikenali atau belum didukung oleh form editor terstruktur.
+            </div>
+        );
     };
 
     const handleSubmit = async (e: React.FormEvent) => {

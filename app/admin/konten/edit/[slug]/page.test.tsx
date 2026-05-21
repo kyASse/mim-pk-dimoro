@@ -77,7 +77,7 @@ describe("EditKontenPage", () => {
     });
 
     const saveButton = screen.getByRole("button", { name: /Simpan Perubahan/i });
-    saveButton.click();
+    fireEvent.click(saveButton);
 
     await waitFor(() => {
       expect(mockSupabase.update).toHaveBeenCalledWith({
@@ -85,6 +85,7 @@ describe("EditKontenPage", () => {
         isi: { key: "value" },
       });
       expect(mockSupabase.eq).toHaveBeenCalledWith('slug', "test-slug");
+      expect(mockRouter.push).toHaveBeenCalledWith('/admin/konten');
     });
   });
 
@@ -118,6 +119,7 @@ describe("EditKontenPage", () => {
         judul: "Catatan SPP",
         isi: { catatan: "Baru" },
       });
+      expect(mockRouter.push).toHaveBeenCalledWith('/admin/konten');
     });
   });
 
@@ -165,6 +167,7 @@ describe("EditKontenPage", () => {
           jadwal: { judul: "Seksi Jadwal", items: [{ tahap: "Gelombang 1", periode: "Januari" }] }
         }
       });
+      expect(mockRouter.push).toHaveBeenCalledWith('/admin/konten');
     });
   });
 
@@ -213,6 +216,37 @@ describe("EditKontenPage", () => {
           ]
         }
       });
+      expect(mockRouter.push).toHaveBeenCalledWith('/admin/konten');
+    });
+  });
+
+  it("should show warning cards for unsupported slugs in form and preview", async () => {
+    const mockParamsUnsupported = Promise.resolve({ slug: "unsupported-slug" });
+    const mockData = {
+      slug: "unsupported-slug",
+      judul: "Unsupported Title",
+      isi: { some: "data" },
+      created_at: "2024-01-01T00:00:00Z",
+    };
+
+    const mockPromise = Promise.resolve({ data: mockData, error: null });
+    (mockPromise as any).single = vi.fn().mockResolvedValue({ data: mockData, error: null });
+    mockSupabase.eq.mockReturnValue(mockPromise);
+
+    render(<EditKontenPage params={mockParamsUnsupported} />);
+
+    // Verify form warning card is displayed
+    await waitFor(() => {
+      expect(screen.getByText("Tipe konten ini tidak dikenali atau belum didukung oleh form editor terstruktur.")).toBeDefined();
+    });
+
+    // Click preview button
+    const previewButton = screen.getByRole("button", { name: /Lihat Preview/i });
+    fireEvent.click(previewButton);
+
+    // Verify preview warning card is displayed
+    await waitFor(() => {
+      expect(screen.getByText("Preview tidak tersedia untuk tipe konten ini.")).toBeDefined();
     });
   });
 });
