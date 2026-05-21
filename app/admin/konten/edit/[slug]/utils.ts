@@ -18,12 +18,27 @@ export interface JadwalPendaftaranIsi {
     items: { nama: string; periode: string }[];
 }
 
+function tryJsonParse(value: any): any {
+    if (typeof value !== "string") return value;
+    try {
+        const parsed = JSON.parse(value);
+        if (typeof parsed === "string") {
+            return tryJsonParse(parsed);
+        }
+        return parsed;
+    } catch {
+        return value;
+    }
+}
+
 export function parseCatatanSpp(rawIsi: any): CatatanSppIsi {
     if (!rawIsi) return { catatan: "" };
-    if (typeof rawIsi === "string") return { catatan: rawIsi };
-    if (typeof rawIsi.catatan === "string") return { catatan: rawIsi.catatan };
-    if (Array.isArray(rawIsi.blocks) && rawIsi.blocks[0]?.text) {
-        return { catatan: rawIsi.blocks[0].text };
+    
+    const parsed = tryJsonParse(rawIsi);
+    if (typeof parsed === "string") return { catatan: parsed };
+    if (parsed && typeof parsed.catatan === "string") return { catatan: parsed.catatan };
+    if (parsed && Array.isArray(parsed.blocks) && parsed.blocks[0]?.text) {
+        return { catatan: parsed.blocks[0].text };
     }
     return { catatan: "" };
 }
@@ -35,25 +50,40 @@ export function parsePersyaratan(rawIsi: any): PersyaratanIsi {
     };
     if (!rawIsi) return defaultVal;
     
+    const parsed = tryJsonParse(rawIsi);
+    if (typeof parsed === "string") {
+        const items = parsed.split("\n").map(line => line.replace(/^\d+\.\s*/, "").trim()).filter(Boolean);
+        return {
+            persyaratan: {
+                judul: "Persyaratan Dokumen",
+                items: items
+            },
+            jadwal: {
+                judul: "Jadwal Pendaftaran",
+                items: []
+            }
+        };
+    }
+    
     let items: string[] = [];
     let jadwalItems: { tahap: string; periode: string }[] = [];
     
     // If it's the legacy block layout
-    if (Array.isArray(rawIsi.blocks) && rawIsi.blocks[0]?.text) {
-        const text = rawIsi.blocks[0].text as string;
+    if (parsed && Array.isArray(parsed.blocks) && parsed.blocks[0]?.text) {
+        const text = parsed.blocks[0].text as string;
         items = text.split("\n").map(line => line.replace(/^\d+\.\s*/, "").trim()).filter(Boolean);
-    } else {
-        items = rawIsi.persyaratan?.items || [];
-        jadwalItems = rawIsi.jadwal?.items || [];
+    } else if (parsed) {
+        items = parsed.persyaratan?.items || [];
+        jadwalItems = parsed.jadwal?.items || [];
     }
 
     return {
         persyaratan: {
-            judul: rawIsi.persyaratan?.judul || "Persyaratan Dokumen",
+            judul: parsed?.persyaratan?.judul || "Persyaratan Dokumen",
             items: items
         },
         jadwal: {
-            judul: rawIsi.jadwal?.judul || "Jadwal Pendaftaran",
+            judul: parsed?.jadwal?.judul || "Jadwal Pendaftaran",
             items: jadwalItems
         }
     };
@@ -66,10 +96,25 @@ export function parseJadwalPendaftaran(rawIsi: any): JadwalPendaftaranIsi {
     };
     if (!rawIsi) return defaultVal;
     
+    const parsed = tryJsonParse(rawIsi);
+    if (typeof parsed === "string") {
+        const items = parsed.split("\n").map(line => {
+            const parts = line.split(":");
+            return {
+                nama: parts[0]?.trim() || "Gelombang",
+                periode: parts[1]?.trim() || ""
+            };
+        }).filter(Boolean);
+        return {
+            judul: "Jadwal Pendaftaran",
+            items: items
+        };
+    }
+    
     let items: { nama: string; periode: string }[] = [];
     
-    if (Array.isArray(rawIsi.blocks) && rawIsi.blocks[0]?.text) {
-        const text = rawIsi.blocks[0].text as string;
+    if (parsed && Array.isArray(parsed.blocks) && parsed.blocks[0]?.text) {
+        const text = parsed.blocks[0].text as string;
         items = text.split("\n").map(line => {
             const parts = line.split(":");
             return {
@@ -77,12 +122,12 @@ export function parseJadwalPendaftaran(rawIsi: any): JadwalPendaftaranIsi {
                 periode: parts[1]?.trim() || ""
             };
         }).filter(Boolean);
-    } else {
-        items = rawIsi.items || [];
+    } else if (parsed) {
+        items = parsed.items || [];
     }
 
     return {
-        judul: rawIsi.judul || "Jadwal Pendaftaran",
+        judul: parsed?.judul || "Jadwal Pendaftaran",
         items: items
     };
 }

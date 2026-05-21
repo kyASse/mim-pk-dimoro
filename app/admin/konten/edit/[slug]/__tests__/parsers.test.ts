@@ -20,6 +20,24 @@ describe("Legacy Fallback Data Parsers", () => {
             });
         });
 
+        it("should parse stringified JSON object representation", () => {
+            expect(parseCatatanSpp('{"catatan": "Biaya SPP Rp 100.000"}')).toEqual({
+                catatan: "Biaya SPP Rp 100.000"
+            });
+        });
+
+        it("should parse double-stringified JSON object representation", () => {
+            expect(parseCatatanSpp('"{\\"catatan\\": \\"Biaya SPP Rp 100.000\\"}"')).toEqual({
+                catatan: "Biaya SPP Rp 100.000"
+            });
+        });
+
+        it("should parse stringified JSON string representation", () => {
+            expect(parseCatatanSpp('"Biaya SPP Rp 100.000"')).toEqual({
+                catatan: "Biaya SPP Rp 100.000"
+            });
+        });
+
         it("should parse structured catatan object", () => {
             expect(parseCatatanSpp({ catatan: "Biaya SPP" })).toEqual({
                 catatan: "Biaya SPP"
@@ -94,6 +112,33 @@ describe("Legacy Fallback Data Parsers", () => {
                 }
             });
         });
+
+        it("should parse stringified JSON representation", () => {
+            const raw = JSON.stringify({
+                persyaratan: {
+                    judul: "Custom Persyaratan",
+                    items: ["A", "B"]
+                },
+                jadwal: {
+                    judul: "Custom Jadwal",
+                    items: [
+                        { tahap: "Gelombang 1", periode: "Januari" }
+                    ]
+                }
+            });
+            expect(parsePersyaratan(raw)).toEqual({
+                persyaratan: {
+                    judul: "Custom Persyaratan",
+                    items: ["A", "B"]
+                },
+                jadwal: {
+                    judul: "Custom Jadwal",
+                    items: [
+                        { tahap: "Gelombang 1", periode: "Januari" }
+                    ]
+                }
+            });
+        });
     });
 
     describe("parseJadwalPendaftaran", () => {
@@ -127,6 +172,21 @@ describe("Legacy Fallback Data Parsers", () => {
                     { nama: "Gelombang A", periode: "Mei 2026" }
                 ]
             };
+            expect(parseJadwalPendaftaran(raw)).toEqual({
+                judul: "Jadwal Gelombang",
+                items: [
+                    { nama: "Gelombang A", periode: "Mei 2026" }
+                ]
+            });
+        });
+
+        it("should parse stringified JSON representation", () => {
+            const raw = JSON.stringify({
+                judul: "Jadwal Gelombang",
+                items: [
+                    { nama: "Gelombang A", periode: "Mei 2026" }
+                ]
+            });
             expect(parseJadwalPendaftaran(raw)).toEqual({
                 judul: "Jadwal Gelombang",
                 items: [

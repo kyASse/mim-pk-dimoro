@@ -123,6 +123,26 @@ describe("EditKontenPage", () => {
     });
   });
 
+  it("should handle stringified JSON in catatan-spp loading correctly", async () => {
+    const mockParamsSpp = Promise.resolve({ slug: "catatan-spp" });
+    const mockData = {
+      slug: "catatan-spp",
+      judul: "Catatan SPP",
+      isi: '{"catatan": "Teks JSON SPP"}',
+      created_at: "2024-01-01T00:00:00Z",
+    };
+
+    const mockPromise = Promise.resolve({ data: mockData, error: null });
+    (mockPromise as any).single = vi.fn().mockResolvedValue({ data: mockData, error: null });
+    mockSupabase.eq.mockReturnValue(mockPromise);
+
+    render(<EditKontenPage params={mockParamsSpp} />);
+
+    await waitFor(() => {
+      expect((screen.getByLabelText(/Teks Catatan SPP/i) as HTMLTextAreaElement).value).toBe("Teks JSON SPP");
+    });
+  });
+
   it("should render and save persyaratan-pendaftaran correctly", async () => {
     const mockParamsPersyaratan = Promise.resolve({ slug: "persyaratan-pendaftaran" });
     const mockData = {
