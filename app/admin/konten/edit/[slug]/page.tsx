@@ -37,9 +37,6 @@ function JSONRenderer({ data }: { data: string }) {
 }
 
 import {
-    type CatatanSppIsi,
-    type PersyaratanIsi,
-    type JadwalPendaftaranIsi,
     parseCatatanSpp,
     parsePersyaratan,
     parseJadwalPendaftaran
@@ -65,6 +62,21 @@ export default function EditKontenPage({ params }: EditPageProps) {
         judul: '',
         isi: '' // This will hold JSON string representation
     });
+    const [judul, setJudul] = useState("");
+    
+    // Catatan SPP State
+    const [catatanSppText, setCatatanSppText] = useState("");
+
+    // Persyaratan Pendaftaran State
+    const [persyaratanJudul, setPersyaratanJudul] = useState("");
+    const [persyaratanItems, setPersyaratanItems] = useState<string[]>([]);
+    const [jadwalJudul, setJadwalJudul] = useState("");
+    const [jadwalItems, setJadwalItems] = useState<{ tahap: string; periode: string }[]>([]);
+
+    // Jadwal Pendaftaran State
+    const [jadwalPendaftaranJudul, setJadwalPendaftaranJudul] = useState("");
+    const [gelombangItems, setGelombangItems] = useState<{ nama: string; periode: string }[]>([]);
+
     const router = useRouter();
     const supabase = createClient();
 
@@ -84,10 +96,27 @@ export default function EditKontenPage({ params }: EditPageProps) {
             }
 
             setKonten(data);
+            setJudul(data.judul || "");
             setFormData({
                 judul: data.judul || '',
                 isi: data.isi ? JSON.stringify(data.isi, null, 2) : ''
             });
+
+            if (slug === 'catatan-spp') {
+                const parsed = parseCatatanSpp(data.isi);
+                setCatatanSppText(parsed.catatan);
+            } else if (slug === 'persyaratan-pendaftaran') {
+                const parsed = parsePersyaratan(data.isi);
+                setPersyaratanJudul(parsed.persyaratan.judul);
+                setPersyaratanItems(parsed.persyaratan.items);
+                setJadwalJudul(parsed.jadwal.judul);
+                setJadwalItems(parsed.jadwal.items);
+            } else if (slug === 'jadwal-pendaftaran') {
+                const parsed = parseJadwalPendaftaran(data.isi);
+                setJadwalPendaftaranJudul(parsed.judul);
+                setGelombangItems(parsed.items);
+            }
+
             setIsLoading(false);
         }
 
@@ -101,9 +130,22 @@ export default function EditKontenPage({ params }: EditPageProps) {
         setIsSaving(true);
 
         try {
-            // Parse JSON from string
-            let isiData: Record<string, unknown> | null = null;
-            if (formData.isi.trim()) {
+            let isiData: Record<string, any> | null = null;
+            const { slug } = await params;
+
+            if (slug === 'catatan-spp') {
+                isiData = { catatan: catatanSppText };
+            } else if (slug === 'persyaratan-pendaftaran') {
+                isiData = {
+                    persyaratan: { judul: persyaratanJudul, items: persyaratanItems.filter(Boolean) },
+                    jadwal: { judul: jadwalJudul, items: jadwalItems.filter(item => item.tahap || item.periode) }
+                };
+            } else if (slug === 'jadwal-pendaftaran') {
+                isiData = {
+                    judul: jadwalPendaftaranJudul,
+                    items: gelombangItems.filter(item => item.nama || item.periode)
+                };
+            } else if (formData.isi.trim()) {
                 try {
                     isiData = JSON.parse(formData.isi);
                     setJsonError('');
@@ -117,7 +159,7 @@ export default function EditKontenPage({ params }: EditPageProps) {
             const { error } = await supabase
                 .from('konten_halaman')
                 .update({
-                    judul: formData.judul,
+                    judul: judul,
                     isi: isiData
                 })
                 .eq('slug', konten.slug);
@@ -136,6 +178,9 @@ export default function EditKontenPage({ params }: EditPageProps) {
 
     const handleInputChange = (field: string, value: string) => {
         setFormData(prev => ({ ...prev, [field]: value }));
+        if (field === 'judul') {
+            setJudul(value);
+        }
         
         // Validate JSON in real-time for 'isi' field
         if (field === 'isi') {
