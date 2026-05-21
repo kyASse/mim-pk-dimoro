@@ -13,29 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Save, FileText, Calendar, Eye, EyeOff, Trash2, Plus, ClipboardCheck, CheckCircle2, CalendarDays, Info } from "lucide-react";
 import { toast } from "sonner";
 
-// Component to render JSON data in a readable format
-function JSONRenderer({ data }: { data: string }) {
-    try {
-        const parsedData = JSON.parse(data);
-        return (
-            <div className="space-y-2">
-                {Object.entries(parsedData).map(([key, value]) => (
-                    <div key={key} className="flex">
-                        <span className="font-semibold text-blue-700 min-w-0 mr-2">{key}:</span>
-                        <span className="text-gray-600 break-all">
-                            {typeof value === 'object' 
-                                ? JSON.stringify(value, null, 2) 
-                                : String(value)
-                            }
-                        </span>
-                    </div>
-                ))}
-            </div>
-        );
-    } catch {
-        return <span className="text-red-500 italic">Invalid JSON</span>;
-    }
-}
+
 
 import {
     parseCatatanSpp,
@@ -58,11 +36,7 @@ export default function EditKontenPage({ params }: EditPageProps) {
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [showPreview, setShowPreview] = useState(false);
-    const [jsonError, setJsonError] = useState<string>('');
-    const [formData, setFormData] = useState({
-        judul: '',
-        isi: '' // This will hold JSON string representation
-    });
+
     const [judul, setJudul] = useState("");
     
     // Catatan SPP State
@@ -98,10 +72,6 @@ export default function EditKontenPage({ params }: EditPageProps) {
 
             setKonten(data);
             setJudul(data.judul || "");
-            setFormData({
-                judul: data.judul || '',
-                isi: data.isi ? JSON.stringify(data.isi, null, 2) : ''
-            });
 
             if (slug === 'catatan-spp') {
                 const parsed = parseCatatanSpp(data.isi);
@@ -123,6 +93,112 @@ export default function EditKontenPage({ params }: EditPageProps) {
 
         fetchKonten();
     }, [params, router, supabase]);
+
+    const renderPreviewContent = () => {
+        if (!konten) return null;
+
+        if (konten.slug === 'catatan-spp') {
+            return (
+                <div className="space-y-4">
+                    <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Tampilan Pada Halaman Pendaftaran</h3>
+                    <div className="pl-4 border-l-2 border-amber-500 bg-amber-50/50 p-4 rounded-r-lg">
+                        <div className="flex gap-2">
+                            <Info className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
+                            <div>
+                                <h4 className="font-bold text-gray-800 text-sm mb-1">Catatan SPP</h4>
+                                <p className="text-gray-600 text-sm leading-relaxed italic">
+                                    &quot;{catatanSppText || "Catatan SPP belum diisi."}&quot;
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        if (konten.slug === 'persyaratan-pendaftaran') {
+            return (
+                <div className="space-y-8">
+                    <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Tampilan Pada Halaman Pendaftaran</h3>
+                    
+                    {/* Requirements documents section */}
+                    <div className="relative pl-4 border-l-2 border-emerald-500">
+                        <h4 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+                            <ClipboardCheck className="h-5 w-5 text-emerald-500" />
+                            {persyaratanJudul || "Persyaratan Dokumen"}
+                        </h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            {persyaratanItems.filter(Boolean).length > 0 ? (
+                                persyaratanItems.filter(Boolean).map((item, index) => (
+                                    <div key={index} className="flex items-center space-x-2 bg-emerald-50/50 p-2.5 rounded-lg border border-emerald-100/50">
+                                        <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                                        <span className="text-sm text-gray-700">{item}</span>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-sm text-gray-400 italic">Belum ada persyaratan ditambahkan.</p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Schedule section */}
+                    <div className="relative pl-4 border-l-2 border-blue-500">
+                        <h4 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+                            <CalendarDays className="h-5 w-5 text-blue-500" />
+                            {jadwalJudul || "Jadwal Pendaftaran"}
+                        </h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            {jadwalItems.filter(item => item.tahap || item.periode).length > 0 ? (
+                                jadwalItems.filter(item => item.tahap || item.periode).map((item, index) => (
+                                    <div key={index} className="bg-blue-50/50 border border-blue-100/50 rounded-lg p-3">
+                                        <span className="inline-block text-xs font-semibold px-2 py-0.5 rounded bg-blue-100 text-blue-800 mb-1">
+                                            {item.tahap || "Nama Tahap"}
+                                        </span>
+                                        <p className="text-sm font-medium text-gray-800 flex items-center gap-1.5">
+                                            <CalendarDays className="h-3.5 w-3.5 text-gray-400" />
+                                            {item.periode || "Periode Tanggal"}
+                                        </p>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-sm text-gray-400 italic">Belum ada tahapan jadwal ditambahkan.</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        if (konten.slug === 'jadwal-pendaftaran') {
+            return (
+                <div className="space-y-6">
+                    <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Tampilan Gelombang Pendaftaran</h3>
+                    <div className="border rounded-xl p-4 bg-gray-50/50 space-y-4">
+                        <h4 className="text-base font-bold text-gray-800 flex items-center gap-2">
+                            <CalendarDays className="h-5 w-5 text-indigo-500" />
+                            {jadwalPendaftaranJudul || "Jadwal Pendaftaran"}
+                        </h4>
+                        <div className="space-y-3">
+                            {gelombangItems.filter(item => item.nama || item.periode).length > 0 ? (
+                                gelombangItems.filter(item => item.nama || item.periode).map((item, index) => (
+                                    <div key={index} className="flex justify-between items-center bg-white p-3 rounded-lg border shadow-sm">
+                                        <span className="font-semibold text-sm text-gray-800">{item.nama}</span>
+                                        <span className="text-xs bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full font-medium border border-indigo-100">
+                                            {item.periode}
+                                        </span>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-sm text-gray-400 italic">Belum ada gelombang ditambahkan.</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        return null;
+    };
 
     const renderFormFields = () => {
         if (!konten) return null;
@@ -361,15 +437,8 @@ export default function EditKontenPage({ params }: EditPageProps) {
                     judul: jadwalPendaftaranJudul,
                     items: gelombangItems.filter(item => item.nama || item.periode)
                 };
-            } else if (formData.isi.trim()) {
-                try {
-                    isiData = JSON.parse(formData.isi);
-                    setJsonError('');
-                } catch {
-                    setJsonError('Format JSON tidak valid. Silakan periksa syntax JSON Anda.');
-                    setIsSaving(false);
-                    return;
-                }
+            } else {
+                isiData = konten?.isi || null;
             }
 
             const { error } = await supabase
@@ -499,58 +568,7 @@ export default function EditKontenPage({ params }: EditPageProps) {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="space-y-4">
-                                    <div>
-                                        <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                                            {judul || 'Judul konten akan muncul di sini'}
-                                        </h2>
-                                    </div>
-                                    
-                                    {/* JSON Preview */}
-                                    <div className="space-y-3">
-                                        <h3 className="text-lg font-semibold text-gray-700">Data JSON:</h3>
-                                        {formData.isi ? (
-                                            <div>
-                                                {jsonError ? (
-                                                    <div className="bg-red-50 border border-red-200 rounded p-4">
-                                                        <p className="text-red-600 text-sm">❌ JSON tidak valid</p>
-                                                        <pre className="text-red-500 text-xs mt-2 overflow-x-auto">
-                                                            {formData.isi}
-                                                        </pre>
-                                                    </div>
-                                                ) : (
-                                                    <div className="bg-gray-50 border rounded p-4">
-                                                        <p className="text-green-600 text-sm mb-2">✅ JSON valid</p>
-                                                        <pre className="text-gray-700 text-sm overflow-x-auto">
-                                                            {(() => {
-                                                                try {
-                                                                    const parsed = JSON.parse(formData.isi);
-                                                                    return JSON.stringify(parsed, null, 2);
-                                                                } catch {
-                                                                    return formData.isi;
-                                                                }
-                                                            })()}
-                                                        </pre>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ) : (
-                                            <div className="bg-gray-100 border rounded p-4">
-                                                <p className="text-gray-500 italic text-sm">Data JSON akan muncul di sini</p>
-                                            </div>
-                                        )}
-                                    </div>
-                                    
-                                    {/* Rendered Preview (if applicable) */}
-                                    {formData.isi && !jsonError && (
-                                        <div className="space-y-3">
-                                            <h3 className="text-lg font-semibold text-gray-700">Struktur Data:</h3>
-                                            <div className="bg-blue-50 border border-blue-200 rounded p-4">
-                                                <JSONRenderer data={formData.isi} />
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
+                                {renderPreviewContent()}
                             </CardContent>
                         </Card>
                     )}
