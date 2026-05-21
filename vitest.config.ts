@@ -8,6 +8,7 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: [],
+    exclude: ["**/node_modules/**", "**/dist/**", "**/tests/**", "**/cypress/**", "**/.{idea,git,cache,output,temp}/**"],
   },
   resolve: {
     alias: {

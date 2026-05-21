@@ -30,7 +30,7 @@ export default function Footer() {
         supabase
             .from('kontak_sekolah')
             .select('alamat, whatsapp, email_utama, jam_operasional')
-            .single()
+            .maybeSingle()
             .then(({ data, error }) => {
                 if (error) {
                     console.error("Error fetching kontak_sekolah:", error);

@@ -61,7 +61,7 @@ export default function Program() {
                             <div className="absolute -top-4 -left-4 w-24 h-24 bg-primary rounded-full -z-10"></div>
                             <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-accent rounded-full -z-10"></div>
                             <Image
-                                src="https://placehold.co/600x400/059669/ffffff?text=Program+Pendidikan"
+                                src="https://placehold.co/600x400/059669/ffffff.png?text=Program+Pendidikan"
                                 alt={`Kegiatan di ${SCHOOL_NAME}`}
                                 width={600}
                                 height={400}
@@ -87,7 +87,7 @@ export default function Program() {
                             <ProgramDetails 
                                 title="Fase A & B (Kelas 1-3)"
                                 description="Fokus pada penguatan literasi dasar, numerasi, dan pembiasaan adab serta ibadah harian."
-                                imageUrl="https://placehold.co/800x600/10b981/ffffff?text=Kelas+Bawah+1-3"
+                                imageUrl="https://placehold.co/800x600/10b981/ffffff.png?text=Kelas+Bawah+1-3"
                                 schedule={[
                                     { day: "Senin - Kamis", hours: "07:00 - 13:00 WIB" },
                                     { day: "Jumat", hours: "07:00 - 11:00 WIB" }
@@ -107,7 +107,7 @@ export default function Program() {
                             <ProgramDetails 
                                 title="Fase B & C (Kelas 4-6)"
                                 description="Pengembangan kemampuan berpikir kritis, kemandirian, dan persiapan menuju jenjang pendidikan menengah."
-                                imageUrl="https://placehold.co/800x600/059669/ffffff?text=Kelas+Atas+4-6"
+                                imageUrl="https://placehold.co/800x600/059669/ffffff.png?text=Kelas+Atas+4-6"
                                 schedule={[
                                     { day: "Senin - Kamis", hours: "07:00 - 14:00 WIB" },
                                     { day: "Jumat", hours: "07:00 - 11:00 WIB" }
@@ -142,28 +142,28 @@ export default function Program() {
                             description="Seni bela diri khas Muhammadiyah untuk melatih ketangkasan, kedisiplinan, dan keberanian."
                             icon="shield"
                             schedule="Sabtu, 08:00 - 10:00 WIB"
-                            imageUrl="https://placehold.co/600x400/059669/ffffff?text=Tapak+Suci"
+                            imageUrl="https://placehold.co/600x400/059669/ffffff.png?text=Tapak+Suci"
                         />
                         <ExtraActivity 
                             title="Hizbul Wathan (HW)"
                             description="Kepanduan Islami untuk membentuk jiwa kepemimpinan, kemandirian, dan cinta tanah air."
                             icon="users"
                             schedule="Jumat, 14:00 - 16:00 WIB"
-                            imageUrl="https://placehold.co/600x400/10b981/ffffff?text=Hizbul+Wathan"
+                            imageUrl="https://placehold.co/600x400/10b981/ffffff.png?text=Hizbul+Wathan"
                         />
                         <ExtraActivity 
                             title="Tahfidz Qur'an"
                             description="Program khusus bagi siswa yang ingin mendalami dan menambah hafalan Al-Qur'an secara intensif."
                             icon="book"
                             schedule="Selasa & Kamis, 14:00 - 15:30 WIB"
-                            imageUrl="https://placehold.co/600x400/34d399/ffffff?text=Tahfidz+Quran"
+                            imageUrl="https://placehold.co/600x400/34d399/ffffff.png?text=Tahfidz+Quran"
                         />
                         <ExtraActivity 
                             title="Seni & Drumband"
                             description="Pengembangan kreativitas melalui musik, olah vokal, dan seni pertunjukan."
                             icon="music"
                             schedule="Rabu, 14:00 - 16:00 WIB"
-                            imageUrl="https://placehold.co/600x400/6ee7b7/ffffff?text=Seni+Musik"
+                            imageUrl="https://placehold.co/600x400/6ee7b7/ffffff.png?text=Seni+Musik"
                         />
                     </div>
                 </div>

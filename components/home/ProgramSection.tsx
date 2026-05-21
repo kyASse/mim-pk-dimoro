@@ -20,21 +20,21 @@ export default function ProgramSection() {
                     <ProgramCard
                         title="Tahfidz Al-Qur'an"
                         description="Program hafalan Al-Qur'an dengan target capaian yang terukur untuk setiap jenjang kelas."
-                        image="https://placehold.co/600x400/059669/ffffff?text=Tahfidz+Al-Qur'an"
+                        image="https://placehold.co/600x400/059669/ffffff.png?text=Tahfidz+Al-Qur'an"
                         href="/program/tahfidz"
                     />
 
                     <ProgramCard
                         title="Sains & Teknologi"
                         description="Pengembangan berpikir kritis melalui pembelajaran sains praktis dan pengenalan teknologi informasi."
-                        image="https://placehold.co/600x400/10b981/ffffff?text=Sains+dan+Teknologi"
+                        image="https://placehold.co/600x400/10b981/ffffff.png?text=Sains+dan+Teknologi"
                         href="/program/sains-teknologi"
                     />
 
                     <ProgramCard
                         title="Ekstrakurikuler"
                         description="Berbagai pilihan kegiatan mulai dari seni bela diri, kepanduan HW, hingga olahraga prestasi."
-                        image="https://placehold.co/600x400/34d399/ffffff?text=Ekstrakurikuler"
+                        image="https://placehold.co/600x400/34d399/ffffff.png?text=Ekstrakurikuler"
                         href="/program/ekstrakurikuler"
                     />
                 </div>

@@ -38,9 +38,11 @@ export default async function KelolaKontenPage() {
     const { data: kontakSekolah, error: kontakError } = await supabase
         .from('kontak_sekolah')
         .select('*')
-        .single() as { data: KontakSekolahItem | null, error: Error | null };
+        .maybeSingle() as { data: KontakSekolahItem | null, error: Error | null };
 
-    if (error || kontakError) {
+    // Ignore error if it's just due to no rows found in strict single(), but here maybeSingle() avoids it,
+    // though if table is completely missing due to no migration, it will be a real error.
+    if (error || (kontakError && !kontakError.message?.includes('contain 0 rows'))) {
         console.error('Error fetching data:', error || kontakError);
         return (
             <div className="min-h-screen p-6">

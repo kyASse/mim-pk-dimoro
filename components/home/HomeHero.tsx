@@ -11,17 +11,17 @@ import { SCHOOL_NAME, SCHOOL_TAGLINE } from "@/lib/school-config";
 const slides = [
     {
         id: 1,
-        image: "https://placehold.co/1920x1080/059669/ffffff?text=MI+Muhammadiyah+Dimoro",
+        image: "https://placehold.co/1920x1080/059669/ffffff.png?text=MI+Muhammadiyah+Dimoro",
         alt: `Kegiatan belajar di ${SCHOOL_NAME}`
     },
     {
         id: 2,
-        image: "https://placehold.co/1920x1080/10b981/ffffff?text=Lingkungan+Islami",
+        image: "https://placehold.co/1920x1080/10b981/ffffff.png?text=Lingkungan+Islami",
         alt: `Lingkungan Islami di ${SCHOOL_NAME}`
     },
     {
         id: 3,
-        image: "https://placehold.co/1920x1080/34d399/ffffff?text=Generasi+Berprestasi",
+        image: "https://placehold.co/1920x1080/34d399/ffffff.png?text=Generasi+Berprestasi",
         alt: `Siswa berprestasi di ${SCHOOL_NAME}`
     }
 ]

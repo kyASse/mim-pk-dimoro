@@ -113,10 +113,10 @@ export default async function PendaftaranPage() {
                                                     <span className="hidden md:flex absolute -left-[11px] bg-primary rounded-full p-1 text-primary-foreground shadow-sm">
                                                         <ClipboardCheck className="h-4 w-4" />
                                                     </span>
-                                                    {persyaratan?.persyaratan.judul || 'Persyaratan Dokumen'}
+                                                    {persyaratan?.persyaratan?.judul || 'Persyaratan Dokumen'}
                                                 </h3>
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                    {persyaratan?.persyaratan.items.map((item, index) => (
+                                                    {persyaratan?.persyaratan?.items?.map((item, index) => (
                                                         <div key={`syarat-${index}`} className="flex items-center space-x-3 bg-muted/40 p-3 rounded-lg border border-border/50 transition-colors hover:bg-muted/60">
                                                             <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0" />
                                                             <span className="text-sm md:text-base">{item}</span>
@@ -131,10 +131,10 @@ export default async function PendaftaranPage() {
                                                     <span className="hidden md:flex absolute -left-[11px] bg-accent rounded-full p-1 text-accent-foreground shadow-sm">
                                                         <CalendarDays className="h-4 w-4" />
                                                     </span>
-                                                    {persyaratan?.jadwal.judul || 'Jadwal Pendaftaran'}
+                                                    {persyaratan?.jadwal?.judul || 'Jadwal Pendaftaran'}
                                                 </h3>
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                    {persyaratan?.jadwal.items.map((item, index) => (
+                                                    {persyaratan?.jadwal?.items?.map((item, index) => (
                                                         <Card key={`jadwal-${index}`} className="bg-muted/30 border-dashed">
                                                             <CardContent className="p-4">
                                                                 <Badge variant="outline" className="mb-2 bg-accent/10 text-accent border-accent/20">

@@ -19,7 +19,7 @@ async function fetchNewsData(): Promise<NewsItem[]> {
     const { data, error } = await supabase
         .from('berita')
         .select('id, judul, ringkasan, image_url, tanggal_terbit, penulis_id, created_at')
-        .eq('status', 'published')
+        .eq('status', 'terbit')
         .order('tanggal_terbit', { ascending: false })
         .limit(MAX_NEWS_ITEMS);
 

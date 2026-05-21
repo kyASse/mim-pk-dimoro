@@ -30,7 +30,7 @@ const editNewsFormSchema = z.object({
     judul: z.string().min(1, "Judul berita wajib diisi").max(200, "Judul maksimal 200 karakter"),
     ringkasan: z.string().min(1, "Ringkasan wajib diisi").max(500, "Ringkasan maksimal 500 karakter"),
     isiLengkap: z.string().min(1, "Isi lengkap berita wajib diisi"),
-    status: z.enum(["draft", "published"]),
+    status: z.enum(["draft", "terbit"]),
     tanggalTerbit: z.string().min(1, "Tanggal terbit wajib diisi"),
 });
 
@@ -57,7 +57,7 @@ export default function EditForm({ berita }: { berita: BeritaData }) {
             judul: berita.judul,
             ringkasan: berita.ringkasan,
             isiLengkap: berita.isi_lengkap,
-            status: (berita.status as "draft" | "published") || "draft",
+            status: (berita.status as "draft" | "terbit") || "draft",
             tanggalTerbit: berita.tanggal_terbit?.split('T')[0] || new Date().toISOString().split('T')[0],
         },
     });
@@ -209,7 +209,7 @@ export default function EditForm({ berita }: { berita: BeritaData }) {
                                             </FormControl>
                                             <SelectContent>
                                                 <SelectItem value="draft">Draft</SelectItem>
-                                                <SelectItem value="published">Dipublikasikan</SelectItem>
+                                                <SelectItem value="terbit">Dipublikasikan</SelectItem>
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />
