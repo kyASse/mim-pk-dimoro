@@ -9,7 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Save, FileText, Calendar, Eye, EyeOff } from "lucide-react";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { ArrowLeft, Save, FileText, Calendar, Eye, EyeOff, Trash2, Plus, ClipboardCheck, CheckCircle2, CalendarDays, Info } from "lucide-react";
 import { toast } from "sonner";
 
 // Component to render JSON data in a readable format
@@ -123,6 +124,221 @@ export default function EditKontenPage({ params }: EditPageProps) {
         fetchKonten();
     }, [params, router, supabase]);
 
+    const renderFormFields = () => {
+        if (!konten) return null;
+
+        if (konten.slug === 'catatan-spp') {
+            return (
+                <div className="space-y-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="catatan-spp">Teks Catatan SPP</Label>
+                        <Textarea
+                            id="catatan-spp"
+                            value={catatanSppText}
+                            onChange={(e) => setCatatanSppText(e.target.value)}
+                            placeholder="Contoh: SPP bulanan sudah termasuk makan siang..."
+                            rows={8}
+                            required
+                        />
+                    </div>
+                </div>
+            );
+        }
+
+        if (konten.slug === 'persyaratan-pendaftaran') {
+            return (
+                <div className="space-y-8">
+                    {/* Persyaratan Dokumen */}
+                    <div className="space-y-4 border-b pb-6">
+                        <h3 className="font-semibold text-lg text-gray-800">Persyaratan Dokumen</h3>
+                        <div className="space-y-2">
+                            <Label htmlFor="persyaratan-judul">Judul Seksi</Label>
+                            <Input
+                                id="persyaratan-judul"
+                                value={persyaratanJudul}
+                                onChange={(e) => setPersyaratanJudul(e.target.value)}
+                                placeholder="Persyaratan Dokumen"
+                                required
+                            />
+                        </div>
+                        <div className="space-y-3">
+                            <Label>Daftar Persyaratan</Label>
+                            {persyaratanItems.map((item, index) => (
+                                <div key={index} className="flex items-center gap-2">
+                                    <Input
+                                        value={item}
+                                        onChange={(e) => {
+                                            const updated = [...persyaratanItems];
+                                            updated[index] = e.target.value;
+                                            setPersyaratanItems(updated);
+                                        }}
+                                        placeholder={`Persyaratan #${index + 1}`}
+                                        required
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => {
+                                            setPersyaratanItems(persyaratanItems.filter((_, i) => i !== index));
+                                        }}
+                                        className="text-red-500 hover:text-red-700 hover:bg-red-50 shrink-0"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </Button>
+                                </div>
+                            ))}
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setPersyaratanItems([...persyaratanItems, ""])}
+                                className="flex items-center gap-2 mt-1"
+                            >
+                                <Plus className="w-4 h-4" />
+                                Tambah Persyaratan
+                            </Button>
+                        </div>
+                    </div>
+
+                    {/* Jadwal Pendaftaran */}
+                    <div className="space-y-4">
+                        <h3 className="font-semibold text-lg text-gray-800">Jadwal Tahapan</h3>
+                        <div className="space-y-2">
+                            <Label htmlFor="jadwal-judul">Judul Seksi</Label>
+                            <Input
+                                id="jadwal-judul"
+                                value={jadwalJudul}
+                                onChange={(e) => setJadwalJudul(e.target.value)}
+                                placeholder="Jadwal Pendaftaran"
+                                required
+                            />
+                        </div>
+                        <div className="space-y-3">
+                            <Label>Tahapan Jadwal</Label>
+                            {jadwalItems.map((item, index) => (
+                                <div key={index} className="flex gap-2 items-center">
+                                    <Input
+                                        value={item.tahap}
+                                        onChange={(e) => {
+                                            const updated = [...jadwalItems];
+                                            updated[index] = { ...updated[index], tahap: e.target.value };
+                                            setJadwalItems(updated);
+                                        }}
+                                        placeholder="Nama Tahap (cth: Gelombang 1)"
+                                        className="w-1/2"
+                                        required
+                                    />
+                                    <Input
+                                        value={item.periode}
+                                        onChange={(e) => {
+                                            const updated = [...jadwalItems];
+                                            updated[index] = { ...updated[index], periode: e.target.value };
+                                            setJadwalItems(updated);
+                                        }}
+                                        placeholder="Periode (cth: Jan - Feb 2026)"
+                                        className="w-1/2"
+                                        required
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => {
+                                            setJadwalItems(jadwalItems.filter((_, i) => i !== index));
+                                        }}
+                                        className="text-red-500 hover:text-red-700 hover:bg-red-50 shrink-0"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </Button>
+                                </div>
+                            ))}
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setJadwalItems([...jadwalItems, { tahap: "", periode: "" }])}
+                                className="flex items-center gap-2 mt-1"
+                            >
+                                <Plus className="w-4 h-4" />
+                                Tambah Jadwal
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        if (konten.slug === 'jadwal-pendaftaran') {
+            return (
+                <div className="space-y-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="jadwal-pendaftaran-judul">Judul Seksi/Halaman</Label>
+                        <Input
+                            id="jadwal-pendaftaran-judul"
+                            value={jadwalPendaftaranJudul}
+                            onChange={(e) => setJadwalPendaftaranJudul(e.target.value)}
+                            placeholder="Jadwal Pendaftaran"
+                            required
+                        />
+                    </div>
+                    <div className="space-y-3">
+                        <Label>Daftar Gelombang</Label>
+                        {gelombangItems.map((item, index) => (
+                            <div key={index} className="flex gap-2 items-center">
+                                <Input
+                                    value={item.nama}
+                                    onChange={(e) => {
+                                        const updated = [...gelombangItems];
+                                        updated[index] = { ...updated[index], nama: e.target.value };
+                                        setGelombangItems(updated);
+                                    }}
+                                    placeholder="Nama Gelombang (cth: Gelombang 1)"
+                                    className="w-1/2"
+                                    required
+                                />
+                                <Input
+                                    value={item.periode}
+                                    onChange={(e) => {
+                                        const updated = [...gelombangItems];
+                                        updated[index] = { ...updated[index], periode: e.target.value };
+                                        setGelombangItems(updated);
+                                    }}
+                                    placeholder="Periode (cth: Jan - Feb 2026)"
+                                    className="w-1/2"
+                                    required
+                                />
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => {
+                                        setGelombangItems(gelombangItems.filter((_, i) => i !== index));
+                                    }}
+                                    className="text-red-500 hover:text-red-700 hover:bg-red-50 shrink-0"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </Button>
+                            </div>
+                        ))}
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setGelombangItems([...gelombangItems, { nama: "", periode: "" }])}
+                            className="flex items-center gap-2 mt-1"
+                        >
+                            <Plus className="w-4 h-4" />
+                            Tambah Gelombang
+                        </Button>
+                    </div>
+                </div>
+            );
+        }
+
+        return null;
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!konten) return;
@@ -173,28 +389,6 @@ export default function EditKontenPage({ params }: EditPageProps) {
             toast.error('Gagal memperbarui konten. Silakan coba lagi.');
         } finally {
             setIsSaving(false);
-        }
-    };
-
-    const handleInputChange = (field: string, value: string) => {
-        setFormData(prev => ({ ...prev, [field]: value }));
-        if (field === 'judul') {
-            setJudul(value);
-        }
-        
-        // Validate JSON in real-time for 'isi' field
-        if (field === 'isi') {
-            if (value.trim() === '') {
-                setJsonError('');
-                return;
-            }
-            
-            try {
-                JSON.parse(value);
-                setJsonError('');
-            } catch {
-                setJsonError('Format JSON tidak valid');
-            }
         }
     };
 
@@ -268,38 +462,14 @@ export default function EditKontenPage({ params }: EditPageProps) {
                                         id="judul"
                                         name="judul"
                                         type="text"
-                                        value={formData.judul}
-                                        onChange={(e) => handleInputChange('judul', e.target.value)}
+                                        value={judul}
+                                        onChange={(e) => setJudul(e.target.value)}
                                         placeholder="Masukkan judul konten"
                                         required
                                     />
                                 </div>
 
-                                <div className="space-y-2">
-                                    <Label htmlFor="isi">Isi Konten (JSON Format)</Label>
-                                    <p className="text-sm text-gray-500">
-                                        Data ini disimpan dalam format JSON. Pastikan format JSON valid sebelum menyimpan.
-                                    </p>
-                                    {jsonError && (
-                                        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded p-2 flex items-center gap-2">
-                                            <span className="text-red-500">⚠️</span>
-                                            {jsonError}
-                                        </div>
-                                    )}
-                                    <Textarea
-                                        id="isi"
-                                        name="isi"
-                                        value={formData.isi}
-                                        onChange={(e) => handleInputChange('isi', e.target.value)}
-                                        placeholder='{"key": "value"}'
-                                        rows={20}
-                                        className={`font-mono text-sm ${jsonError ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''}`}
-                                        required
-                                    />
-                                    <div className="text-xs text-gray-400">
-                                        💡 Tips: Gunakan indentasi yang proper untuk JSON yang mudah dibaca
-                                    </div>
-                                </div>
+                                {renderFormFields()}
 
                                 <div className="flex items-center justify-between pt-4 border-t">
                                     <div className="text-sm text-gray-500 flex items-center gap-2">
@@ -308,7 +478,7 @@ export default function EditKontenPage({ params }: EditPageProps) {
                                     </div>
                                     <Button 
                                         type="submit" 
-                                        disabled={isSaving || Boolean(jsonError)} 
+                                        disabled={isSaving} 
                                         className="flex items-center gap-2"
                                     >
                                         <Save className="w-4 h-4" />
@@ -332,7 +502,7 @@ export default function EditKontenPage({ params }: EditPageProps) {
                                 <div className="space-y-4">
                                     <div>
                                         <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                                            {formData.judul || 'Judul konten akan muncul di sini'}
+                                            {judul || 'Judul konten akan muncul di sini'}
                                         </h2>
                                     </div>
                                     
