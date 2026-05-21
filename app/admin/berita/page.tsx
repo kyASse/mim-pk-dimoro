@@ -106,14 +106,14 @@ export default async function KelolaBeritaPage() {
                                         </td>
                                         <td className="px-6 py-4">
                                             <Badge 
-                                                variant={item.status === 'published' ? 'default' : 'secondary'}
+                                                variant={(item.status === 'published' || item.status === 'terbit') ? 'default' : 'secondary'}
                                                 className={
-                                                    item.status === 'published' 
+                                                    (item.status === 'published' || item.status === 'terbit')
                                                         ? 'bg-green-100 text-green-800 hover:bg-green-100' 
                                                         : 'bg-purple-100 text-purple-800 hover:bg-purple-100'
                                                 }
                                             >
-                                                {item.status === 'published' ? 'Diterbitkan' : 'Draft'}
+                                                {(item.status === 'published' || item.status === 'terbit') ? 'Diterbitkan' : 'Draft'}
                                             </Badge>
                                         </td>
                                         <td className="px-6 py-4">

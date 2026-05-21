@@ -30,7 +30,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const { data: berita } = await supabase
       .from('berita')
       .select('id, updated_at, tanggal_terbit, status')
-      .eq('status', 'published')
+      .eq('status', 'terbit')
       .order('tanggal_terbit', { ascending: false });
 
     const beritaEntries: MetadataRoute.Sitemap = (berita || []).map((b: any) => ({

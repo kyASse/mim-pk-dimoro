@@ -88,6 +88,7 @@ export default async function AdminDashboard() {
                   // Status badge dengan warna yang tepat
                   const getStatusColor = (status: string | null) => {
                     switch (status) {
+                      case 'terbit': 
                       case 'published': return 'default'
                       case 'draft': return 'secondary'  
                       case 'archived': return 'outline'
@@ -97,6 +98,7 @@ export default async function AdminDashboard() {
                   
                   const getStatusText = (status: string | null) => {
                     switch (status) {
+                      case 'terbit':
                       case 'published': return 'Terpublikasi'
                       case 'draft': return 'Draf'
                       case 'archived': return 'Diarsipkan' 
