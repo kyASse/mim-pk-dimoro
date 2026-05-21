@@ -36,6 +36,16 @@ function JSONRenderer({ data }: { data: string }) {
     }
 }
 
+import {
+    type CatatanSppIsi,
+    type PersyaratanIsi,
+    type JadwalPendaftaranIsi,
+    parseCatatanSpp,
+    parsePersyaratan,
+    parseJadwalPendaftaran
+} from "./utils";
+
+
 type EditPageProps = { params: Promise<{ slug: string }> };
 
 interface KontenItem {

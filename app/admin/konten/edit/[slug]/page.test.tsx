@@ -28,7 +28,7 @@ describe("EditKontenPage", () => {
   const mockSupabase = {
     from: vi.fn().mockReturnThis(),
     select: vi.fn().mockReturnThis(),
-    eq: vi.fn().mockReturnThis(),
+    eq: vi.fn(),
     single: vi.fn(),
     update: vi.fn().mockReturnThis(),
   };
@@ -47,7 +47,9 @@ describe("EditKontenPage", () => {
       created_at: "2024-01-01T00:00:00Z",
     };
 
-    mockSupabase.single.mockResolvedValue({ data: mockData, error: null });
+    const mockPromise = Promise.resolve({ data: mockData, error: null });
+    (mockPromise as any).single = vi.fn().mockResolvedValue({ data: mockData, error: null });
+    mockSupabase.eq.mockReturnValue(mockPromise);
 
     render(<EditKontenPage params={mockParams} />);
 
@@ -64,13 +66,14 @@ describe("EditKontenPage", () => {
       created_at: "2024-01-01T00:00:00Z",
     };
 
-    mockSupabase.single.mockResolvedValue({ data: mockData, error: null });
-    mockSupabase.update.mockResolvedValue({ error: null });
+    const mockPromise = Promise.resolve({ data: mockData, error: null });
+    (mockPromise as any).single = vi.fn().mockResolvedValue({ data: mockData, error: null });
+    mockSupabase.eq.mockReturnValue(mockPromise);
 
     render(<EditKontenPage params={mockParams} />);
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/Judul Konten/i)).toHaveValue("Test Title");
+      expect((screen.getByLabelText(/Judul Konten/i) as HTMLInputElement).value).toBe("Test Title");
     });
 
     const saveButton = screen.getByRole("button", { name: /Simpan Perubahan/i });
