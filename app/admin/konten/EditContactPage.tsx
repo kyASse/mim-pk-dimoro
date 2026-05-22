@@ -45,9 +45,9 @@ export default function EditContactPage() {
             const { data, error } = await supabase
                 .from('kontak_sekolah')
                 .select('*')
-                .single();
+                .maybeSingle();
 
-            if (error) {
+            if (error && error.code !== 'PGRST116') {
                 console.error('Error fetching kontak:', error);
                 toast.error('Gagal memuat data kontak sekolah');
                 return;

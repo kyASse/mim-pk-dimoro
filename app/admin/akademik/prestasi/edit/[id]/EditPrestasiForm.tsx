@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ImageIcon, Trash2 } from "lucide-react";
 import Image from "next/image";
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 import { toast } from 'sonner';
 
 type Prestasi = {
@@ -28,7 +28,7 @@ type Props = {
 };
 
 export default function EditPrestasiForm({ prestasi, imageUrl }: Props) {
-    const [_textFormState, textFormAction] = useFormState(async (_: any, formData: FormData) => {
+    const [_textFormState, textFormAction] = useActionState(async (_: any, formData: FormData) => {
         const result = await updatePrestasiAction(prestasi.id, formData);
         if (result.success) toast.success("Informasi prestasi berhasil diperbarui.");
         else toast.error(result.message);
@@ -36,7 +36,7 @@ export default function EditPrestasiForm({ prestasi, imageUrl }: Props) {
     }, { success: false, message: "" });
     
     // Pisahkan state/action untuk setiap form
-    const [_imageFormState, imageFormAction] = useFormState(async (_: any, formData: FormData) => {
+    const [_imageFormState, imageFormAction] = useActionState(async (_: any, formData: FormData) => {
         toast.info("Mengunggah gambar...");
         const result = await updatePrestasiAction(prestasi.id, formData);
         if (result.success) toast.success("Gambar berhasil diunggah/diganti.");
@@ -44,7 +44,7 @@ export default function EditPrestasiForm({ prestasi, imageUrl }: Props) {
         return result;
     }, { success: false, message: "" });
     
-    const [_deleteImageState, deleteImageAction] = useFormState(async (_: any, formData: FormData) => {
+    const [_deleteImageState, deleteImageAction] = useActionState(async (_: any, formData: FormData) => {
         const result = await updatePrestasiAction(prestasi.id, formData);
         if (result.success) toast.success("Gambar berhasil dihapus.");
         else toast.error(result.message);

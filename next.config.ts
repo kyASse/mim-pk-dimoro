@@ -1,9 +1,15 @@
 import type { NextConfig } from "next";
 
-const supabaseHostname = (() => {
+const supabaseUrlConfig = (() => {
   try {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    return url ? new URL(url).hostname : undefined;
+    const urlStr = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    if (!urlStr) return undefined;
+    const url = new URL(urlStr);
+    return {
+      protocol: (url.protocol.replace(":", "") === "https" ? "https" : "http") as "http" | "https",
+      hostname: url.hostname,
+      port: url.port || "",
+    };
   } catch {
     return undefined;
   }
@@ -43,14 +49,17 @@ const nextConfig: NextConfig = {
   },
 
   images: {
-    domains: ["tk-aba-mertosanan.sch.id", "images.pexels.com", "placehold.co"],
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    domains: ["images.pexels.com", "placehold.co"],
     remotePatterns: [
-      ...(supabaseHostname
+      ...(supabaseUrlConfig
         ? [
             {
-              protocol: 'https' as const,
-              hostname: supabaseHostname,
-              port: '',
+              protocol: supabaseUrlConfig.protocol,
+              hostname: supabaseUrlConfig.hostname,
+              port: supabaseUrlConfig.port,
               pathname: '/storage/v1/object/public/**',
             },
           ]

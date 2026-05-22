@@ -19,14 +19,26 @@ export async function updateBiayaAction(formData: FormData) {
         }
     });
 
-    const updates = biayaData.map(item => ({
-        id: parseInt(item.id),
-        biaya_putra: parseInt(item.putra) || 0,
-        biaya_putri: parseInt(item.putri) || 0,
-    }));
+    for (const item of biayaData) {
+        if (!item || !item.id) continue;
+        
+        const id = parseInt(item.id);
+        const putra = parseInt(item.putra) || 0;
+        const putri = parseInt(item.putri) || 0;
 
-    const { error } = await supabase.from('biaya_pendaftaran').upsert(updates);
-    if (error) { redirect(`/admin/akademik/edit-biaya?error=${error.message}`); }
+        const { error } = await supabase
+            .from('biaya_pendaftaran')
+            .update({
+                biaya_putra: putra,
+                biaya_putri: putri,
+            })
+            .eq('id', id);
+
+        if (error) {
+            console.error(`Error updating biaya_pendaftaran for id ${id}:`, error);
+            redirect(`/admin/akademik/edit-biaya?error=${encodeURIComponent(error.message)}`);
+        }
+    }
 
     revalidatePath('/admin/akademik');
     redirect('/admin/akademik');

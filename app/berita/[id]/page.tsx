@@ -9,6 +9,7 @@ import {
 import Link from "next/link";
 import PageHeader from "@/components/shared/PageHeader";
 import ShareSection from "@/components/berita/ShareSection";
+import { SCHOOL_NAME } from "@/lib/school-config";
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -23,7 +24,7 @@ export default async function BeritaDetailPage({ params }: PageProps) {
         .from('berita')
         .select('*')
         .eq('id', id)
-        .eq('status', 'published')
+        .eq('status', 'terbit')
         .single();
 
     // Jika berita tidak ditemukan atau error
@@ -53,7 +54,7 @@ export default async function BeritaDetailPage({ params }: PageProps) {
             {/* Page Header */}
             <PageHeader
                 title="Detail Berita"
-                description="Informasi terkini dari TK ABA Mertosanan"
+                description={`Informasi terkini dari ${SCHOOL_NAME}`}
                 background="bg-primary/10"
             />
 
@@ -153,17 +154,17 @@ export async function generateMetadata({ params }: PageProps) {
         .from('berita')
         .select('judul, ringkasan, image_url')
         .eq('id', id)
-        .eq('status', 'published')
+        .eq('status', 'terbit')
         .single();
 
     if (!berita) {
         return {
-            title: 'Berita Tidak Ditemukan - TK ABA Mertosanan',
+            title: `Berita Tidak Ditemukan - ${SCHOOL_NAME}`,
         };
     }
 
     return {
-        title: `${berita.judul} - TK ABA Mertosanan`,
+        title: `${berita.judul} - ${SCHOOL_NAME}`,
         description: berita.ringkasan || `Baca berita terbaru: ${berita.judul}`,
         openGraph: {
             title: berita.judul,

@@ -11,7 +11,7 @@ export default async function PortalPengumumanPage() {
   const { data: berita } = await supabase
     .from('berita')
     .select('id, judul, ringkasan, tanggal_terbit, status')
-    .eq('status', 'published')
+    .eq('status', 'terbit')
     .order('tanggal_terbit', { ascending: false })
     .limit(10);
 

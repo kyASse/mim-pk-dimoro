@@ -31,7 +31,7 @@ const newsFormSchema = z.object({
   judul: z.string().min(1, "Judul berita wajib diisi").max(200, "Judul maksimal 200 karakter"),
   ringkasan: z.string().min(1, "Ringkasan wajib diisi").max(500, "Ringkasan maksimal 500 karakter"),
   isiLengkap: z.string().min(1, "Isi lengkap berita wajib diisi"),
-  status: z.enum(["draft", "published"]),
+  status: z.enum(["draft", "terbit"]),
   tanggalTerbit: z.string().min(1, "Tanggal terbit wajib diisi"),
   tambahkanKeGaleri: z.boolean().optional(),
 });
@@ -317,7 +317,7 @@ export default function TambahBeritaPage() {
                         </FormControl>
                         <SelectContent>
                           <SelectItem value="draft">Draft</SelectItem>
-                          <SelectItem value="published">Dipublikasikan</SelectItem>
+                          <SelectItem value="terbit">Dipublikasikan</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
