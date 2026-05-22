@@ -98,30 +98,41 @@ ALTER TABLE public.laporan_perkembangan ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.pesan_masuk ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.statistik_utama ENABLE ROW LEVEL SECURITY;
 
--- kontak_sekolah: public read, admin write
+-- kontak_sekolah: public read, authenticated write
 CREATE POLICY "Public read kontak_sekolah" ON public.kontak_sekolah FOR SELECT USING (true);
-CREATE POLICY "All access kontak_sekolah" ON public.kontak_sekolah FOR ALL USING (true);
+CREATE POLICY "Authenticated insert kontak_sekolah" ON public.kontak_sekolah FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated update kontak_sekolah" ON public.kontak_sekolah FOR UPDATE USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated delete kontak_sekolah" ON public.kontak_sekolah FOR DELETE USING (auth.role() = 'authenticated');
 
--- ekstrakurikuler: public read
+-- ekstrakurikuler: public read, authenticated write
 CREATE POLICY "Public read ekstrakurikuler" ON public.ekstrakurikuler FOR SELECT USING (true);
-CREATE POLICY "All access ekstrakurikuler" ON public.ekstrakurikuler FOR ALL USING (true);
+CREATE POLICY "Authenticated insert ekstrakurikuler" ON public.ekstrakurikuler FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated update ekstrakurikuler" ON public.ekstrakurikuler FOR UPDATE USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated delete ekstrakurikuler" ON public.ekstrakurikuler FOR DELETE USING (auth.role() = 'authenticated');
 
--- kegiatan_harian: public read
+-- kegiatan_harian: public read, authenticated write
 CREATE POLICY "Public read kegiatan_harian" ON public.kegiatan_harian FOR SELECT USING (true);
-CREATE POLICY "All access kegiatan_harian" ON public.kegiatan_harian FOR ALL USING (true);
+CREATE POLICY "Authenticated insert kegiatan_harian" ON public.kegiatan_harian FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated update kegiatan_harian" ON public.kegiatan_harian FOR UPDATE USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated delete kegiatan_harian" ON public.kegiatan_harian FOR DELETE USING (auth.role() = 'authenticated');
 
--- laporan_perkembangan: hanya bisa dibaca oleh admin & orang tua pemilik siswa
--- (dev fallback: all access)
-CREATE POLICY "Public read laporan_perkembangan" ON public.laporan_perkembangan FOR SELECT USING (true);
-CREATE POLICY "All access laporan_perkembangan" ON public.laporan_perkembangan FOR ALL USING (true);
+-- laporan_perkembangan: authenticated only (sensitive student data)
+CREATE POLICY "Authenticated read laporan_perkembangan" ON public.laporan_perkembangan FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated insert laporan_perkembangan" ON public.laporan_perkembangan FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated update laporan_perkembangan" ON public.laporan_perkembangan FOR UPDATE USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated delete laporan_perkembangan" ON public.laporan_perkembangan FOR DELETE USING (auth.role() = 'authenticated');
 
--- pesan_masuk: siapapun bisa insert (form kontak publik), admin bisa baca
+-- pesan_masuk: siapapun bisa insert (form kontak publik), authenticated bisa baca/update/delete
 CREATE POLICY "Public insert pesan_masuk" ON public.pesan_masuk FOR INSERT WITH CHECK (true);
-CREATE POLICY "All access pesan_masuk" ON public.pesan_masuk FOR ALL USING (true);
+CREATE POLICY "Authenticated read pesan_masuk" ON public.pesan_masuk FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated update pesan_masuk" ON public.pesan_masuk FOR UPDATE USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated delete pesan_masuk" ON public.pesan_masuk FOR DELETE USING (auth.role() = 'authenticated');
 
--- statistik_utama: public read
+-- statistik_utama: public read, authenticated write
 CREATE POLICY "Public read statistik_utama" ON public.statistik_utama FOR SELECT USING (true);
-CREATE POLICY "All access statistik_utama" ON public.statistik_utama FOR ALL USING (true);
+CREATE POLICY "Authenticated insert statistik_utama" ON public.statistik_utama FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated update statistik_utama" ON public.statistik_utama FOR UPDATE USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated delete statistik_utama" ON public.statistik_utama FOR DELETE USING (auth.role() = 'authenticated');
 
 -- ============================================================
 -- STORAGE BUCKETS
