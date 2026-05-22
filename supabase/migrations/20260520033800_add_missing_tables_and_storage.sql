@@ -218,23 +218,14 @@ CREATE POLICY "Authenticated delete dokumentasi-prestasi"
   ON storage.objects FOR DELETE
   USING (bucket_id = 'dokumentasi-prestasi' AND auth.role() = 'authenticated');
 
--- dokumen-rapor: privat, hanya authenticated
-CREATE POLICY "Authenticated access dokumen-rapor"
-  ON storage.objects FOR ALL
-  USING (bucket_id = 'dokumen-rapor' AND auth.role() = 'authenticated')
-  WITH CHECK (bucket_id = 'dokumen-rapor' AND auth.role() = 'authenticated');
+-- dokumen-rapor: privat, dikelola via service role/admin workflow
 
--- dokumen-pendukung: privat, hanya authenticated
-CREATE POLICY "Authenticated access dokumen-pendukung"
-  ON storage.objects FOR ALL
-  USING (bucket_id = 'dokumen-pendukung' AND auth.role() = 'authenticated')
+-- dokumen-pendukung: privat, authenticated hanya boleh upload baru
+CREATE POLICY "Authenticated upload dokumen-pendukung"
+  ON storage.objects FOR INSERT
   WITH CHECK (bucket_id = 'dokumen-pendukung' AND auth.role() = 'authenticated');
 
--- dokumen-pribadi: privat, hanya authenticated
-CREATE POLICY "Authenticated access dokumen-pribadi"
-  ON storage.objects FOR ALL
-  USING (bucket_id = 'dokumen-pribadi' AND auth.role() = 'authenticated')
-  WITH CHECK (bucket_id = 'dokumen-pribadi' AND auth.role() = 'authenticated');
+-- dokumen-pribadi: privat, dikelola via service role/admin workflow
 
 -- ============================================================
 -- SEED DATA AWAL
