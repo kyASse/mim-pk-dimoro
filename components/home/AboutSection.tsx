@@ -1,68 +1,55 @@
 "use client"
 import Image from "next/image";
 import Link from "next/link";
-import { Award, Heart, Users, ChevronRight } from "lucide-react";
-import { SCHOOL_NAME, SCHOOL_ABOUT_DESCRIPTION } from "@/lib/school-config";
+import { ChevronRight, Quote } from "lucide-react";
+import { HEADMASTER_WELCOME } from "@/lib/school-data";
 
 export default function AboutSection() {
     return (
         <section className="py-16 bg-secondary/20">
             <div className="container mx-auto px-4">
-                <div className="flex flex-col md:flex-row items-center gap-8">
-                    <div className="md:w-1/2">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-4">Selamat Datang di {SCHOOL_NAME}</h2>
-                        <div className="text-lg text-muted-foreground mb-6">
-                            {SCHOOL_ABOUT_DESCRIPTION}
-                        </div>
-                        <div className="space-y-4">
-                            <div className="flex items-start">
-                                <div className="mt-1 bg-accent/20 p-2 rounded-full">
-                                    <Award className=" h-5 w-6 text-accent-foreground"/>
-                                </div>
-                                <div className="ml-4">
-                                    <h3 className="font-semibold text-lg">Pendidikan Berkualitas</h3>
-                                    <p className="text-muted-foreground">Kurikulum terintegrasi dengan nilai-nilai Islami</p>
-                                </div>
-                            </div>
-                            <div className="flex items-start">
-                                <div className=" mt-1 bg-primary/20 p-2 rounded-full">
-                                    <Heart className="h-5 w-6 text-primary-foreground"/>
-                                </div>
-                                <div className="ml-4">
-                                    <h3 className="font-semibold text-lg">Pembentukan Karakter</h3>
-                                    <p className="text-muted-foreground">Membangun akhlak mulia sejak usia sekolah dasar</p>
+                <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+                    <div className="md:w-5/12 relative flex justify-center">
+                        <div className="relative w-full max-w-sm">
+                            <div className="absolute -top-4 -left-4 w-24 h-24 bg-primary/20 rounded-full -z-10"></div>
+                            <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-primary/20 rounded-full -z-10"></div>
+                            <div className="relative rounded-2xl overflow-hidden shadow-xl border-4 border-background bg-card">
+                                <Image
+                                    src={HEADMASTER_WELCOME.photoUrl || "https://placehold.co/600x400/059669/ffffff.png?text=Kepala+Madrasah"}
+                                    alt={HEADMASTER_WELCOME.name}
+                                    width={400}
+                                    height={500}
+                                    className="w-full h-auto object-cover aspect-[4/5]"
+                                />
+                                <div className="p-4 bg-card text-card-foreground text-center">
+                                    <h3 className="font-bold text-lg">{HEADMASTER_WELCOME.name}</h3>
+                                    <p className="text-sm text-muted-foreground">{HEADMASTER_WELCOME.title}</p>
                                 </div>
                             </div>
-                            <div className="flex items-start">
-                                <div className=" mt-1 bg-highlight/20 p-2 rounded-full">
-                                    <Users className="h-5 w-6 text-primary-foreground"/>
-                                </div>
-                                <div className="ml-4">
-                                    <h3 className="font-semibold text-lg">Tenaga Pendidik Profesional</h3>
-                                    <p className="text-muted-foreground">Guru yang berpengalaman dan berdedikasi tinggi</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="mt-8">
-                            <button className=" rounded-full bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 font-semibold transition-colors">
-                                <Link href="/tentang-kami" className="flex items-center gap-2">
-                                    Pelajari Lebih Lanjut
-                                    <ChevronRight className="h-4 w-4" />
-                                </Link>
-                            </button>
                         </div>
                     </div>
-                    <div className="md:w-1/2 relative mt-8 md:mt-0">
-                        <div className="relative">
-                            <div className="absolute -top-4 -left-4 w-24 h-24 bg-primary rounded-full -z-10"></div>
-                            <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-primary rounded-full -z-10"></div>
-                            <Image
-                            src="https://placehold.co/600x400/059669/ffffff.png?text=Profil+Sekolah"
-                            alt={`Kegiatan di ${SCHOOL_NAME}`}
-                            width={600}
-                            height={400}
-                            className="rounded-2xl shadow-lg "
-                            />
+                    <div className="md:w-7/12">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+                            <Quote className="h-4 w-4" />
+                            Sambutan Kepala Madrasah
+                        </div>
+                        <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                            Selamat Datang di MIM PK Dimoro
+                        </h2>
+                        <blockquote className="text-lg text-muted-foreground italic mb-6 border-l-4 border-primary pl-4 py-1">
+                            &ldquo;{HEADMASTER_WELCOME.summary}&rdquo;
+                        </blockquote>
+                        <p className="text-sm text-muted-foreground mb-8">
+                            {HEADMASTER_WELCOME.paragraphs[1]}
+                        </p>
+                        <div>
+                            <Link 
+                                href="/tentang-kami"
+                                className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 font-semibold transition-colors shadow-md hover:shadow-lg"
+                            >
+                                Baca Sambutan Selengkapnya
+                                <ChevronRight className="h-4 w-4" />
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -70,3 +57,4 @@ export default function AboutSection() {
         </section>
     )
 }
+

@@ -7,6 +7,7 @@ export interface HeadmasterWelcome {
   name: string;
   title: string;
   photoUrl: string;
+  summary: string;
   paragraphs: string[];
 }
 
@@ -60,6 +61,8 @@ export const HEADMASTER_WELCOME: HeadmasterWelcome = {
   name: 'Hj. Anik Sulityowati, S.Ag.',
   title: 'Kepala MI Muhammadiyah Dimoro',
   photoUrl: '/images/headmaster.jpg',
+  summary:
+    'MIM PK Dimoro berkomitmen menyelenggarakan pendidikan Islam terpadu yang memadukan kurikulum nasional, ke-Muhammadiyahan, dan program unggulan sains serta keagamaan untuk membina generasi yang beriman, cerdas, dan berakhlakul karimah.',
   paragraphs: [
     'Assalamu’alaikum Warahmatullahi Wabarakatuh.',
     'Puji syukur kehadirat Allah SWT yang telah memberikan rahmat dan hidayah-Nya sehingga MI Muhammadiyah Dimoro (MIM PK Dimoro) terus berkembang menjadi lembaga pendidikan dasar Islam yang unggul, berkemajuan, dan berkarakter.',
