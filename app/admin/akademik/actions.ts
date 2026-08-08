@@ -1,10 +1,10 @@
 'use server';
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { extractStoragePath } from "@/lib/utils/storage";
 
 // --- ACTIONS UNTUK BIAYA ---
-export async function updateBiayaAction(formData: FormData) {
+export async function updateBiayaAction(formData: FormData): Promise<{ success: boolean; message?: string }> {
     const supabase = await createClient();
     const entries = Array.from(formData.entries());
     const biayaData: any[] = [];
@@ -36,15 +36,15 @@ export async function updateBiayaAction(formData: FormData) {
 
         if (error) {
             console.error(`Error updating biaya_pendaftaran for id ${id}:`, error);
-            redirect(`/admin/akademik/edit-biaya?error=${encodeURIComponent(error.message)}`);
+            return { success: false, message: `Gagal memperbarui data biaya: ${error.message}` };
         }
     }
 
     revalidatePath('/admin/akademik');
-    redirect('/admin/akademik');
+    return { success: true, message: "Biaya pendaftaran berhasil diperbarui." };
 }
 
-export async function updateCatatanSppAction(formData: FormData) {
+export async function updateCatatanSppAction(formData: FormData): Promise<{ success: boolean; message?: string }> {
     const supabase = await createClient();
     const newCatatan = formData.get('catatan-spp') as string;
 
@@ -53,16 +53,18 @@ export async function updateCatatanSppAction(formData: FormData) {
         .update({ isi: { catatan: newCatatan } })
         .eq('slug', 'catatan-spp');
 
-    if (error) { redirect(`/admin/akademik/edit-biaya?error=${error.message}`); }
+    if (error) {
+        return { success: false, message: `Gagal memperbarui catatan SPP: ${error.message}` };
+    }
     
     revalidatePath('/admin/akademik');
-    redirect('/admin/akademik');
+    return { success: true, message: "Catatan SPP berhasil diperbarui." };
 }
 
 // --- ACTIONS UNTUK PRESTASI ---
 
 // CREATE
-export async function createPrestasiAction(prevState: any, formData: FormData) {
+export async function createPrestasiAction(prevState: any, formData: FormData): Promise<{ success: boolean; message?: string }> {
     const supabase = await createClient();
     const data = {
         tahun: parseInt(formData.get('tahun') as string),
@@ -75,11 +77,11 @@ export async function createPrestasiAction(prevState: any, formData: FormData) {
     if (error) { return { success: false, message: `Gagal membuat prestasi: ${error.message}` }; }
 
     revalidatePath('/admin/akademik');
-    redirect('/admin/akademik');
+    return { success: true, message: "Prestasi berhasil ditambahkan." };
 }
 
 // UPDATE
-export async function updatePrestasiAction(prestasiId: number, formData: FormData) {
+export async function updatePrestasiAction(prestasiId: number, formData: FormData): Promise<{ success: boolean; message?: string }> {
     const supabase = await createClient();
     const action = formData.get('action') as string;
 
@@ -103,7 +105,10 @@ export async function updatePrestasiAction(prestasiId: number, formData: FormDat
             
             const { data: oldData } = await supabase.from('prestasi').select('dokumentasi_url').eq('id', prestasiId).single();
             if (oldData?.dokumentasi_url) {
-                await supabase.storage.from('dokumentasi-prestasi').remove([oldData.dokumentasi_url]);
+                const storagePath = extractStoragePath(oldData.dokumentasi_url, 'dokumentasi-prestasi');
+                if (storagePath) {
+                    await supabase.storage.from('dokumentasi-prestasi').remove([storagePath]);
+                }
             }
             
             const filePath = `${prestasiId}/${Date.now()}_${imageFile.name}`;
@@ -117,7 +122,10 @@ export async function updatePrestasiAction(prestasiId: number, formData: FormDat
         if (action === 'delete_image') {
             const { data: oldData } = await supabase.from('prestasi').select('dokumentasi_url').eq('id', prestasiId).single();
             if (oldData?.dokumentasi_url) {
-                await supabase.storage.from('dokumentasi-prestasi').remove([oldData.dokumentasi_url]);
+                const storagePath = extractStoragePath(oldData.dokumentasi_url, 'dokumentasi-prestasi');
+                if (storagePath) {
+                    await supabase.storage.from('dokumentasi-prestasi').remove([storagePath]);
+                }
                 await supabase.from('prestasi').update({ dokumentasi_url: null }).eq('id', prestasiId);
             }
         }
@@ -131,12 +139,15 @@ export async function updatePrestasiAction(prestasiId: number, formData: FormDat
 }
 
 // DELETE
-export async function deletePrestasiAction(prestasiId: number) {
+export async function deletePrestasiAction(prestasiId: number): Promise<{ success: boolean; message?: string }> {
     const supabase = await createClient();
     try {
         const { data: prestasi } = await supabase.from('prestasi').select('dokumentasi_url').eq('id', prestasiId).single();
         if (prestasi?.dokumentasi_url) {
-            await supabase.storage.from('dokumentasi-prestasi').remove([prestasi.dokumentasi_url]);
+            const storagePath = extractStoragePath(prestasi.dokumentasi_url, 'dokumentasi-prestasi');
+            if (storagePath) {
+                await supabase.storage.from('dokumentasi-prestasi').remove([storagePath]);
+            }
         }
         const { error } = await supabase.from('prestasi').delete().eq('id', prestasiId);
         if (error) throw error;
@@ -146,4 +157,4 @@ export async function deletePrestasiAction(prestasiId: number) {
     } catch (error: any) {
         return { success: false, message: error.message };
     }
-}
+}

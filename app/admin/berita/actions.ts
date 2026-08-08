@@ -3,6 +3,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { extractStoragePath } from "@/lib/utils/storage";
 
 // =================================================================
 // ACTION UNTUK MENGHAPUS BERITA
@@ -14,13 +15,12 @@ import { revalidatePath } from "next/cache";
  * @param imageUrl - URL lengkap dari gambar yang akan dihapus dari storage.
  * @returns Objek yang menandakan keberhasilan atau kegagalan.
  */
-export async function deleteBeritaAction(beritaId: number, imageUrl: string) {
+export async function deleteBeritaAction(beritaId: number, imageUrl: string): Promise<{ success: boolean; message?: string }> {
     const supabase = await createClient();
 
     // 1. Hapus gambar dari Storage terlebih dahulu
     try {
-        // Ekstrak path file dari URL lengkap untuk digunakan di API storage
-        const path = new URL(imageUrl).pathname.split('/konten-publik/')[1];
+        const path = extractStoragePath(imageUrl, 'konten-publik');
         
         if (path) {
             const { error: storageError } = await supabase.storage.from('konten-publik').remove([path]);
@@ -30,7 +30,7 @@ export async function deleteBeritaAction(beritaId: number, imageUrl: string) {
             }
         }
     } catch (error) {
-        console.error("Error saat parsing URL gambar:", error);
+        console.error("Error saat extracting storage path gambar:", error);
     }
 
     // 2. Hapus data berita dari tabel database
@@ -69,7 +69,7 @@ type UpdateBeritaData = {
  * @param dataToUpdate - Objek berisi data baru untuk judul, ringkasan, dan isi.
  * @returns Objek yang menandakan keberhasilan atau kegagalan.
  */
-export async function updateBeritaAction(beritaId: number, dataToUpdate: UpdateBeritaData) {
+export async function updateBeritaAction(beritaId: number, dataToUpdate: UpdateBeritaData): Promise<{ success: boolean; message?: string }> {
     const supabase = await createClient();
 
     const { error } = await supabase
@@ -86,4 +86,4 @@ export async function updateBeritaAction(beritaId: number, dataToUpdate: UpdateB
     revalidatePath(`/admin/berita/edit/${beritaId}`);
 
     return { success: true, message: "Berita berhasil diperbarui." };
-}
+}

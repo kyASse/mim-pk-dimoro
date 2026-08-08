@@ -3,13 +3,14 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { extractStoragePath } from "@/lib/utils/storage";
 
-export async function deleteGaleriAction(galeriId: number, imageUrl: string) {
+export async function deleteGaleriAction(galeriId: number, imageUrl: string): Promise<{ success: boolean; message?: string }> {
     const supabase = await createClient();
 
     // Hapus gambar dari Storage
     try {
-        const path = new URL(imageUrl).pathname.split('/konten-publik/')[1];
+        const path = extractStoragePath(imageUrl, 'konten-publik');
         if (path) {
             await supabase.storage.from('konten-publik').remove([path]);
         }
@@ -34,7 +35,7 @@ export async function deleteGaleriAction(galeriId: number, imageUrl: string) {
 export async function updateGaleriAction(
     galeriId: number,
     { keterangan, kategori, image }: { keterangan: string; kategori: string; image?: File | null }
-) {
+): Promise<{ success: boolean; message?: string }> {
     const supabase = await createClient();
 
     let image_url: string | undefined;
@@ -65,5 +66,5 @@ export async function updateGaleriAction(
     if (error) return { success: false, message: error.message };
 
     revalidatePath('/admin/galeri');
-    return { success: true };
-}
+    return { success: true, message: "Galeri berhasil diperbarui." };
+}
