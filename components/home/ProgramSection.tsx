@@ -5,6 +5,7 @@ import ProgramCard from "./ProgramCard";
 import { Button } from "../ui/button";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { EXCELLENT_PROGRAMS } from "@/lib/school-data";
 
 export default function ProgramSection() {
     return (
@@ -18,22 +19,22 @@ export default function ProgramSection() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <ProgramCard
-                        title="Tahfidz Al-Qur'an"
-                        description="Program hafalan Al-Qur'an dengan target capaian yang terukur untuk setiap jenjang kelas."
+                        title={EXCELLENT_PROGRAMS.tahfidz.title}
+                        description={EXCELLENT_PROGRAMS.tahfidz.target}
                         image="https://placehold.co/600x400/059669/ffffff.png?text=Tahfidz+Al-Qur'an"
                         href="/program/tahfidz"
                     />
 
                     <ProgramCard
-                        title="Sains & Teknologi"
-                        description="Pengembangan berpikir kritis melalui pembelajaran sains praktis dan pengenalan teknologi informasi."
-                        image="https://placehold.co/600x400/10b981/ffffff.png?text=Sains+dan+Teknologi"
-                        href="/program/sains-teknologi"
+                        title={EXCELLENT_PROGRAMS.klinikBelajar.title}
+                        description={EXCELLENT_PROGRAMS.klinikBelajar.description}
+                        image="https://placehold.co/600x400/10b981/ffffff.png?text=Klinik+Belajar"
+                        href="/program/klinik-belajar"
                     />
 
                     <ProgramCard
                         title="Ekstrakurikuler"
-                        description="Berbagai pilihan kegiatan mulai dari seni bela diri, kepanduan HW, hingga olahraga prestasi."
+                        description="Berbagai pilihan kegiatan mulai dari seni bela diri Tapak Suci, kepanduan Hizbul Wathan (HW), hingga Robotika."
                         image="https://placehold.co/600x400/34d399/ffffff.png?text=Ekstrakurikuler"
                         href="/program/ekstrakurikuler"
                     />
@@ -54,3 +55,4 @@ export default function ProgramSection() {
         </section>
     )
 }
+
