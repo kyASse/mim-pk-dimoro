@@ -3,7 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
-export async function createKegiatanAction(prevState: any, formData: FormData): Promise<{ success: boolean; message?: string }> {
+export async function createKegiatanAction(prevState: unknown, formData: FormData): Promise<{ success: boolean; message?: string }> {
     const supabase = await createClient();
     const data = {
         judul: (formData.get('judul') as string)?.trim(),
@@ -25,7 +25,7 @@ export async function createKegiatanAction(prevState: any, formData: FormData): 
     return { success: true, message: "Kegiatan berhasil ditambahkan." };
 }
 
-export async function updateKegiatanAction(kegiatanId: number, prevState: any, formData: FormData): Promise<{ success: boolean; message?: string }> {
+export async function updateKegiatanAction(kegiatanId: number, prevState: unknown, formData: FormData): Promise<{ success: boolean; message?: string }> {
     const supabase = await createClient();
     const data = {
         judul: (formData.get('judul') as string)?.trim(),
@@ -53,4 +53,4 @@ export async function deleteKegiatanAction(kegiatanId: number): Promise<{ succes
     if (error) { return { success: false, message: error.message }; }
     revalidatePath('/admin/kalender');
     return { success: true, message: "Kegiatan berhasil dihapus." };
-}
+}

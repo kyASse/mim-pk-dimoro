@@ -42,6 +42,23 @@ export async function updateGaleriAction(
 
     // Jika ada file gambar baru, upload ke storage dan dapatkan url baru
     if (image) {
+        if (image.size > 5 * 1024 * 1024) {
+            return { success: false, message: "Ukuran file terlalu besar (maksimal 5MB)." };
+        }
+
+        const { data: oldData } = await supabase
+            .from('galeri')
+            .select('image_url')
+            .eq('id', galeriId)
+            .single();
+
+        if (oldData?.image_url) {
+            const oldPath = extractStoragePath(oldData.image_url, 'konten-publik');
+            if (oldPath) {
+                await supabase.storage.from('konten-publik').remove([oldPath]);
+            }
+        }
+
         // Ganti 'konten-publik' sesuai bucket Anda
         const fileName = `galeri/galeri-${galeriId}-${Date.now()}-${image.name}`;
         const { data, error } = await supabase.storage

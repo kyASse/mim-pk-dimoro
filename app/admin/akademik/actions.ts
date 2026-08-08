@@ -3,11 +3,17 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { extractStoragePath } from "@/lib/utils/storage";
 
+interface BiayaInput {
+    id?: string;
+    putra?: string;
+    putri?: string;
+}
+
 // --- ACTIONS UNTUK BIAYA ---
 export async function updateBiayaAction(formData: FormData): Promise<{ success: boolean; message?: string }> {
     const supabase = await createClient();
     const entries = Array.from(formData.entries());
-    const biayaData: any[] = [];
+    const biayaData: BiayaInput[] = [];
     
     entries.forEach(([key, value]) => {
         const match = key.match(/biaya\[(\d+)\]\[(\w+)\]/);
@@ -15,7 +21,7 @@ export async function updateBiayaAction(formData: FormData): Promise<{ success: 
             const index = parseInt(match[1]);
             const field = match[2];
             if (!biayaData[index]) biayaData[index] = {};
-            biayaData[index][field] = value;
+            biayaData[index][field as keyof BiayaInput] = value as string;
         }
     });
 
@@ -23,8 +29,8 @@ export async function updateBiayaAction(formData: FormData): Promise<{ success: 
         if (!item || !item.id) continue;
         
         const id = parseInt(item.id);
-        const putra = parseInt(item.putra) || 0;
-        const putri = parseInt(item.putri) || 0;
+        const putra = parseInt(item.putra || '0') || 0;
+        const putri = parseInt(item.putri || '0') || 0;
 
         const { error } = await supabase
             .from('biaya_pendaftaran')
@@ -64,14 +70,25 @@ export async function updateCatatanSppAction(formData: FormData): Promise<{ succ
 // --- ACTIONS UNTUK PRESTASI ---
 
 // CREATE
-export async function createPrestasiAction(prevState: any, formData: FormData): Promise<{ success: boolean; message?: string }> {
+export async function createPrestasiAction(prevState: unknown, formData: FormData): Promise<{ success: boolean; message?: string }> {
     const supabase = await createClient();
+    const tahunStr = formData.get('tahun') as string;
+    const nama_prestasi = (formData.get('nama_prestasi') as string)?.trim();
+    const tingkat = (formData.get('tingkat') as string)?.trim();
+    const deskripsi = (formData.get('deskripsi') as string)?.trim() || null;
+    const nama_siswa = (formData.get('nama_siswa') as string)?.trim();
+    const tahun = parseInt(tahunStr, 10);
+
+    if (!tahunStr || isNaN(tahun) || !nama_prestasi || !tingkat || !nama_siswa) {
+        return { success: false, message: 'Harap isi semua kolom wajib dengan benar.' };
+    }
+
     const data = {
-        tahun: parseInt(formData.get('tahun') as string),
-        nama_prestasi: formData.get('nama_prestasi') as string,
-        tingkat: formData.get('tingkat') as string,
-        deskripsi: formData.get('deskripsi') as string,
-        nama_siswa: formData.get('nama_siswa') as string,
+        tahun,
+        nama_prestasi,
+        tingkat,
+        deskripsi,
+        nama_siswa,
     };
     const { error } = await supabase.from('prestasi').insert(data);
     if (error) { return { success: false, message: `Gagal membuat prestasi: ${error.message}` }; }
@@ -133,8 +150,8 @@ export async function updatePrestasiAction(prestasiId: number, formData: FormDat
         revalidatePath('/admin/akademik');
         revalidatePath(`/admin/akademik/prestasi/edit/${prestasiId}`);
         return { success: true, message: "Aksi berhasil dijalankan." };
-    } catch (error: any) {
-        return { success: false, message: error.message };
+    } catch (error: unknown) {
+        return { success: false, message: (error as Error).message };
     }
 }
 
@@ -154,7 +171,7 @@ export async function deletePrestasiAction(prestasiId: number): Promise<{ succes
 
         revalidatePath('/admin/akademik');
         return { success: true, message: "Prestasi berhasil dihapus." };
-    } catch (error: any) {
-        return { success: false, message: error.message };
+    } catch (error: unknown) {
+        return { success: false, message: (error as Error).message };
     }
-}
+}
