@@ -12,7 +12,7 @@ import {
     FormMessage,
     FormDescription
 } from "@/components/ui/form";
-import { createClient } from "@/lib/supabase/client";
+import { submitPendaftaranAction } from "@/app/pendaftaran/actions";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
@@ -84,8 +84,6 @@ const formSchema = z.object({
 
 export default function PendaftaranForm() {
     const [isSuccess, setIsSuccess] = useState(false);
-    const supabase = createClient();
-    const [isUploading, setIsUploading] = useState(false);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -151,75 +149,38 @@ export default function PendaftaranForm() {
     }, [isSuccess, form]);
 
     async function onSubmit(values: z.infer<typeof formSchema>): Promise<void> {
-        // Notify developers about form submission in non-production environments
         if (process.env.NODE_ENV !== 'production') {
             console.debug('=== FORM SUBMIT STARTED ===');
             console.debug('Form values:', values);
         }
         
-        // Tampilkan notifikasi bahwa form sedang diproses
         toast.info("Memproses pendaftaran...", {
             description: "Mohon tunggu, data sedang disimpan"
         });
         
-        setIsUploading(false);
         try {
-            let dokumen_pendukung_url: string | null = null;
-            const file = values.dokumen_pendukung?.[0];
-
-            if (file) {
-                setIsUploading(true);
-                const fileName = `${Date.now()}_${file.name}`;
-                const { data: uploadData, error: uploadError } = await supabase.storage
-                    .from('dokumen-pendukung')
-                    .upload(fileName, file);
-
-                if (uploadError) {
-                    throw new Error(`Gagal mengunggah dokumen: ${uploadError.message}`);
+            const fd = new FormData();
+            Object.entries(values).forEach(([key, val]) => {
+                if (key === 'dokumen_pendukung') {
+                    const file = values.dokumen_pendukung?.[0];
+                    if (file) {
+                        fd.append('dokumen_pendukung', file);
+                    }
+                } else if (key === 'memiliki_kebutuhan_khusus') {
+                    fd.append('memiliki_kebutuhan_khusus', String(Boolean(val)));
+                } else if (key === 'jenis_kebutuhan_khusus') {
+                    fd.append('jenis_kebutuhan_khusus', JSON.stringify(val || []));
+                } else if (val !== undefined && val !== null) {
+                    fd.append(key, String(val));
                 }
-                // Simpan hanya path object; akses dilakukan via URL bertanda tangan
-                dokumen_pendukung_url = uploadData.path;
-                setIsUploading(false);
+            });
+
+            const res = await submitPendaftaranAction(fd);
+            if (!res.success) {
+                toast.error(res.message || "Gagal mengirim pendaftaran");
+                return;
             }
-            
-            const dataToSubmit = {
-                ...values,
-                anak_ke: values.anak_ke ? parseInt(values.anak_ke) : null,
-                jumlah_saudara_kandung: values.jumlah_saudara_kandung ? parseInt(values.jumlah_saudara_kandung) : null,
-                berat_badan: values.berat_badan ? parseInt(values.berat_badan) : null,
-                tinggi_badan: values.tinggi_badan ? parseInt(values.tinggi_badan) : null,
-                jalur_pendaftaran: "Online",
-                memiliki_kebutuhan_khusus: values.memiliki_kebutuhan_khusus,
 
-                jenis_kebutuhan_khusus: values.memiliki_kebutuhan_khusus
-                    ? (Array.isArray(values.jenis_kebutuhan_khusus)
-                        ? values.jenis_kebutuhan_khusus
-                        : (typeof values.jenis_kebutuhan_khusus === "string"
-                            ? JSON.parse(values.jenis_kebutuhan_khusus)
-                            : []))
-                    : [],
-
-                deskripsi_kebutuhan_khusus: values.memiliki_kebutuhan_khusus ? values.deskripsi_kebutuhan_khusus : "",
-                dokumen_pendukung_url: dokumen_pendukung_url,
-            };
-            
-            // Hapus field yang tidak ada di database atau tidak diperlukan
-            delete (dataToSubmit as any).dokumen_pendukung;
-            delete (dataToSubmit as any).email; // Email tidak ada di schema database pendaftar
-
-            // Data preparation complete, ready to insert into the database.
-
-            const { data: insertData, error: insertError } = await supabase.from("pendaftar").insert([dataToSubmit]);
-            if (insertError) {
-                console.error('Database insert error:', insertError);
-                throw insertError;
-            }
-            
-            console.log('Data berhasil disimpan:', insertData);
-            
-            // Jangan tampilkan toast sukses di sini, biarkan useEffect yang handle
-            // karena useEffect akan menampilkan toast dengan WhatsApp link
-            
             setIsSuccess(true);
             form.reset();
 
@@ -230,7 +191,6 @@ export default function PendaftaranForm() {
                     description: err.message
                 });
             }
-            setIsUploading(false);
         }
     }
 
@@ -659,9 +619,9 @@ export default function PendaftaranForm() {
                         type="submit" 
                         size="lg"
                         className="w-full text-base font-semibold h-12 shadow-lg shadow-primary/20" 
-                        disabled={form.formState.isSubmitting || isUploading}
+                        disabled={form.formState.isSubmitting}
                     >
-                        {form.formState.isSubmitting || isUploading ? (
+                        {form.formState.isSubmitting ? (
                             <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Mengirim data...</>
                         ) : (
                             <><Send className="mr-2 h-5 w-5" /> Kirim Formulir Pendaftaran</>
