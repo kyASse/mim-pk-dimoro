@@ -2,6 +2,7 @@
 'use server';
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
 import { extractStoragePath } from "@/lib/utils/storage";
 
@@ -17,15 +18,18 @@ import { extractStoragePath } from "@/lib/utils/storage";
  */
 export async function deleteBeritaAction(beritaId: number, imageUrl: string): Promise<{ success: boolean; message?: string }> {
     const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { success: false, message: "Sesi telah berakhir. Silakan login kembali." };
+
+    const admin = await createAdminClient();
 
     // 1. Hapus gambar dari Storage terlebih dahulu
     try {
         const path = extractStoragePath(imageUrl, 'konten-publik');
         
         if (path) {
-            const { error: storageError } = await supabase.storage.from('konten-publik').remove([path]);
+            const { error: storageError } = await admin.storage.from('konten-publik').remove([path]);
             if (storageError) {
-                // Log error tapi jangan hentikan proses jika gambar tidak ditemukan
                 console.error("Peringatan: Gagal menghapus gambar dari storage:", storageError.message);
             }
         }
@@ -34,7 +38,7 @@ export async function deleteBeritaAction(beritaId: number, imageUrl: string): Pr
     }
 
     // 2. Hapus data berita dari tabel database
-    const { error: dbError } = await supabase
+    const { error: dbError } = await admin
         .from('berita')
         .delete()
         .eq('id', beritaId);
@@ -44,7 +48,6 @@ export async function deleteBeritaAction(beritaId: number, imageUrl: string): Pr
         return { success: false, message: `Gagal menghapus data: ${dbError.message}` };
     }
 
-    // 3. Revalidasi path (PENTING!) untuk me-refresh cache halaman daftar berita
     revalidatePath('/admin/berita');
     
     return { success: true, message: "Berita berhasil dihapus." };
@@ -65,14 +68,15 @@ type UpdateBeritaData = {
 
 /**
  * Memperbarui data teks dari sebuah berita.
- * @param beritaId - ID dari berita yang akan diperbarui.
- * @param dataToUpdate - Objek berisi data baru untuk judul, ringkasan, dan isi.
- * @returns Objek yang menandakan keberhasilan atau kegagalan.
  */
 export async function updateBeritaAction(beritaId: number, dataToUpdate: UpdateBeritaData): Promise<{ success: boolean; message?: string }> {
     const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { success: false, message: "Sesi telah berakhir. Silakan login kembali." };
 
-    const { error } = await supabase
+    const admin = await createAdminClient();
+
+    const { error } = await admin
         .from('berita')
         .update(dataToUpdate)
         .eq('id', beritaId);
@@ -104,6 +108,8 @@ export async function createBeritaAction(formData: FormData): Promise<{ success:
             return { success: false, message: "Sesi telah berakhir. Silakan login kembali." };
         }
 
+        const admin = await createAdminClient();
+
         const judul = (formData.get('judul') as string)?.trim();
         const ringkasan = (formData.get('ringkasan') as string)?.trim();
         const isiLengkap = (formData.get('isiLengkap') as string)?.trim();
@@ -127,7 +133,7 @@ export async function createBeritaAction(formData: FormData): Promise<{ success:
         // Upload gambar ke Storage
         const fileName = `${Date.now()}-${imageFile.name.replace(/\s+/g, '_')}`;
         const filePath = `berita/${fileName}`;
-        const { error: uploadError } = await supabase.storage
+        const { error: uploadError } = await admin.storage
             .from('konten-publik')
             .upload(filePath, imageFile);
 
@@ -136,12 +142,12 @@ export async function createBeritaAction(formData: FormData): Promise<{ success:
         }
 
         // Dapatkan URL publik gambar
-        const { data: { publicUrl } } = supabase.storage
+        const { data: { publicUrl } } = admin.storage
             .from('konten-publik')
             .getPublicUrl(filePath);
 
         // Simpan data berita
-        const { error: insertError } = await supabase
+        const { error: insertError } = await admin
             .from('berita')
             .insert({
                 judul,
@@ -155,13 +161,13 @@ export async function createBeritaAction(formData: FormData): Promise<{ success:
 
         if (insertError) {
             // Cleanup upload jika simpan DB gagal
-            await supabase.storage.from('konten-publik').remove([filePath]);
+            await admin.storage.from('konten-publik').remove([filePath]);
             return { success: false, message: `Gagal menyimpan berita: ${insertError.message}` };
         }
 
         // Tambahkan ke galeri jika diminta
         if (tambahkanKeGaleri) {
-            await supabase
+            await admin
                 .from('galeri')
                 .insert({
                     image_url: publicUrl,
@@ -180,4 +186,5 @@ export async function createBeritaAction(formData: FormData): Promise<{ success:
         return { success: false, message: msg };
     }
 }
+
 
