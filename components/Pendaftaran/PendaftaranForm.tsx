@@ -70,7 +70,7 @@ const formSchema = z.object({
     nama_ibu_kandung: z.string().optional(),
     pendidikan_ibu: z.string().optional(),
     pekerjaan_ibu: z.string().optional(),
-    email: z.string().email("Email tidak valid"),
+    email: z.string().email("Email tidak valid").optional().or(z.literal("")),
     wali_nama: z.string().optional(),
     wali_pendidikan: z.string().optional(),
     wali_hubungan: z.string().optional(),
