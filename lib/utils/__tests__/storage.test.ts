@@ -14,5 +14,17 @@ describe('extractStoragePath', () => {
   it('should handle invalid or empty inputs gracefully', () => {
     expect(extractStoragePath(null, 'konten-publik')).toBeNull();
     expect(extractStoragePath('', 'konten-publik')).toBeNull();
+    expect(extractStoragePath('   ', 'konten-publik')).toBeNull();
+  });
+
+  it('should strip query parameters and hash fragments from URL', () => {
+    const url = 'https://xyz.supabase.co/storage/v1/object/public/konten-publik/berita/123.png?t=1690000#section';
+    expect(extractStoragePath(url, 'konten-publik')).toBe('berita/123.png');
+  });
+
+  it('should decode URI components such as encoded spaces', () => {
+    const url = 'https://xyz.supabase.co/storage/v1/object/public/konten-publik/berita/foto%20kegiatan.jpg';
+    expect(extractStoragePath(url, 'konten-publik')).toBe('berita/foto kegiatan.jpg');
   });
 });
+

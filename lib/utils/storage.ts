@@ -14,12 +14,16 @@ export function extractStoragePath(
   if (trimmed.includes(marker)) {
     try {
       const parts = trimmed.split(marker);
-      const relative = parts[parts.length - 1];
+      const relative = parts[parts.length - 1].split('?')[0].split('#')[0];
       return relative ? decodeURIComponent(relative) : null;
     } catch {
-      return trimmed;
+      const parts = trimmed.split(marker);
+      const relative = parts[parts.length - 1].split('?')[0].split('#')[0];
+      return relative || trimmed;
     }
   }
 
-  return trimmed;
+  const clean = trimmed.split('?')[0].split('#')[0];
+  return clean || null;
 }
+
