@@ -9,7 +9,7 @@ export default async function PortalAkademikPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return redirect('/auth/login');
 
-  const { data: siswa } = await supabase
+  const { data: siswa, error: siswaError } = await supabase
     .from('siswa')
     .select('id, nama_lengkap, kelompok, tanggal_lahir, wali_kelas, tahun_ajaran')
     .eq('profile_orang_tua_id', user.id);
@@ -21,7 +21,8 @@ export default async function PortalAkademikPage() {
     .order('tanggal', { ascending: true });
 
   // Normalisasi agar properti selalu ada saat render (hindari error saat data DB tidak memiliki field opsional)
-  const s = siswa?.[0];
+  const hasSiswa = !siswaError && siswa && siswa.length > 0;
+  const s = hasSiswa ? siswa[0] : null;
   const birth = s?.tanggal_lahir ? new Date(s.tanggal_lahir) : null;
   const now = new Date();
   let umur = '-';
@@ -33,7 +34,7 @@ export default async function PortalAkademikPage() {
   }
   const siswaData = {
     id: s?.id ?? '-',
-    nama_lengkap: s?.nama_lengkap ?? '-',
+    nama_lengkap: s?.nama_lengkap ?? (siswaError ? 'Gagal memuat data' : 'Belum Terhubung'),
     kelompok: s?.kelompok ?? '-',
     umur,
     wali_kelas: s?.wali_kelas ?? '-',
@@ -99,6 +100,14 @@ export default async function PortalAkademikPage() {
                   </div>
                   <h3 className="text-lg md:text-xl font-bold text-gray-900">Profil Anak</h3>
                 </div>
+                
+                {!hasSiswa && (
+                  <div className="mb-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-sm">
+                    {siswaError 
+                      ? "Gagal memuat data profil siswa terhubung." 
+                      : "Akun Anda belum terhubung dengan data siswa. Silakan hubungi pihak sekolah jika ini adalah kesalahan."}
+                  </div>
+                )}
                 
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
