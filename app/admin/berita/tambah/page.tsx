@@ -20,7 +20,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { createClient } from "@/lib/supabase/client";
+import { createBeritaAction } from "@/app/admin/berita/actions";
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Upload, Image as ImageIcon, X, Calendar, Save } from "lucide-react";
@@ -43,7 +43,6 @@ export default function TambahBeritaPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const supabase = createClient();
   const router = useRouter();
 
   const form = useForm<NewsFormData>({
@@ -84,65 +83,31 @@ export default function TambahBeritaPage() {
     setIsSubmitting(true);
 
     try {
-      // 1. Dapatkan ID admin yang sedang login
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast.error("Tidak dapat menemukan user. Silakan login ulang.");
+      const fd = new FormData();
+      fd.append('judul', data.judul);
+      fd.append('ringkasan', data.ringkasan);
+      fd.append('isiLengkap', data.isiLengkap);
+      fd.append('status', data.status);
+      fd.append('tanggalTerbit', data.tanggalTerbit);
+      fd.append('tambahkanKeGaleri', data.tambahkanKeGaleri ? 'true' : 'false');
+      fd.append('image', imageFile);
+
+      const res = await createBeritaAction(fd);
+
+      if (!res.success) {
+        console.error('Error adding news:', res.message);
+        toast.error(res.message || 'Terjadi kesalahan saat menyimpan berita');
         return;
-      }
-
-      // 2. Upload gambar ke Storage
-      const fileName = `${Date.now()}-${imageFile.name.replace(/\s/g, '_')}`;
-      const filePath = `berita/${fileName}`;
-      const { error: uploadError } = await supabase.storage
-        .from('konten-publik')
-        .upload(filePath, imageFile);
-      
-      if (uploadError) throw uploadError;
-
-      // 3. Dapatkan URL publik dari gambar yang baru di-upload
-      const { data: { publicUrl } } = supabase.storage
-        .from('konten-publik')
-        .getPublicUrl(filePath);
-
-      // 4. Simpan data berita ke tabel 'berita'
-      const { error: insertError } = await supabase
-        .from('berita')
-        .insert({
-          judul: data.judul,
-          ringkasan: data.ringkasan,
-          isi_lengkap: data.isiLengkap,
-          image_url: publicUrl,
-          penulis_id: user.id,
-          status: data.status,
-          tanggal_terbit: data.tanggalTerbit,
-        });
-      
-      if (insertError) throw insertError;
-
-      // 5. Tambahkan ke galeri jika diminta
-      if (data.tambahkanKeGaleri) {
-        const { error: galeriError } = await supabase
-          .from('galeri')
-          .insert({
-            image_url: publicUrl,
-            keterangan: data.judul,
-            kategori: 'Berita',
-          });
-        
-        if (galeriError) {
-          console.warn('Gagal menambahkan ke galeri:', galeriError);
-          toast.warning('Berita berhasil disimpan, tetapi gagal menambahkan ke galeri');
-        }
       }
 
       toast.success('Berita berhasil ditambahkan!');
       router.push('/admin/berita');
       router.refresh();
 
-    } catch (error) {
-      console.error('Error adding news:', error);
-      toast.error('Terjadi kesalahan saat menyimpan berita');
+    } catch (error: unknown) {
+      const msg = (error as Error)?.message || 'Terjadi kesalahan sistem saat menyimpan berita';
+      console.error('Error adding news:', msg);
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }

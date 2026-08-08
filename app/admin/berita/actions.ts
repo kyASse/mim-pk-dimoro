@@ -86,4 +86,98 @@ export async function updateBeritaAction(beritaId: number, dataToUpdate: UpdateB
     revalidatePath(`/admin/berita/edit/${beritaId}`);
 
     return { success: true, message: "Berita berhasil diperbarui." };
-}
+}
+
+// =================================================================
+// ACTION UNTUK MEMBUAT BERITA BARU
+// =================================================================
+
+/**
+ * Membuat berita baru beserta upload gambar utama dan opsi tambah ke galeri.
+ */
+export async function createBeritaAction(formData: FormData): Promise<{ success: boolean; message?: string }> {
+    const supabase = await createClient();
+
+    try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+            return { success: false, message: "Sesi telah berakhir. Silakan login kembali." };
+        }
+
+        const judul = (formData.get('judul') as string)?.trim();
+        const ringkasan = (formData.get('ringkasan') as string)?.trim();
+        const isiLengkap = (formData.get('isiLengkap') as string)?.trim();
+        const status = (formData.get('status') as string) || 'draft';
+        const tanggalTerbit = (formData.get('tanggalTerbit') as string) || new Date().toISOString().split('T')[0];
+        const tambahkanKeGaleri = formData.get('tambahkanKeGaleri') === 'true';
+        const imageFile = formData.get('image') as File | null;
+
+        if (!judul || !ringkasan || !isiLengkap) {
+            return { success: false, message: "Judul, ringkasan, dan isi berita wajib diisi." };
+        }
+
+        if (!imageFile || imageFile.size === 0) {
+            return { success: false, message: "Gambar utama berita wajib diunggah." };
+        }
+
+        if (imageFile.size > 10 * 1024 * 1024) {
+            return { success: false, message: "Ukuran file gambar terlalu besar (maksimal 10MB)." };
+        }
+
+        // Upload gambar ke Storage
+        const fileName = `${Date.now()}-${imageFile.name.replace(/\s+/g, '_')}`;
+        const filePath = `berita/${fileName}`;
+        const { error: uploadError } = await supabase.storage
+            .from('konten-publik')
+            .upload(filePath, imageFile);
+
+        if (uploadError) {
+            return { success: false, message: `Gagal mengunggah gambar: ${uploadError.message}` };
+        }
+
+        // Dapatkan URL publik gambar
+        const { data: { publicUrl } } = supabase.storage
+            .from('konten-publik')
+            .getPublicUrl(filePath);
+
+        // Simpan data berita
+        const { error: insertError } = await supabase
+            .from('berita')
+            .insert({
+                judul,
+                ringkasan,
+                isi_lengkap: isiLengkap,
+                image_url: publicUrl,
+                penulis_id: user.id,
+                status,
+                tanggal_terbit: tanggalTerbit,
+            });
+
+        if (insertError) {
+            // Cleanup upload jika simpan DB gagal
+            await supabase.storage.from('konten-publik').remove([filePath]);
+            return { success: false, message: `Gagal menyimpan berita: ${insertError.message}` };
+        }
+
+        // Tambahkan ke galeri jika diminta
+        if (tambahkanKeGaleri) {
+            await supabase
+                .from('galeri')
+                .insert({
+                    image_url: publicUrl,
+                    keterangan: judul,
+                    kategori: 'Berita',
+                });
+        }
+
+        revalidatePath('/admin/berita');
+        revalidatePath('/galeri');
+        revalidatePath('/berita');
+
+        return { success: true, message: "Berita berhasil ditambahkan." };
+    } catch (err: unknown) {
+        const msg = (err as Error)?.message || "Terjadi kesalahan sistem saat membuat berita.";
+        return { success: false, message: msg };
+    }
+}
+
