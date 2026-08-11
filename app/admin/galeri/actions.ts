@@ -3,13 +3,14 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { extractStoragePath } from "@/lib/utils/storage";
 
-export async function deleteGaleriAction(galeriId: number, imageUrl: string) {
+export async function deleteGaleriAction(galeriId: number, imageUrl: string): Promise<{ success: boolean; message?: string }> {
     const supabase = await createClient();
 
     // Hapus gambar dari Storage
     try {
-        const path = new URL(imageUrl).pathname.split('/konten-publik/')[1];
+        const path = extractStoragePath(imageUrl, 'konten-publik');
         if (path) {
             await supabase.storage.from('konten-publik').remove([path]);
         }
@@ -34,13 +35,30 @@ export async function deleteGaleriAction(galeriId: number, imageUrl: string) {
 export async function updateGaleriAction(
     galeriId: number,
     { keterangan, kategori, image }: { keterangan: string; kategori: string; image?: File | null }
-) {
+): Promise<{ success: boolean; message?: string }> {
     const supabase = await createClient();
 
     let image_url: string | undefined;
 
     // Jika ada file gambar baru, upload ke storage dan dapatkan url baru
     if (image) {
+        if (image.size > 5 * 1024 * 1024) {
+            return { success: false, message: "Ukuran file terlalu besar (maksimal 5MB)." };
+        }
+
+        const { data: oldData } = await supabase
+            .from('galeri')
+            .select('image_url')
+            .eq('id', galeriId)
+            .single();
+
+        if (oldData?.image_url) {
+            const oldPath = extractStoragePath(oldData.image_url, 'konten-publik');
+            if (oldPath) {
+                await supabase.storage.from('konten-publik').remove([oldPath]);
+            }
+        }
+
         // Ganti 'konten-publik' sesuai bucket Anda
         const fileName = `galeri/galeri-${galeriId}-${Date.now()}-${image.name}`;
         const { data, error } = await supabase.storage
@@ -65,5 +83,5 @@ export async function updateGaleriAction(
     if (error) return { success: false, message: error.message };
 
     revalidatePath('/admin/galeri');
-    return { success: true };
-}
+    return { success: true, message: "Galeri berhasil diperbarui." };
+}

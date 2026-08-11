@@ -5,17 +5,18 @@ import ProgramCard from "./ProgramCard";
 import { Button } from "../ui/button";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { EXCELLENT_PROGRAMS } from "@/lib/school-data";
 
-const programs = [
+const fallbackPrograms = [
     {
-        title: "Tahfidz Al-Qur'an",
-        description: "Program hafalan Al-Qur'an dengan target capaian terukur, dibimbing dengan metode talaqqi menyenangkan.",
+        title: EXCELLENT_PROGRAMS?.tahfidz?.title || "Tahfidz Al-Qur'an",
+        description: EXCELLENT_PROGRAMS?.tahfidz?.target || "Program hafalan Al-Qur'an dengan target capaian terukur, dibimbing dengan metode talaqqi menyenangkan.",
         image: "/images/mim_tahfidz_learning.jpg",
         href: "/program/tahfidz"
     },
     {
-        title: "Sains & Teknologi",
-        description: "Pengembangan kemampuan berpikir kritis melalui praktikum sains dasar dan literasi teknologi digital.",
+        title: EXCELLENT_PROGRAMS?.klinikBelajar?.title || "Sains & Teknologi",
+        description: EXCELLENT_PROGRAMS?.klinikBelajar?.description || "Pengembangan kemampuan berpikir kritis melalui praktikum sains dasar dan literasi teknologi digital.",
         image: "/images/mim_hero_main.jpg",
         href: "/program/sains-teknologi"
     },
@@ -44,7 +45,7 @@ export default function ProgramSection() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {programs.map((program, index) => (
+                    {fallbackPrograms.map((program, index) => (
                         <motion.div
                             key={program.title}
                             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}

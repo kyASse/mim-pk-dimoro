@@ -11,18 +11,10 @@ export async function createAdminClient() {
     throw new Error('FATAL: SUPABASE_SERVICE_ROLE_KEY atau NEXT_PUBLIC_SUPABASE_URL tidak terkonfigurasi.');
   }
 
-  // Gunakan service role tanpa cookies/Authorization user agar benar-benar bypass RLS
   return createClient(url, serviceRoleKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,
     },
-    global: {
-      headers: {
-        // Pastikan menggunakan service role untuk otorisasi agar melewati RLS
-        Authorization: `Bearer ${serviceRoleKey}`,
-        apikey: serviceRoleKey,
-      },
-    }
   });
 }
