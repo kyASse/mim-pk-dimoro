@@ -1,72 +1,118 @@
-"use client"
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Award, Heart, Users, ChevronRight } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
 import { SCHOOL_NAME, SCHOOL_ABOUT_DESCRIPTION } from "@/lib/school-config";
 
 export default function AboutSection() {
+    const shouldReduceMotion = useReducedMotion();
+
     return (
-        <section className="py-16 bg-secondary/20">
+        <section className="py-20 bg-background overflow-hidden">
             <div className="container mx-auto px-4">
-                <div className="flex flex-col md:flex-row items-center gap-8">
-                    <div className="md:w-1/2">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-4">Selamat Datang di {SCHOOL_NAME}</h2>
-                        <div className="text-lg text-muted-foreground mb-6">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    
+                    {/* Left: Text Content */}
+                    <motion.div 
+                        initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true, amount: 0.3 }}
+                        transition={{ duration: 0.6 }}
+                        className="lg:col-span-6"
+                    >
+                        <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-6 leading-tight">
+                            Selamat Datang di {SCHOOL_NAME}
+                        </h2>
+                        
+                        <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-8">
                             {SCHOOL_ABOUT_DESCRIPTION}
-                        </div>
-                        <div className="space-y-4">
-                            <div className="flex items-start">
-                                <div className="mt-1 bg-accent/20 p-2 rounded-full">
-                                    <Award className=" h-5 w-6 text-accent-foreground"/>
+                        </p>
+
+                        <div className="space-y-6 mb-8">
+                            <div className="flex items-start gap-4">
+                                <div className="p-3 rounded-2xl bg-primary/10 text-primary shrink-0 mt-1">
+                                    <Award className="h-5 w-5" />
                                 </div>
-                                <div className="ml-4">
-                                    <h3 className="font-semibold text-lg">Pendidikan Berkualitas</h3>
-                                    <p className="text-muted-foreground">Kurikulum terintegrasi dengan nilai-nilai Islami</p>
-                                </div>
-                            </div>
-                            <div className="flex items-start">
-                                <div className=" mt-1 bg-primary/20 p-2 rounded-full">
-                                    <Heart className="h-5 w-6 text-primary-foreground"/>
-                                </div>
-                                <div className="ml-4">
-                                    <h3 className="font-semibold text-lg">Pembentukan Karakter</h3>
-                                    <p className="text-muted-foreground">Membangun akhlak mulia sejak usia sekolah dasar</p>
+                                <div>
+                                    <h3 className="font-semibold text-base text-foreground mb-1">
+                                        Pendidikan Berkualitas
+                                    </h3>
+                                    <p className="text-sm text-muted-foreground leading-relaxed">
+                                        Kurikulum terintegrasi antara pendidikan nasional dan ilmu keislaman secara seimbang.
+                                    </p>
                                 </div>
                             </div>
-                            <div className="flex items-start">
-                                <div className=" mt-1 bg-highlight/20 p-2 rounded-full">
-                                    <Users className="h-5 w-6 text-primary-foreground"/>
+
+                            <div className="flex items-start gap-4">
+                                <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0 mt-1">
+                                    <Heart className="h-5 w-5" />
                                 </div>
-                                <div className="ml-4">
-                                    <h3 className="font-semibold text-lg">Tenaga Pendidik Profesional</h3>
-                                    <p className="text-muted-foreground">Guru yang berpengalaman dan berdedikasi tinggi</p>
+                                <div>
+                                    <h3 className="font-semibold text-base text-foreground mb-1">
+                                        Pembentukan Karakter
+                                    </h3>
+                                    <p className="text-sm text-muted-foreground leading-relaxed">
+                                        Menanamkan kebiasaan ibadah harian dan akhlakul karimah sejak dini.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-start gap-4">
+                                <div className="p-3 rounded-2xl bg-sky-500/10 text-sky-600 dark:text-sky-400 shrink-0 mt-1">
+                                    <Users className="h-5 w-5" />
+                                </div>
+                                <div>
+                                    <h3 className="font-semibold text-base text-foreground mb-1">
+                                        Pendidik Berdedikasi
+                                    </h3>
+                                    <p className="text-sm text-muted-foreground leading-relaxed">
+                                        Guru yang berpengalaman dalam membimbing dan mengayomi potensi setiap siswa.
+                                    </p>
                                 </div>
                             </div>
                         </div>
-                        <div className="mt-8">
-                            <button className=" rounded-full bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 font-semibold transition-colors">
-                                <Link href="/tentang-kami" className="flex items-center gap-2">
-                                    Pelajari Lebih Lanjut
-                                    <ChevronRight className="h-4 w-4" />
-                                </Link>
-                            </button>
+
+                        <div>
+                            <Link href="/tentang-kami" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 group transition-colors">
+                                <span>Pelajari Selengkapnya Tentang Kami</span>
+                                <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                            </Link>
                         </div>
-                    </div>
-                    <div className="md:w-1/2 relative mt-8 md:mt-0">
-                        <div className="relative">
-                            <div className="absolute -top-4 -left-4 w-24 h-24 bg-primary rounded-full -z-10"></div>
-                            <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-primary rounded-full -z-10"></div>
-                            <Image
-                            src="https://placehold.co/600x400/059669/ffffff.png?text=Profil+Sekolah"
-                            alt={`Kegiatan di ${SCHOOL_NAME}`}
-                            width={600}
-                            height={400}
-                            className="rounded-2xl shadow-lg "
-                            />
+                    </motion.div>
+
+                    {/* Right: Visual Card */}
+                    <motion.div 
+                        initial={{ opacity: 0, x: shouldReduceMotion ? 0 : 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true, amount: 0.3 }}
+                        transition={{ duration: 0.6 }}
+                        className="lg:col-span-6 relative"
+                    >
+                        <div className="relative rounded-3xl overflow-hidden shadow-xl border border-border/50 bg-card">
+                            <div className="relative aspect-[4/3] w-full overflow-hidden">
+                                <Image
+                                    src="/images/mim_tahfidz_learning.jpg"
+                                    alt={`Kegiatan pembelajaran siswa di ${SCHOOL_NAME}`}
+                                    fill
+                                    className="object-cover"
+                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                />
+                            </div>
                         </div>
-                    </div>
+
+                        {/* Secondary Overlaid Accent Card */}
+                        <div className="hidden sm:block absolute -bottom-6 -right-6 p-5 bg-card border border-border/80 rounded-2xl shadow-xl max-w-xs">
+                            <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-1">Lingkungan Kondusif</p>
+                            <p className="text-xs text-muted-foreground leading-relaxed">
+                                Ruang kelas ramah anak dengan suasana belajar yang aman, nyaman, dan menyenangkan.
+                            </p>
+                        </div>
+                    </motion.div>
+
                 </div>
             </div>
         </section>
-    )
+    );
 }

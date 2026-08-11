@@ -1,11 +1,10 @@
-"use client"
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { ChevronRight, Calendar } from "lucide-react";
 
-// Tipe untuk data berita
 type NewsItem = {
     id: string;
     judul: string;
@@ -22,48 +21,63 @@ interface NewsCardProps {
 }
 
 export default function NewsCard({ item, index }: NewsCardProps) {
-    // Format tanggal ke bahasa Indonesia
+    const shouldReduceMotion = useReducedMotion();
+
     const formatTanggal = (tanggal: string) => {
-        const date = new Date(tanggal);
-        return date.toLocaleDateString('id-ID', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric'
-        });
+        try {
+            const date = new Date(tanggal);
+            return date.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+        } catch {
+            return tanggal;
+        }
     };
 
     return (
         <motion.div
-            key={item.id}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            whileHover={{ scale: 1.05 }}
+            viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
-            viewport={{ once: true }}
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 ease-in-out"
+            className="bg-card rounded-3xl border border-border/60 shadow-sm overflow-hidden flex flex-col justify-between hover:shadow-md hover:border-primary/40 transition-all group"
         >
-            <div className="relative h-48">
-                <Image
-                    src={item.image_url || '/placeholder-news.jpg'}
-                    alt={item.judul}
-                    fill
-                    className="object-cover"
-                />  
-            </div>
-            <div className="p-6">
-                <div className="flex items-center text-sm text-muted-foreground mb-2">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    <span>{formatTanggal(item.tanggal_terbit)}</span>
+            <div>
+                <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted">
+                    <Image
+                        src={item.image_url || '/images/mim_tahfidz_learning.jpg'}
+                        alt={item.judul}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
                 </div>
-                <h3 className="text-xl font-bold mb-2 line-clamp-2">{item.judul}</h3>
-                <p className="text-muted-foreground mb-4 line-clamp-3">
-                    {item.ringkasan || 'Baca artikel lengkap untuk mengetahui informasi selengkapnya.'}
-                </p>
+                
+                <div className="p-6">
+                    <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-3">
+                        <Calendar className="w-3.5 h-3.5 text-primary" />
+                        <span>{formatTanggal(item.tanggal_terbit)}</span>
+                    </div>
+
+                    <h3 className="text-lg font-bold text-foreground mb-3 line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+                        {item.judul}
+                    </h3>
+
+                    <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed mb-4">
+                        {item.ringkasan || 'Baca berita selengkapnya mengenai kegiatan dan prestasi di sekolah.'}
+                    </p>
+                </div>
+            </div>
+
+            <div className="px-6 pb-6 pt-0">
                 <Link 
                     href={`/berita/${item.id}`} 
-                    className="text-accent-foreground hover:underline inline-flex items-center transition-colors"
+                    className="inline-flex items-center text-xs font-semibold text-primary hover:underline gap-1"
                 >
-                    Baca Selengkapnya <ChevronRight className="ml-2 w-4 h-4" />
+                    <span>Baca Selengkapnya</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
                 </Link>
             </div>
         </motion.div>
