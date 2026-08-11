@@ -35,12 +35,12 @@ export default function ProgramCard({ title, description, image, href }: Program
                     </p>
                 </div>
 
-                <Link href={href} className="w-full block">
-                    <Button variant="outline" className="w-full rounded-full border-border/80 hover:bg-primary/10 hover:text-primary hover:border-primary/40 font-semibold justify-between">
+                <Button asChild variant="outline" className="w-full rounded-full border-border/80 hover:bg-primary/10 hover:text-primary hover:border-primary/40 font-semibold justify-between">
+                    <Link href={href}>
                         <span>Pelajari Program</span>
                         <ChevronRight className="h-4 w-4" />
-                    </Button>
-                </Link>
+                    </Link>
+                </Button>
             </div>
         </div>
     );

@@ -64,12 +64,12 @@ export default function ProgramSection() {
                 </div>
 
                 <div className="text-center mt-12">
-                    <Link href="/program">
-                        <Button className="rounded-full border-border hover:bg-muted font-semibold px-6" variant="outline">
+                    <Button asChild className="rounded-full border-border hover:bg-muted font-semibold px-6" variant="outline">
+                        <Link href="/program">
                             <span>Lihat Semua Program Unggulan</span>
                             <ChevronRight className="ml-1.5 h-4 w-4" />
-                        </Button>
-                    </Link>
+                        </Link>
+                    </Button>
                 </div>
 
             </div>
