@@ -1,3 +1,29 @@
+# AboutSection & ProgramSection Integration Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Integrate and refine `AboutSection` (Headmaster Welcome) and `ProgramSection` (Flagship Programs Bento Grid) on the MIM PK Dimoro Home Page following `tasteskill v2` guidelines.
+
+**Architecture:** Use centralized school data (`lib/school-data.ts`) for Headmaster Welcome and Excellent Programs, applying an asymmetric split storytelling layout for `AboutSection` and a bento grid for `ProgramSection`. Ensure zero em-dashes, `useReducedMotion()` accessibility, and WCAG AA contrast compliance.
+
+**Tech Stack:** Next.js 15+ (App Router), TypeScript, Tailwind CSS, Motion (`motion/react`), Vitest, Testing Library.
+
+---
+
+### Task 1: Refine `AboutSection` Component
+
+**Files:**
+- Modify: `components/home/AboutSection.tsx`
+- Test: `components/home/__tests__/home-sections.test.tsx`
+
+- [ ] **Step 1: Verify `AboutSection` test suite passes before modifications**
+
+Run: `npm test -- components/home/__tests__/home-sections.test.tsx`
+Expected: PASS
+
+- [ ] **Step 2: Update `AboutSection.tsx` for asymmetric split layout**
+
+```tsx
 "use client";
 
 import Image from "next/image";
@@ -120,7 +146,6 @@ export default function AboutSection() {
                             </div>
                         </div>
 
-                        {/* Secondary Overlaid Accent Card */}
                         <div className="hidden sm:block absolute -bottom-6 -right-6 p-5 bg-card border border-border/80 rounded-2xl shadow-xl max-w-xs z-10">
                             <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-1">Lingkungan Kondusif</p>
                             <p className="text-xs text-muted-foreground leading-relaxed">
@@ -134,3 +159,172 @@ export default function AboutSection() {
         </section>
     );
 }
+```
+
+- [ ] **Step 3: Run unit tests to verify `AboutSection` passes**
+
+Run: `npm test -- components/home/__tests__/home-sections.test.tsx`
+Expected: PASS
+
+- [ ] **Step 4: Commit `AboutSection` updates**
+
+```bash
+git add components/home/AboutSection.tsx
+git commit -m "feat(home): refine AboutSection with headmaster welcome and asymmetric split storytelling"
+```
+
+---
+
+### Task 2: Refine `ProgramSection` & `ProgramCard` Components
+
+**Files:**
+- Modify: `components/home/ProgramSection.tsx`
+- Modify: `components/home/ProgramCard.tsx`
+- Test: `components/home/__tests__/home-sections.test.tsx`
+
+- [ ] **Step 1: Update `ProgramSection.tsx` with centralized `EXCELLENT_PROGRAMS` data**
+
+```tsx
+"use client";
+
+import { motion, useReducedMotion } from "motion/react";
+import ProgramCard from "./ProgramCard";
+import { Button } from "../ui/button";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { EXCELLENT_PROGRAMS } from "@/lib/school-data";
+
+const programs = [
+    {
+        title: EXCELLENT_PROGRAMS.tahfidz.title,
+        description: EXCELLENT_PROGRAMS.tahfidz.target,
+        image: "/images/mim_tahfidz_learning.jpg",
+        href: "/program/tahfidz"
+    },
+    {
+        title: EXCELLENT_PROGRAMS.klinikBelajar.title,
+        description: EXCELLENT_PROGRAMS.klinikBelajar.description,
+        image: "/images/mim_hero_main.jpg",
+        href: "/program/klinik-belajar"
+    },
+    {
+        title: "Ekstrakurikuler",
+        description: "Berbagai pilihan kegiatan mulai dari seni bela diri Tapak Suci, kepanduan Hizbul Wathan (HW), hingga Robotika.",
+        image: "/images/mim_tahfidz_learning.jpg",
+        href: "/program/ekstrakurikuler"
+    }
+];
+
+export default function ProgramSection() {
+    const shouldReduceMotion = useReducedMotion();
+
+    return (
+        <section className="py-20 bg-muted/40 border-y border-border/40">
+            <div className="container mx-auto px-4">
+                
+                <div className="text-center max-w-3xl mx-auto mb-14">
+                    <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-4">
+                        Program Unggulan Madrasah
+                    </h2>
+                    <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
+                        Kami menyediakan program akademik dan keislaman terpadu untuk mengembangkan seluruh minat, bakat, dan potensi setiap siswa secara optimal.
+                    </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {programs.map((program, index) => (
+                        <motion.div
+                            key={program.title}
+                            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, amount: 0.2 }}
+                            transition={{ duration: 0.5, delay: index * 0.1 }}
+                        >
+                            <ProgramCard
+                                title={program.title}
+                                description={program.description}
+                                image={program.image}
+                                href={program.href}
+                            />
+                        </motion.div>
+                    ))}
+                </div>
+
+                <div className="text-center mt-12">
+                    <Link href="/program">
+                        <Button className="rounded-full border-border hover:bg-muted font-semibold px-6" variant="outline">
+                            <span>Lihat Semua Program Unggulan</span>
+                            <ChevronRight className="ml-1.5 h-4 w-4" />
+                        </Button>
+                    </Link>
+                </div>
+
+            </div>
+        </section>
+    );
+}
+```
+
+- [ ] **Step 2: Update `ProgramCard.tsx` for clean interactive button accessibility**
+
+```tsx
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
+import { Button } from "../ui/button";
+
+interface ProgramCardProps {
+    title: string;
+    description: string;
+    image: string;
+    href: string;
+}
+
+export default function ProgramCard({ title, description, image, href }: ProgramCardProps) {
+    return (
+        <div className="overflow-hidden rounded-3xl bg-card border border-border/60 shadow-sm flex flex-col h-full hover:shadow-md hover:border-primary/40 transition-all group">
+            <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted">
+                <Image
+                    src={image}
+                    alt={title}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+            </div>
+            
+            <div className="p-6 flex flex-col flex-grow justify-between">
+                <div>
+                    <h3 className="text-xl font-bold text-foreground mb-3 leading-snug group-hover:text-primary transition-colors">
+                        {title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-6">
+                        {description}
+                    </p>
+                </div>
+
+                <Link href={href} className="w-full block">
+                    <Button variant="outline" className="w-full rounded-full border-border/80 hover:bg-primary/10 hover:text-primary hover:border-primary/40 font-semibold justify-between">
+                        <span>Pelajari Program</span>
+                        <ChevronRight className="h-4 w-4" />
+                    </Button>
+                </Link>
+            </div>
+        </div>
+    );
+}
+```
+
+- [ ] **Step 3: Run full Vitest test suite and TypeScript type check**
+
+Run: `npx tsc --noEmit; npm test`
+Expected: 0 TS errors, 16 test files passed (87 tests)
+
+- [ ] **Step 4: Commit `ProgramSection` updates**
+
+```bash
+git add components/home/ProgramSection.tsx components/home/ProgramCard.tsx
+git commit -m "feat(home): update ProgramSection to use EXCELLENT_PROGRAMS with responsive bento cards"
+```

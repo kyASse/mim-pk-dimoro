@@ -1,130 +1,153 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button"; 
-import { ChevronRight, UserPlus, } from "lucide-react";
-import { motion } from "motion/react";
+import { ChevronRight, UserPlus, Sparkles, ShieldCheck } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
 import { SCHOOL_NAME, SCHOOL_TAGLINE } from "@/lib/school-config";
 
-const slides = [
-    {
-        id: 1,
-        image: "https://placehold.co/1920x1080/059669/ffffff.png?text=MI+Muhammadiyah+Dimoro",
-        alt: `Kegiatan belajar di ${SCHOOL_NAME}`
-    },
-    {
-        id: 2,
-        image: "https://placehold.co/1920x1080/10b981/ffffff.png?text=Lingkungan+Islami",
-        alt: `Lingkungan Islami di ${SCHOOL_NAME}`
-    },
-    {
-        id: 3,
-        image: "https://placehold.co/1920x1080/34d399/ffffff.png?text=Generasi+Berprestasi",
-        alt: `Siswa berprestasi di ${SCHOOL_NAME}`
-    }
-]
-
 export default function HomeHero() {
-    const [currentSlide, setCurrentSlide] = useState(0);
+    const shouldReduceMotion = useReducedMotion();
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-        }, 5000);
-        return () => clearInterval(interval);
-    }, []);
+    const fadeInVariants = {
+        hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
+        visible: (custom: number) => ({
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.6, delay: custom * 0.15, ease: [0.16, 1, 0.3, 1] as const }
+        })
+    };
 
-    return(
-        <section className="relative h-[600px] md:h-[700px] overflow-hidden">
-            {/* Background Slideshow */}
-            <div className="absolute inset-0 z-0">
-                {slides.map((slide, index) => (
-                    <div 
-                        key={slide.id}
-                        className=" absolute inset-0 transition-opacity duration-1000 ease-in-out"
-                        style={{ opacity: currentSlide === index ? 1 : 0 }}
-                    >
-                        <Image
-                            src={slide.image}
-                            alt={slide.alt}
-                            fill
-                            priority={index === 0}
-                            className=" object-cover "
-                        />
-                        <div className=" absolute inset-0 bg-gradient-to-r from-black/60 to to-black/30" />
+    return (
+        <section className="relative min-h-[100dvh] pt-20 md:pt-24 pb-16 flex items-center overflow-hidden bg-background">
+            {/* Ambient Background Accents */}
+            <div className="absolute top-0 right-0 -z-10 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-10 left-0 -z-10 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="container mx-auto px-4">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    
+                    {/* Left Column: Value Prop & CTAs */}
+                    <div className="lg:col-span-7 flex flex-col justify-center">
+                        
+                        {/* 1. Eyebrow Badge */}
+                        <motion.div
+                            custom={0}
+                            initial="hidden"
+                            animate="visible"
+                            variants={fadeInVariants}
+                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide w-max mb-6 border border-primary/20"
+                        >
+                            <Sparkles className="w-3.5 h-3.5" />
+                            <span>Madrasah Ibtidaiyah Program Khusus</span>
+                        </motion.div>
+
+                        {/* 2. Headline */}
+                        <motion.h1
+                            custom={1}
+                            initial="hidden"
+                            animate="visible"
+                            variants={fadeInVariants}
+                            className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground mb-6 leading-[1.1]"
+                        >
+                            {SCHOOL_NAME}
+                        </motion.h1>
+
+                        {/* 3. Subtext (Max 20 words) */}
+                        <motion.p
+                            custom={2}
+                            initial="hidden"
+                            animate="visible"
+                            variants={fadeInVariants}
+                            className="text-lg md:text-xl text-muted-foreground font-medium mb-8 max-w-[50ch] leading-relaxed"
+                        >
+                            {SCHOOL_TAGLINE}
+                        </motion.p>
+
+                        {/* 4. Action CTAs */}
+                        <motion.div
+                            custom={3}
+                            initial="hidden"
+                            animate="visible"
+                            variants={fadeInVariants}
+                            className="flex flex-col sm:flex-row gap-4"
+                        >
+                            <Link href="/pendaftaran" className="w-full sm:w-auto">
+                                <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-full shadow-lg shadow-primary/25 h-12 px-7">
+                                    <UserPlus className="w-4 h-4 mr-2" />
+                                    Daftar PPDB
+                                </Button>
+                            </Link>
+                            <Link href="/program" className="w-full sm:w-auto">
+                                <Button size="lg" variant="outline" className="w-full sm:w-auto border-border hover:bg-muted font-semibold rounded-full h-12 px-7">
+                                    <ChevronRight className="w-4 h-4 mr-2" />
+                                    Program Unggulan
+                                </Button>
+                            </Link>
+                        </motion.div>
+
+                        {/* Trust Highlights */}
+                        <motion.div
+                            custom={4}
+                            initial="hidden"
+                            animate="visible"
+                            variants={fadeInVariants}
+                            className="mt-10 pt-6 border-t border-border/60 flex items-center gap-6 text-xs text-muted-foreground font-medium"
+                        >
+                            <div className="flex items-center gap-2">
+                                <ShieldCheck className="w-4 h-4 text-primary" />
+                                <span>Akreditasi Unggul</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                <span>Kurikulum Terpadu Islami</span>
+                            </div>
+                        </motion.div>
                     </div>
-                ))}
-            </div>
 
-            {/* Content */}
-            <div className=" relative z-10 container mx-auto px-4 h-full flex items-center">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8 }}
-                    className=" max-w-3xl text-white "
-                >
-                    <motion.h1
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                        className=" text-4xl md:text-5xl lg:text-6xl font-bold mb-4"
-                    >
-                        {SCHOOL_NAME}
-                    </motion.h1>
-                    <motion.p
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.4 }}
-                        className=" text-xl md:text-2xl font-medium mb-2"
-                    >
-                        Madrasah Ibtidaiyah Program Khusus
-                    </motion.p>
-                    <motion.p
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.6 }}
-                        className=" text-lg md:text-xl font-medium mb-8 text-white/90"
-                    >
-                        {SCHOOL_TAGLINE}
-                    </motion.p>
+                    {/* Right Column: Hero Visual Card */}
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.8 }}
-                        className=" flex flex-col sm:flex-row gap-4"
+                        initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] as const }}
+                        className="lg:col-span-5 relative"
                     >
-                        <Link href="/pendaftaran" className=" w-full sm:w-auto">
-                            <Button size="lg" className=" w-full sm:w-auto bg-primary hover:bg-primary/80 text-primary-foreground font-semibold">
-                                <UserPlus className=" mr-2" />
-                                Daftar Sekarang
-                            </Button>
-                        </Link>
-                        <Link href="/program" className=" w-full sm:w-auto">
-                            <Button size="lg" variant="outline" className=" w-full sm:w-auto bg-white hover:bg-primary/80 border-white text-primary-foreground hover:text-primary-foreground font-semibold">
-                                <ChevronRight className=" mr-2" />
-                                Program Kami
-                            </Button>
-                        </Link>
-                    </motion.div>
-                </motion.div>
-            </div>
+                        <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-border/50 bg-card">
+                            <div className="relative aspect-[4/3] w-full overflow-hidden">
+                                <Image
+                                    src="/images/mim_hero_main.jpg"
+                                    alt={`Gedung dan kegiatan di ${SCHOOL_NAME}`}
+                                    fill
+                                    priority
+                                    className="object-cover transition-transform duration-700 hover:scale-105"
+                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                            </div>
+                            <div className="absolute bottom-0 inset-x-0 p-6 text-white bg-gradient-to-t from-black/80 to-transparent">
+                                <span className="px-3 py-1 bg-primary/90 text-primary-foreground text-xs font-semibold rounded-full mb-2 inline-block">
+                                    Pendidikan Islam Modern
+                                </span>
+                                <h2 className="text-xl font-bold">MI Muhammadiyah Dimoro</h2>
+                                <p className="text-sm text-white/80 mt-1">Membentuk karakter Islami dan prestasi unggul.</p>
+                            </div>
+                        </div>
 
-            {/* Slide Indicators */}
-            <div className=" absolute bottom-6 left-0 right-0 z-10 flex justify-center space-x-2">
-                {slides.map((_, index) => (
-                    <button
-                        key={index}
-                        onClick={() => setCurrentSlide(index)}
-                        className={`w-3 h-3 rounded-full transition-all ${
-                            currentSlide === index ? 'bg-white scale-125' : 'bg-white/50'
-                            }`}
-                            aria-label={`Go to slide ${index + 1}`}
-                    />
-                ))}
+                        {/* Floating Decorative Card */}
+                        <div className="hidden sm:flex absolute -bottom-6 -left-6 bg-card border border-border/80 p-4 rounded-2xl shadow-xl items-center gap-3 max-w-xs z-10">
+                            <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-lg">
+                                59
+                            </div>
+                            <div>
+                                <p className="text-xs text-muted-foreground font-medium">Pengalaman</p>
+                                <p className="text-sm font-bold text-foreground">Berdiri Sejak 1967</p>
+                            </div>
+                        </div>
+                    </motion.div>
+
+                </div>
             </div>
         </section>
-    )
+    );
 }

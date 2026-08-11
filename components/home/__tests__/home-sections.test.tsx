@@ -1,9 +1,37 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import AboutSection from '@/components/home/AboutSection';
 import ProgramSection from '@/components/home/ProgramSection';
 import { HEADMASTER_WELCOME, EXCELLENT_PROGRAMS } from '@/lib/school-data';
+
+// Setup IntersectionObserver mock for Vitest test environment
+global.IntersectionObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+}));
+
+// Mock framer-motion & motion/react to avoid IntersectionObserver errors in test environment
+vi.mock("framer-motion", () => ({
+  motion: {
+    div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+    h2: ({ children, ...props }: any) => <h2 {...props}>{children}</h2>,
+    p: ({ children, ...props }: any) => <p {...props}>{children}</p>,
+  },
+  AnimatePresence: ({ children }: any) => <>{children}</>,
+  useReducedMotion: () => true,
+}));
+
+vi.mock("motion/react", () => ({
+  motion: {
+    div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+    h2: ({ children, ...props }: any) => <h2 {...props}>{children}</h2>,
+    p: ({ children, ...props }: any) => <p {...props}>{children}</p>,
+  },
+  AnimatePresence: ({ children }: any) => <>{children}</>,
+  useReducedMotion: () => true,
+}));
 
 describe('Home Page Components Integration', () => {
   describe('AboutSection', () => {
@@ -31,4 +59,3 @@ describe('Home Page Components Integration', () => {
     });
   });
 });
-
