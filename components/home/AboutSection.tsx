@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Award, Heart, Users, ChevronRight, Quote } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
-import { SCHOOL_NAME, SCHOOL_ABOUT_DESCRIPTION } from "@/lib/school-config";
+import { SCHOOL_NAME } from "@/lib/school-config";
 import { HEADMASTER_WELCOME } from "@/lib/school-data";
 
 export default function AboutSection() {
@@ -28,19 +28,15 @@ export default function AboutSection() {
                             <span>Sambutan Kepala Madrasah</span>
                         </div>
 
-                        <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-6 leading-tight">
+                        <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-4 leading-tight">
                             Selamat Datang di {SCHOOL_NAME}
                         </h2>
                         
                         <p className="text-base text-muted-foreground leading-relaxed mb-6 font-medium italic border-l-4 border-primary pl-4 py-1">
-                            "{HEADMASTER_WELCOME?.summary || SCHOOL_ABOUT_DESCRIPTION}"
+                            {HEADMASTER_WELCOME.summary}
                         </p>
 
-                        <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mb-8">
-                            {SCHOOL_ABOUT_DESCRIPTION}
-                        </p>
-
-                        <div className="space-y-5 mb-8">
+                        <div className="space-y-4 mb-8">
                             <div className="flex items-start gap-4">
                                 <div className="p-2.5 rounded-2xl bg-primary/10 text-primary shrink-0 mt-1">
                                     <Award className="h-5 w-5" />
@@ -85,8 +81,11 @@ export default function AboutSection() {
                         </div>
 
                         <div>
-                            <Link href="/tentang-kami" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 group transition-colors">
-                                <span>Pelajari Selengkapnya Tentang Kami</span>
+                            <Link 
+                                href="/tentang-kami" 
+                                className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 group transition-colors"
+                            >
+                                <span>Baca Sambutan Selengkapnya</span>
                                 <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                             </Link>
                         </div>
@@ -110,17 +109,15 @@ export default function AboutSection() {
                                     sizes="(max-width: 768px) 100vw, 50vw"
                                 />
                             </div>
-                            {HEADMASTER_WELCOME?.name && (
-                                <div className="p-4 bg-card text-card-foreground border-t border-border/40 flex items-center justify-between">
-                                    <div>
-                                        <h3 className="font-bold text-sm text-foreground">{HEADMASTER_WELCOME.name}</h3>
-                                        <p className="text-xs text-muted-foreground">{HEADMASTER_WELCOME.title}</p>
-                                    </div>
-                                    <span className="text-[11px] font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20">
-                                        Kepala Madrasah
-                                    </span>
+                            <div className="p-4 bg-card text-card-foreground border-t border-border/40 flex items-center justify-between">
+                                <div>
+                                    <h3 className="font-bold text-sm text-foreground">{HEADMASTER_WELCOME.name}</h3>
+                                    <p className="text-xs text-muted-foreground">{HEADMASTER_WELCOME.title}</p>
                                 </div>
-                            )}
+                                <span className="text-[11px] font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20">
+                                    Kepala Madrasah
+                                </span>
+                            </div>
                         </div>
 
                         {/* Secondary Overlaid Accent Card */}

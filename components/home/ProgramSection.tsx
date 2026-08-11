@@ -7,22 +7,22 @@ import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { EXCELLENT_PROGRAMS } from "@/lib/school-data";
 
-const fallbackPrograms = [
+const programs = [
     {
-        title: EXCELLENT_PROGRAMS?.tahfidz?.title || "Tahfidz Al-Qur'an",
-        description: EXCELLENT_PROGRAMS?.tahfidz?.target || "Program hafalan Al-Qur'an dengan target capaian terukur, dibimbing dengan metode talaqqi menyenangkan.",
+        title: EXCELLENT_PROGRAMS.tahfidz.title,
+        description: EXCELLENT_PROGRAMS.tahfidz.target,
         image: "/images/mim_tahfidz_learning.jpg",
         href: "/program/tahfidz"
     },
     {
-        title: EXCELLENT_PROGRAMS?.klinikBelajar?.title || "Sains & Teknologi",
-        description: EXCELLENT_PROGRAMS?.klinikBelajar?.description || "Pengembangan kemampuan berpikir kritis melalui praktikum sains dasar dan literasi teknologi digital.",
+        title: EXCELLENT_PROGRAMS.klinikBelajar.title,
+        description: EXCELLENT_PROGRAMS.klinikBelajar.description,
         image: "/images/mim_hero_main.jpg",
-        href: "/program/sains-teknologi"
+        href: "/program/klinik-belajar"
     },
     {
         title: "Ekstrakurikuler",
-        description: "Wadah pembinaan minat bakat melalui Hizbul Wathan, Tapak Suci, seni Al-Qur'an, dan olahraga prestasi.",
+        description: "Berbagai pilihan kegiatan mulai dari seni bela diri Tapak Suci, kepanduan Hizbul Wathan (HW), hingga Robotika.",
         image: "/images/mim_tahfidz_learning.jpg",
         href: "/program/ekstrakurikuler"
     }
@@ -45,7 +45,7 @@ export default function ProgramSection() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {fallbackPrograms.map((program, index) => (
+                    {programs.map((program, index) => (
                         <motion.div
                             key={program.title}
                             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
