@@ -15,10 +15,12 @@ export default async function PortalLaporanPage() {
   const siswaIds = siswa?.map(s => s.id) || [];
   const siswaNameMap = new Map<string, string>();
   for (const s of siswa || []) siswaNameMap.set(String(s.id), s.nama_lengkap);
-  const { data: laporan } = await supabase
-    .from('laporan_perkembangan')
-    .select('id, siswa_id, semester, tahun_ajaran, catatan_guru, dokumen_rapor_url')
-    .in('siswa_id', siswaIds.length ? siswaIds : ['__none__']);
+  const laporan = siswaIds.length > 0
+    ? (await supabase
+        .from('laporan_perkembangan')
+        .select('id, siswa_id, semester, tahun_ajaran, catatan_guru, dokumen_rapor_url')
+        .in('siswa_id', siswaIds)).data
+    : [];
 
   // Link unduh dipusatkan ke endpoint API agar akses & logging terkendali
 

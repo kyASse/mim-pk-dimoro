@@ -85,7 +85,7 @@ export default async function EditBiayaPage({ searchParams }: PageProps) {
                         </div>
                     </CardHeader>
                     <CardContent className="pt-6">
-                        <form action={updateBiayaAction} className="space-y-6">
+                        <form action={async (formData) => { 'use server'; await updateBiayaAction(formData); }} className="space-y-6">
                             <div className="rounded-xl border border-slate-100 dark:border-slate-800 overflow-hidden">
                                 <Table>
                                     <TableHeader className="bg-slate-50/50 dark:bg-slate-900/50">
@@ -161,7 +161,7 @@ export default async function EditBiayaPage({ searchParams }: PageProps) {
                             <p className="leading-relaxed">Catatan ini akan langsung terbit pada seksi SPP halaman Pendaftaran Publik.</p>
                         </div>
                         
-                        <form action={updateCatatanSppAction} className="space-y-6">
+                        <form action={async (formData) => { 'use server'; await updateCatatanSppAction(formData); }} className="space-y-6">
                             <div className="space-y-2">
                                 <Label htmlFor="catatan-spp" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                                     Isi Catatan SPP
