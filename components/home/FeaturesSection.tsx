@@ -24,7 +24,7 @@ export default function FeaturesSection() {
                 {/* Asymmetric Bento Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-12 gap-6">
                     
-                    {/* Cell 1: Large Featured Hero Tile (col-span-12 lg:col-span-7) */}
+                    {/* Cell 1: Large Featured Hero Tile (col-span-12 lg:col-span-7) - Primary Green */}
                     <motion.div
                         initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -38,7 +38,7 @@ export default function FeaturesSection() {
                             <div className="w-12 h-12 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center mb-6 shadow-md shadow-primary/20">
                                 <BookOpen className="w-6 h-6" />
                             </div>
-                            <span className="text-xs font-semibold uppercase tracking-wider text-primary mb-2 inline-block">
+                            <span className="text-xs font-semibold uppercase tracking-wider text-primary mb-2 inline-block px-2.5 py-0.5 rounded-full bg-primary/10">
                                 Fondasi Utama
                             </span>
                             <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
@@ -58,18 +58,21 @@ export default function FeaturesSection() {
                         </div>
                     </motion.div>
 
-                    {/* Cell 2: Program Tahfidz (col-span-12 md:col-span-6 lg:col-span-5) */}
+                    {/* Cell 2: Program Tahfidz (col-span-12 md:col-span-6 lg:col-span-5) - Amber Gold */}
                     <motion.div
                         initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, amount: 0.2 }}
                         transition={{ duration: 0.5, delay: 0.1 }}
-                        className="lg:col-span-5 p-8 rounded-3xl bg-card border border-border/60 shadow-sm flex flex-col justify-between hover:border-primary/40 transition-colors"
+                        className="lg:col-span-5 p-8 rounded-3xl bg-amber-gold-surface border border-amber-gold/40 shadow-sm flex flex-col justify-between hover:border-amber-gold/60 transition-colors"
                     >
                         <div>
-                            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-6">
+                            <div className="w-12 h-12 rounded-2xl bg-amber-gold/20 text-amber-800 dark:text-amber-200 flex items-center justify-center mb-6">
                                 <BookMarked className="w-6 h-6" />
                             </div>
+                            <span className="text-xs font-semibold uppercase tracking-wider text-amber-800 dark:text-amber-200 mb-2 inline-block px-2.5 py-0.5 rounded-full bg-amber-gold/20">
+                                Target Hafalan
+                            </span>
                             <h3 className="text-xl font-bold text-foreground mb-3">
                                 Program Tahfidz Al-Qur'an
                             </h3>
@@ -78,13 +81,13 @@ export default function FeaturesSection() {
                             </p>
                         </div>
 
-                        <div className="mt-6 pt-4 border-t border-border/40 flex items-center justify-between text-xs text-muted-foreground">
+                        <div className="mt-6 pt-4 border-t border-amber-gold/30 flex items-center justify-between text-xs text-muted-foreground">
                             <span>Target Bimbingan Harian</span>
-                            <span className="font-semibold text-foreground">Juz 30 & Surah Pilihan</span>
+                            <span className="font-semibold text-amber-900 dark:text-amber-100">Juz 30 & Surah Pilihan</span>
                         </div>
                     </motion.div>
 
-                    {/* Cell 3: Pembinaan Karakter (col-span-12 md:col-span-6 lg:col-span-5) */}
+                    {/* Cell 3: Pembinaan Karakter (col-span-12 md:col-span-6 lg:col-span-5) - Sage Mint */}
                     <motion.div
                         initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -93,9 +96,12 @@ export default function FeaturesSection() {
                         className="lg:col-span-5 p-8 rounded-3xl bg-card border border-border/60 shadow-sm flex flex-col justify-between hover:border-primary/40 transition-colors"
                     >
                         <div>
-                            <div className="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center mb-6">
+                            <div className="w-12 h-12 rounded-2xl bg-secondary/40 text-secondary-foreground flex items-center justify-center mb-6">
                                 <Brain className="w-6 h-6" />
                             </div>
+                            <span className="text-xs font-semibold uppercase tracking-wider text-secondary-foreground mb-2 inline-block px-2.5 py-0.5 rounded-full bg-secondary/30">
+                                Karakter Islami
+                            </span>
                             <h3 className="text-xl font-bold text-foreground mb-3">
                                 Pembinaan Pembentukan Karakter
                             </h3>
@@ -110,18 +116,21 @@ export default function FeaturesSection() {
                         </div>
                     </motion.div>
 
-                    {/* Cell 4: Ekstrakurikuler Variatif (col-span-12 lg:col-span-7) */}
+                    {/* Cell 4: Ekstrakurikuler Variatif (col-span-12 lg:col-span-7) - Sky Blue */}
                     <motion.div
                         initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, amount: 0.2 }}
                         transition={{ duration: 0.5, delay: 0.3 }}
-                        className="lg:col-span-7 p-8 rounded-3xl bg-card border border-border/60 shadow-sm flex flex-col justify-between hover:border-primary/40 transition-colors"
+                        className="lg:col-span-7 p-8 rounded-3xl bg-sky-500/5 border border-sky-500/30 shadow-sm flex flex-col justify-between hover:border-sky-500/50 transition-colors"
                     >
                         <div>
-                            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-6">
+                            <div className="w-12 h-12 rounded-2xl bg-sky-500/15 text-sky-700 dark:text-sky-300 flex items-center justify-center mb-6">
                                 <Activity className="w-6 h-6" />
                             </div>
+                            <span className="text-xs font-semibold uppercase tracking-wider text-sky-700 dark:text-sky-300 mb-2 inline-block px-2.5 py-0.5 rounded-full bg-sky-500/15">
+                                Talent & Minat
+                            </span>
                             <h3 className="text-xl font-bold text-foreground mb-3">
                                 Ekstrakurikuler Variatif
                             </h3>
@@ -130,9 +139,9 @@ export default function FeaturesSection() {
                             </p>
                         </div>
 
-                        <div className="mt-6 pt-4 border-t border-border/40 flex items-center justify-between text-xs text-muted-foreground">
+                        <div className="mt-6 pt-4 border-t border-sky-500/20 flex items-center justify-between text-xs text-muted-foreground">
                             <span>Pilihan Ekskul</span>
-                            <span className="font-semibold text-foreground">10+ Kegiatan Talent</span>
+                            <span className="font-semibold text-sky-800 dark:text-sky-200">10+ Kegiatan Talent</span>
                         </div>
                     </motion.div>
 
