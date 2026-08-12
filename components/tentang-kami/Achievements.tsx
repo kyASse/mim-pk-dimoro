@@ -14,6 +14,7 @@ type Prestasi = {
 
 export default function Achievements() {
     const [prestasi, setPrestasi] = useState<Prestasi[]>([]);
+    const [loading, setLoading] = useState(true);
     const shouldReduceMotion = useReducedMotion();
 
     useEffect(() => {
@@ -25,12 +26,14 @@ export default function Achievements() {
 
             if (error) {
                 console.error('Error fetching prestasi data:', error);
+                setLoading(false);
                 return;
             }
 
             if (data) {
                 setPrestasi(data);
             }
+            setLoading(false);
         };
 
         fetchData();
@@ -58,7 +61,25 @@ export default function Achievements() {
                 </div>
 
                 <div className="max-w-4xl mx-auto space-y-10">
-                    {Object.keys(groupedPrestasi).length === 0 ? (
+                    {loading ? (
+                        <div className="space-y-4 animate-pulse" data-testid="achievements-skeleton">
+                            <div className="h-7 w-32 bg-muted rounded-md" />
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {[...Array(3)].map((_, index) => (
+                                    <div
+                                        key={index}
+                                        className="flex items-start space-x-3.5 bg-card border border-border/60 rounded-2xl p-5 shadow-sm"
+                                    >
+                                        <div className="bg-muted w-10 h-10 rounded-xl shrink-0 mt-0.5" />
+                                        <div className="flex-1 space-y-2">
+                                            <div className="h-4 bg-muted rounded w-3/4" />
+                                            <div className="h-3 bg-muted rounded w-1/2" />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ) : Object.keys(groupedPrestasi).length === 0 ? (
                         <div className="text-center py-10 bg-card border border-border/50 rounded-3xl p-6 text-muted-foreground text-sm">
                             Belum ada data prestasi yang ditampilkan.
                         </div>
