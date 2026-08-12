@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { Award, Trophy, Medal, Star } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
@@ -10,11 +10,12 @@ type Prestasi = {
     tingkat: string;
     tahun: number;
     deskripsi: string;
-    // Add other fields if needed, matching your Supabase 'prestasi' table
 };
 
 export default function Achievements() {
     const [prestasi, setPrestasi] = useState<Prestasi[]>([]);
+    const shouldReduceMotion = useReducedMotion();
+
     useEffect(() => {
         const supabase = createClient();
         const fetchData = async () => {
@@ -27,13 +28,14 @@ export default function Achievements() {
                 return;
             }
 
-            setPrestasi(data);
-        }
+            if (data) {
+                setPrestasi(data);
+            }
+        };
 
         fetchData();
     }, []);
 
-    // Group prestasi by 'tahun' instead of 'tingkat'
     const groupedPrestasi = prestasi.reduce<Record<number, Prestasi[]>>((acc, curr) => {
         if (!acc[curr.tahun]) {
             acc[curr.tahun] = [];
@@ -43,49 +45,66 @@ export default function Achievements() {
     }, {});
 
     return (
-        <section className="py-16">
+        <section className="py-16 md:py-24 bg-background">
             <div className="container mx-auto px-4">
-                <h2 className="text-3xl font-bold text-center mb-12">Prestasi Kami</h2>
+                <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold border border-primary/20">
+                        <Trophy className="w-3.5 h-3.5" />
+                        <span>Rekam Jejak Prestasi</span>
+                    </div>
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground">
+                        Prestasi Madrasah
+                    </h2>
+                    <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                        Capaian dan kebanggaan siswa-siswi MIM PK Dimoro dalam berbagai kompetisi akademik dan non-akademik.
+                    </p>
+                </div>
 
-                <div className="max-w-4xl mx-auto">
-                    {Object.entries(groupedPrestasi).map(([tahun, prestasiList]) => (
-                        <div key={tahun} className="mb-12 last:mb-0">
-                            <h3 className="text-2xl font-bold mb-6 flex items-center">
-                                <Trophy className="w-6 h-6 mr-2 text-primary" />
-                                Tahun {tahun}
-                            </h3>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {prestasiList.map((prestasi, index) => (
-                                    <motion.div
-                                        key={index}
-                                        variants={{
-                                            hidden: { opacity: 0, y: 50 },
-                                            visible: { opacity: 1, y: 0 },
-                                        }}
-                                        initial="hidden"
-                                        animate="visible"
-                                        transition={{ duration: 0.5, delay: index * 0.2 }}
-                                        viewport={{ once: true }}
-                                        className="flex items-center space-x-3 bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-muted"
-                                    >
-                                        <div className="bg-primary/10 p-2 rounded-full">
-                                            {index === 0 && <Award className="w-5 h-5 text-primary-foreground" />}
-                                            {index === 1 && <Trophy className="w-5 h-5 text-primary-foreground" />}
-                                            {index === 2 && <Medal className="w-5 h-5 text-primary-foreground" />}
-                                            {index === 3 && <Star className="w-5 h-5 text-primary-foreground" />}
-                                        </div>
-                                        <div>
-                                            <h4 className="text-lg font-semibold mb-1">{prestasi.nama_prestasi}</h4>
-                                            <p className="text-sm text-muted-foreground font-semibold">Tingkat {prestasi.tingkat}</p>
-                                        </div>
-                                    </motion.div>
-                                ))}
-                            </div>
+                <div className="max-w-4xl mx-auto space-y-10">
+                    {Object.keys(groupedPrestasi).length === 0 ? (
+                        <div className="text-center py-10 bg-card border border-border/50 rounded-3xl p-6 text-muted-foreground text-sm">
+                            Belum ada data prestasi yang ditampilkan.
                         </div>
-                    ))}
+                    ) : (
+                        Object.entries(groupedPrestasi).map(([tahun, prestasiList]) => (
+                            <div key={tahun} className="space-y-4">
+                                <h3 className="text-xl font-bold text-foreground flex items-center gap-2">
+                                    <Trophy className="w-5 h-5 text-primary" />
+                                    <span>Tahun {tahun}</span>
+                                </h3>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {prestasiList.map((item, index) => (
+                                        <motion.div
+                                            key={index}
+                                            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.4, delay: index * 0.1 }}
+                                            viewport={{ once: true }}
+                                            className="flex items-start space-x-3.5 bg-card border border-border/60 rounded-2xl p-5 shadow-sm hover:border-primary/40 transition-colors"
+                                        >
+                                            <div className="bg-primary/10 text-primary p-2.5 rounded-xl shrink-0 mt-0.5">
+                                                {index % 4 === 0 && <Award className="w-5 h-5" />}
+                                                {index % 4 === 1 && <Trophy className="w-5 h-5" />}
+                                                {index % 4 === 2 && <Medal className="w-5 h-5" />}
+                                                {index % 4 === 3 && <Star className="w-5 h-5" />}
+                                            </div>
+                                            <div>
+                                                <h4 className="text-base font-bold text-foreground mb-1 leading-snug">
+                                                    {item.nama_prestasi}
+                                                </h4>
+                                                <span className="inline-block text-xs font-semibold text-amber-gold bg-amber-gold-surface border border-amber-gold/30 px-2.5 py-0.5 rounded-full">
+                                                    Tingkat {item.tingkat}
+                                                </span>
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
         </section>
-    )
+    );
 }
