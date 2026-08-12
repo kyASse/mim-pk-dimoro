@@ -70,6 +70,11 @@ export default {
           'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
           border: 'hsl(var(--sidebar-border))',
           ring: 'hsl(var(--sidebar-ring))'
+        },
+        'amber-gold': {
+          DEFAULT: 'hsl(var(--amber-gold))',
+          foreground: 'hsl(var(--amber-gold-foreground))',
+          surface: 'hsl(var(--amber-gold-surface))',
         }
       },
       borderRadius: {
