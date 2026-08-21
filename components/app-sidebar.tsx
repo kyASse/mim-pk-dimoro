@@ -10,6 +10,7 @@ import {
   GraduationCap,
   Home,
   Calendar,
+  Inbox,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -25,7 +26,7 @@ import { createClient } from "@/lib/supabase/client"
 import { useEffect, useState } from "react"
 import { User } from "@supabase/supabase-js"
 import Image from "next/image"
-import { SCHOOL_NAME } from "@/lib/school-config"
+import { SCHOOL_NAME, SCHOOL_LOGO_PATH, SCHOOL_LOGO_ALT } from "@/lib/school-config"
 
 // Data menu admin yang sesuai dengan aplikasi MIM PK Dimoro
 const navMainData = [
@@ -107,6 +108,17 @@ const navMainData = [
       {
         title: "Daftar Testimoni",
         url: "/admin/testimoni",
+      },
+    ],
+  },
+  {
+    title: "Pesan Masuk",
+    url: "/admin/pesan",
+    icon: Inbox,
+    items: [
+      {
+        title: "Daftar Pesan",
+        url: "/admin/pesan",
       },
     ],
   },
@@ -245,8 +257,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <div className="flex items-center gap-2 px-2 py-2">
             <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-white overflow-hidden">
               <Image
-                src="/logo-mim-pk-dimoro.svg"
-                alt={SCHOOL_NAME}
+                src={SCHOOL_LOGO_PATH}
+                alt={SCHOOL_LOGO_ALT}
                 width={32}
                 height={32}
                 className="object-contain"
@@ -276,8 +288,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <div className="flex items-center gap-2 px-2 py-2">
             <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-white overflow-hidden">
               <Image
-                src="/logo-mim-pk-dimoro.svg"
-                alt={SCHOOL_NAME}
+                src={SCHOOL_LOGO_PATH}
+                alt={SCHOOL_LOGO_ALT}
                 width={32}
                 height={32}
                 className="object-contain"
@@ -312,8 +324,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <div className="flex items-center gap-2 px-2 py-2">
           <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-white overflow-hidden">
             <Image
-              src="/logo-mim-pk-dimoro.svg"
-              alt={SCHOOL_NAME}
+              src={SCHOOL_LOGO_PATH}
+              alt={SCHOOL_LOGO_ALT}
               width={32}
               height={32}
               className="object-contain"
