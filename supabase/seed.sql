@@ -28,7 +28,7 @@ TRUNCATE public.kontak_sekolah CASCADE;
 INSERT INTO public.kontak_sekolah (alamat, whatsapp, email_utama, email_admin, jam_operasional, maps_embed_url)
 VALUES (
   'Sudimoro, RT.003/RW.X, Parangjoro, Grogol, Sukoharjo, Jawa Tengah',
-  '081234567890',
+  '+62 821-3388-1991',
   'info@mimpkdimoro.sch.id',
   'admin@mimpkdimoro.sch.id',
   E'Senin - Kamis: 07.30 - 14.00 WIB\nJumat: 07.30 - 11.00 WIB',

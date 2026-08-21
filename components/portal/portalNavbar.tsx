@@ -9,6 +9,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
+import { SCHOOL_NAME, SCHOOL_LOGO_PATH, SCHOOL_LOGO_ALT } from "@/lib/school-config";
 
 // Navigation items configuration
 const navigationItems: Array<{ href: string; label: string; exact?: boolean }> = [
@@ -63,8 +64,8 @@ export default function PortalNavbar() {
                             whileTap={{ scale: 0.95 }}
                         >
                             <Image
-                                src="/Logo-TK-ABA.png"
-                                alt="TK ABA Mertosanan"
+                                src={SCHOOL_LOGO_PATH}
+                                alt={SCHOOL_LOGO_ALT}
                                 width={40}
                                 height={40}
                                 className="object-contain"
@@ -73,10 +74,10 @@ export default function PortalNavbar() {
                         </motion.div>
                         <div className="hidden sm:block">
                             <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
-                                Portal TK ABA
+                                {SCHOOL_NAME}
                             </h1>
                             <p className="text-sm md:text-base text-gray-600 dark:text-gray-300 font-medium">
-                                Mertosanan
+                                Portal Orang Tua
                             </p>
                         </div>
                     </Link>
