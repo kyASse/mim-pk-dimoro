@@ -23,13 +23,16 @@ export default function Footer() {
         whatsapp?: string;
         email_utama?: string;
         jam_operasional?: string;
+        facebook_url?: string;
+        instagram_url?: string;
+        youtube_url?: string;
     } | null>(null);
 
     useEffect(() => {
         const supabase = createClient();
         supabase
             .from('kontak_sekolah')
-            .select('alamat, whatsapp, email_utama, jam_operasional')
+            .select('alamat, whatsapp, email_utama, jam_operasional, facebook_url, instagram_url, youtube_url')
             .maybeSingle()
             .then(({ data, error }) => {
                 if (error) {
@@ -163,13 +166,31 @@ export default function Footer() {
                         <div className="mt-4">
                             <h4 className="font-medium mb-2">Ikuti Kami:</h4>
                             <div className="flex space-x-3">
-                                <a href="#" className="bg-highlight hover:bg-highlight/80 p-2 rounded-full transition-colors">
+                                <a
+                                    href={kontak?.facebook_url || "#"}
+                                    aria-label="Facebook"
+                                    target={kontak?.facebook_url && kontak.facebook_url !== '#' ? "_blank" : undefined}
+                                    rel={kontak?.facebook_url && kontak.facebook_url !== '#' ? "noopener noreferrer" : undefined}
+                                    className="bg-highlight hover:bg-highlight/80 p-2 rounded-full transition-colors"
+                                >
                                     <Facebook className="w-5 h-5 text-highlight-foreground" />
                                 </a>
-                                <a href="#" className="bg-highlight hover:bg-highlight/80 p-2 rounded-full transition-colors">
+                                <a
+                                    href={kontak?.instagram_url || "#"}
+                                    aria-label="Instagram"
+                                    target={kontak?.instagram_url && kontak.instagram_url !== '#' ? "_blank" : undefined}
+                                    rel={kontak?.instagram_url && kontak.instagram_url !== '#' ? "noopener noreferrer" : undefined}
+                                    className="bg-highlight hover:bg-highlight/80 p-2 rounded-full transition-colors"
+                                >
                                     <Instagram className="w-5 h-5 text-highlight-foreground" />
                                 </a>
-                                <a href="#" className="bg-highlight hover:bg-highlight/80 p-2 rounded-full transition-colors">
+                                <a
+                                    href={kontak?.youtube_url || "#"}
+                                    aria-label="YouTube"
+                                    target={kontak?.youtube_url && kontak.youtube_url !== '#' ? "_blank" : undefined}
+                                    rel={kontak?.youtube_url && kontak.youtube_url !== '#' ? "noopener noreferrer" : undefined}
+                                    className="bg-highlight hover:bg-highlight/80 p-2 rounded-full transition-colors"
+                                >
                                     <Youtube className="w-5 h-5 text-highlight-foreground" />
                                 </a>
                             </div>
