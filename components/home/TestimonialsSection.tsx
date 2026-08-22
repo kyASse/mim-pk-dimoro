@@ -3,27 +3,47 @@ import TestimonialCard from "./TestimonialCard";
 import { SCHOOL_NAME } from "@/lib/school-config";
 
 type TestimonialItem = {
-    id: string;
+    id: string | number;
     nama_orang_tua: string;
     status_orang_tua: string;
     isi_testimoni: string;
     avatar_url?: string;
+    is_featured?: boolean;
     created_at: string;
 };
 
 async function fetchData(): Promise<TestimonialItem[]> {
     const supabase = await createClient();
-    const { data, error } = await supabase
+    
+    // 1. Fetch featured testimonials up to 6 items
+    const { data: featuredData, error: featuredError } = await supabase
         .from('testimoni')
         .select('*')
-        .order('created_at', { ascending: false });
+        .eq('is_featured', true)
+        .order('created_at', { ascending: false })
+        .limit(6);
 
-    if (error) {
-        console.error('Error fetching testimonial data:', error);
+    if (featuredError) {
+        console.error('Error fetching featured testimonials:', featuredError);
+    }
+
+    if (featuredData && featuredData.length > 0) {
+        return featuredData;
+    }
+
+    // 2. Fallback: If no featured testimonials exist, fetch latest 3 testimonials
+    const { data: fallbackData, error: fallbackError } = await supabase
+        .from('testimoni')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(3);
+
+    if (fallbackError) {
+        console.error('Error fetching fallback testimonials:', fallbackError);
         return [];
     }
 
-    return data || [];
+    return fallbackData || [];
 }
 
 export default async function TestimonialsSection() {
