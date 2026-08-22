@@ -57,6 +57,7 @@ export default function Footer() {
                                     width={32}
                                     height={32}
                                     className="object-contain"
+                                    unoptimized
                                 />
                             </motion.div>
                             <div>
@@ -82,7 +83,7 @@ export default function Footer() {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/tentang" className="hover:text-primary transition-colors">
+                                <Link href="/tentang-kami" className="hover:text-primary transition-colors">
                                 Tentang Kami
                                 </Link>
                             </li>
