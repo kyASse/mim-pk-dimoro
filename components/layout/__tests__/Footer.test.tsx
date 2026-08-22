@@ -36,6 +36,7 @@ describe('Footer Component', () => {
 
     expect(screen.getByRole('link', { name: /beranda/i }).getAttribute('href')).toBe('/');
     expect(screen.getByRole('link', { name: /program & kurikulum/i }).getAttribute('href')).toBe('/program');
+    expect(screen.getByRole('link', { name: /kalender akademik/i }).getAttribute('href')).toBe('/kalender-akademik');
     expect(screen.getByRole('link', { name: /galeri/i }).getAttribute('href')).toBe('/galeri');
     expect(screen.getByRole('link', { name: /pendaftaran/i }).getAttribute('href')).toBe('/pendaftaran');
     expect(screen.getByRole('link', { name: /kontak/i }).getAttribute('href')).toBe('/kontak');

@@ -9,6 +9,7 @@ import {
     X,
     School,
     BookOpen,
+    Calendar,
     Image as ImageIcon,
     Phone,
     UserPlus,
@@ -24,6 +25,7 @@ const navLinks = [
     { name: 'Beranda', href: '/', icon: <School className="w-5 h-5" /> },
     { name: 'Tentang Kami', href: '/tentang-kami', icon: <BookOpen className="w-5 h-5" /> },
     { name: 'Program & Kurikulum', href: '/program', icon: <BookOpen className="w-5 h-5" /> },
+    { name: 'Kalender', href: '/kalender-akademik', icon: <Calendar className="w-5 h-5" /> },
     { name: 'Galeri', href: '/galeri', icon: <ImageIcon className="w-5 h-5" /> },
     { name: 'Pendaftaran', href: '/pendaftaran', icon: <UserPlus className="w-5 h-5" /> },
     { name: 'Kontak', href: '/kontak', icon: <Phone className="w-5 h-5" /> },
@@ -74,6 +76,8 @@ export default function Navbar() {
                             width={32}
                             height={32}
                             className="object-contain"
+                            unoptimized
+                            priority
                         />
                     </motion.div>
                     <div>

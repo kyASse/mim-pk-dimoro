@@ -93,6 +93,11 @@ export default function Footer() {
                                 </Link>
                             </li>
                             <li>
+                                <Link href="/kalender-akademik" className="hover:text-primary transition-colors">
+                                Kalender Akademik
+                                </Link>
+                            </li>
+                            <li>
                                 <Link href="/galeri" className="hover:text-primary transition-colors">
                                 Galeri
                                 </Link>
