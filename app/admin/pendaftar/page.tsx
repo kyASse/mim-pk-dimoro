@@ -15,7 +15,7 @@ export default async function KelolaPendaftarPage() {
 
     const { data: pendaftar, error } = await supabase
         .from('pendaftar')
-        .select('id, nama_lengkap, nama_ayah_kandung, nama_ibu_kandung, jenis_kelamin, tanggal_lahir, nomor_telepon, status_pendaftaran, created_at')
+        .select('*')
         .order('created_at', { ascending: false });
 
     if (error) {

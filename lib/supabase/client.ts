@@ -14,6 +14,14 @@ export function createClient() {
 
   return createBrowserClient(
     env.NEXT_PUBLIC_SUPABASE_URL,
-    env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    {
+      isSingleton: true,
+      auth: {
+        lock: async (_name, _acquireTimeout, fn) => {
+          return await fn();
+        },
+      },
+    }
   );
 }

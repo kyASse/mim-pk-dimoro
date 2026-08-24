@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { CalendarDays, FileText, Megaphone, HandCoins, MessageSquareQuote } from "lucide-react";
 
+import { SCHOOL_NAME } from "@/lib/school-config";
+
 type Siswa = { id: string; nama_lengkap: string; kelompok: string | null };
 type Laporan = { id: number; semester: string; tahun_ajaran: string; catatan_guru: string | null; dokumen_rapor_url: string | null };
 
@@ -45,7 +47,7 @@ export default async function PortalPage() {
                             Selamat Datang Kembali, <span className="text-blue-200 block sm:inline">{siswaUtama ? 'Orang Tua' : user.email?.split('@')[0]}</span>!
                         </h1>
                         <p className="text-blue-100 text-sm md:text-lg max-w-3xl leading-relaxed">
-                            Berikut ringkasan perkembangan {siswaUtama ? siswaUtama.nama_lengkap : 'anak'} serta informasi terbaru dari TK ABA Mertosanan.
+                            Berikut ringkasan perkembangan {siswaUtama ? siswaUtama.nama_lengkap : 'anak'} serta informasi terbaru dari {SCHOOL_NAME}.
                         </p>
                     </div>
                     {/* Decorative elements - hidden on small screens */}

@@ -28,6 +28,27 @@ export async function updateStatusPendaftaran(id: string, status: string) {
     return { success: !error, message: error?.message };
 }
 
+export async function bulkUpdateStatusPendaftaran(ids: string[], status: string) {
+    if (!ids || ids.length === 0) {
+        return { success: false, message: "Tidak ada pendaftar yang dipilih." };
+    }
+
+    const supabase = await createClient();
+    const { error } = await supabase
+        .from('pendaftar')
+        .update({ status_pendaftaran: status })
+        .in('id', ids);
+
+    if (!error) {
+        revalidatePath('/admin/pendaftar');
+    }
+
+    return { 
+        success: !error, 
+        message: error ? error.message : `${ids.length} pendaftar berhasil diubah statusnya menjadi ${status}.` 
+    };
+}
+
 export async function updatePendaftarData(id: string, data: Record<string, unknown>) {
     const supabase = await createClient();
     const { error } = await supabase

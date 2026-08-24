@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { updateStatusPendaftaran, updatePendaftarData, acceptAndCreatePortalAccountAction } from '../actions';
+import { updateStatusPendaftaran, updatePendaftarData, acceptAndCreatePortalAccountAction, bulkUpdateStatusPendaftaran } from '../actions';
 
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(),
@@ -281,6 +281,44 @@ describe('Admin Pendaftar Actions', () => {
       expect(result.success).toBe(false);
       expect(result.message).toBe('FK constraint error');
       expect(mockDeleteUser).toHaveBeenCalledWith('user-789');
+    });
+  });
+
+  describe('bulkUpdateStatusPendaftaran', () => {
+    it('should update status pendaftaran for multiple IDs successfully', async () => {
+      const mockIn = vi.fn().mockResolvedValue({ error: null });
+      const mockUpdate = vi.fn().mockReturnValue({ in: mockIn });
+      const mockSupabase = {
+        from: vi.fn().mockReturnValue({ update: mockUpdate }),
+      };
+      vi.mocked(createClient).mockResolvedValue(mockSupabase as any);
+
+      const result = await bulkUpdateStatusPendaftaran(['id-1', 'id-2', 'id-3'], 'Diterima');
+
+      expect(result.success).toBe(true);
+      expect(mockSupabase.from).toHaveBeenCalledWith('pendaftar');
+      expect(mockUpdate).toHaveBeenCalledWith({ status_pendaftaran: 'Diterima' });
+      expect(mockIn).toHaveBeenCalledWith('id', ['id-1', 'id-2', 'id-3']);
+    });
+
+    it('should return error if ids array is empty', async () => {
+      const result = await bulkUpdateStatusPendaftaran([], 'Diterima');
+      expect(result.success).toBe(false);
+      expect(result.message).toContain('Tidak ada pendaftar');
+    });
+
+    it('should handle supabase update error gracefully', async () => {
+      const mockIn = vi.fn().mockResolvedValue({ error: { message: 'DB Connection Error' } });
+      const mockUpdate = vi.fn().mockReturnValue({ in: mockIn });
+      const mockSupabase = {
+        from: vi.fn().mockReturnValue({ update: mockUpdate }),
+      };
+      vi.mocked(createClient).mockResolvedValue(mockSupabase as any);
+
+      const result = await bulkUpdateStatusPendaftaran(['id-1'], 'Ditolak');
+
+      expect(result.success).toBe(false);
+      expect(result.message).toBe('DB Connection Error');
     });
   });
 });

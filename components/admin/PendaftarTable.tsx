@@ -14,23 +14,66 @@ import {
     ChevronLeft, 
     ChevronRight,
     RotateCcw,
-    User
+    User,
+    FileSpreadsheet
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import PendaftarSearch from "./PendaftarSearch";
+import PendaftarDateFilter from "./PendaftarDateFilter";
+import PendaftarBulkToolbar from "./PendaftarBulkToolbar";
+import PendaftarBulkStatusDialog from "./PendaftarBulkStatusDialog";
+import PendaftarWhatsAppModal, { WhatsAppRecipient } from "./PendaftarWhatsAppModal";
+import { filterPendaftarList } from "@/lib/utils/pendaftar-filter";
+import { exportToExcelEmisDapodik } from "@/lib/utils/pendaftar-export";
 
 export type PendaftarItem = {
     id: string;
+    nomor_induk?: string | null;
     nama_lengkap: string | null;
+    nama_panggilan?: string | null;
     nama_ayah_kandung: string | null;
     nama_ibu_kandung?: string | null;
     jenis_kelamin: string | null;
+    tempat_lahir?: string | null;
     tanggal_lahir?: string | null;
+    agama?: string | null;
+    kewarganegaraan?: string | null;
+    anak_ke?: number | null;
+    jumlah_saudara_kandung?: number | null;
+    status_anak?: string | null;
+    bahasa_sehari_hari?: string | null;
+    berat_badan?: number | null;
+    tinggi_badan?: number | null;
+    golongan_darah?: string | null;
+    tk_asal?: string | null;
+    memiliki_kebutuhan_khusus?: boolean | null;
+    jenis_kebutuhan_khusus?: any;
+    alamat_lengkap?: string | null;
+    jarak_tempat_tinggal?: string | null;
+    transportasi?: string | null;
     nomor_telepon?: string | null;
+    email?: string | null;
+    pendidikan_ayah?: string | null;
+    pekerjaan_ayah?: string | null;
+    pendidikan_ibu?: string | null;
+    pekerjaan_ibu?: string | null;
+    gaji_orang_tua?: string | null;
+    alamat_orang_tua?: string | null;
+    wali_nama?: string | null;
+    wali_hubungan?: string | null;
+    wali_pendidikan?: string | null;
+    wali_pekerjaan?: string | null;
+    wali_telepon?: string | null;
+    wali_alamat?: string | null;
+    hobi?: string | null;
+    cita_cita?: string | null;
     status_pendaftaran: string | null;
+    diterima_di_kelas?: string | null;
+    diterima_pada_tanggal?: string | null;
     created_at: string;
 };
 
@@ -40,24 +83,22 @@ interface PendaftarTableProps {
 
 const ITEMS_PER_PAGE = 10;
 
-function formatPhoneNumber(phone: string): string {
-    const cleaned = phone.replace(/\D/g, "");
-    if (cleaned.startsWith("0")) {
-        return "62" + cleaned.slice(1);
-    }
-    if (cleaned.startsWith("62")) {
-        return cleaned;
-    }
-    return "62" + cleaned;
-}
-
-export default function PendaftarTable({ pendaftar }: PendaftarTableProps) {
+export default function PendaftarTable({ pendaftar: initialPendaftar }: PendaftarTableProps) {
+    const [pendaftar, setPendaftar] = useState<PendaftarItem[]>(initialPendaftar);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedStatus, setSelectedStatus] = useState<string>("ALL");
     const [selectedGender, setSelectedGender] = useState<string>("");
+    const [startDate, setStartDate] = useState<string>("");
+    const [endDate, setEndDate] = useState<string>("");
     const [currentPage, setCurrentPage] = useState<number>(1);
 
-    // Compute stable official registration IDs based on index
+    // Bulk selection state
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+    const [isBulkStatusOpen, setIsBulkStatusOpen] = useState(false);
+    const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
+    const [whatsAppRecipients, setWhatsAppRecipients] = useState<WhatsAppRecipient[]>([]);
+
+    // Official registration ID mapping
     const regIdMap = useMemo(() => {
         const map = new Map<string, string>();
         pendaftar.forEach((item, index) => {
@@ -68,73 +109,70 @@ export default function PendaftarTable({ pendaftar }: PendaftarTableProps) {
         return map;
     }, [pendaftar]);
 
-    // Calculate metrics counts
+    // Summary metric counts
     const stats = useMemo(() => {
         const total = pendaftar.length;
-        const diterima = pendaftar.filter((p) => p.status_pendaftaran === "Diterima").length;
+        const diterima = pendaftar.filter((p) => p.status_pendaftaran === "Diterima" || p.status_pendaftaran === "Akun Dibuat").length;
         const revisi = pendaftar.filter((p) => p.status_pendaftaran === "Revisi" || p.status_pendaftaran === "Validasi Ulang").length;
         const ditolak = pendaftar.filter((p) => p.status_pendaftaran === "Ditolak").length;
         const menunggu = pendaftar.filter((p) => {
             const s = p.status_pendaftaran;
-            return s !== "Diterima" && s !== "Revisi" && s !== "Validasi Ulang" && s !== "Ditolak";
+            return s !== "Diterima" && s !== "Akun Dibuat" && s !== "Revisi" && s !== "Validasi Ulang" && s !== "Ditolak";
         }).length;
 
         return { total, menunggu, diterima, revisi, ditolak };
     }, [pendaftar]);
 
-    // Filter data
+    // Filter data using pure helper
     const filteredPendaftar = useMemo(() => {
-        return pendaftar.filter((item) => {
-            // Status filter
-            if (selectedStatus !== "ALL") {
-                const s = item.status_pendaftaran;
-                if (selectedStatus === "Menunggu Persetujuan") {
-                    if (s === "Diterima" || s === "Revisi" || s === "Validasi Ulang" || s === "Ditolak") {
-                        return false;
-                    }
-                } else if (selectedStatus === "Revisi") {
-                    if (s !== "Revisi" && s !== "Validasi Ulang") {
-                        return false;
-                    }
-                } else if (s !== selectedStatus) {
-                    return false;
-                }
-            }
-
-            // Gender filter
-            if (selectedGender && item.jenis_kelamin !== selectedGender) {
-                return false;
-            }
-
-            // Search query
-            if (searchQuery.trim()) {
-                const query = searchQuery.toLowerCase().trim();
-                const nama = item.nama_lengkap?.toLowerCase() || "";
-                const ayah = item.nama_ayah_kandung?.toLowerCase() || "";
-                const ibu = item.nama_ibu_kandung?.toLowerCase() || "";
-                const regId = regIdMap.get(item.id)?.toLowerCase() || "";
-                const phone = item.nomor_telepon?.toLowerCase() || "";
-
-                const matches =
-                    nama.includes(query) ||
-                    ayah.includes(query) ||
-                    ibu.includes(query) ||
-                    regId.includes(query) ||
-                    phone.includes(query);
-
-                if (!matches) return false;
-            }
-
-            return true;
+        return filterPendaftarList(pendaftar, {
+            searchQuery,
+            status: selectedStatus,
+            gender: selectedGender,
+            startDate,
+            endDate,
+            regIdMap,
         });
-    }, [pendaftar, selectedStatus, selectedGender, searchQuery, regIdMap]);
+    }, [pendaftar, selectedStatus, selectedGender, searchQuery, startDate, endDate, regIdMap]);
 
-    // Pagination calculations
+    // Pagination
     const totalItems = filteredPendaftar.length;
     const totalPages = Math.max(1, Math.ceil(totalItems / ITEMS_PER_PAGE));
     const safeCurrentPage = Math.min(currentPage, totalPages);
     const startIndex = (safeCurrentPage - 1) * ITEMS_PER_PAGE;
     const paginatedPendaftar = filteredPendaftar.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+    // Selection handlers
+    const isAllCurrentPageSelected = paginatedPendaftar.length > 0 && paginatedPendaftar.every((p) => selectedIds.has(p.id));
+    const isSomeSelected = selectedIds.size > 0;
+
+    const handleToggleSelectAll = () => {
+        setSelectedIds((prev) => {
+            const next = new Set(prev);
+            if (isAllCurrentPageSelected) {
+                paginatedPendaftar.forEach((p) => next.delete(p.id));
+            } else {
+                paginatedPendaftar.forEach((p) => next.add(p.id));
+            }
+            return next;
+        });
+    };
+
+    const handleToggleSelectRow = (id: string) => {
+        setSelectedIds((prev) => {
+            const next = new Set(prev);
+            if (next.has(id)) {
+                next.delete(id);
+            } else {
+                next.add(id);
+            }
+            return next;
+        });
+    };
+
+    const handleClearSelection = () => {
+        setSelectedIds(new Set());
+    };
 
     const handleStatusSelect = (status: string) => {
         setSelectedStatus(status);
@@ -145,17 +183,26 @@ export default function PendaftarTable({ pendaftar }: PendaftarTableProps) {
         setSearchQuery("");
         setSelectedStatus("ALL");
         setSelectedGender("");
+        setStartDate("");
+        setEndDate("");
         setCurrentPage(1);
+    };
+
+    // Export to Excel EMIS 4.0 & Dapodik
+    const handleExportExcel = () => {
+        if (filteredPendaftar.length === 0) return;
+        exportToExcelEmisDapodik(filteredPendaftar, regIdMap);
     };
 
     // Export to CSV
     const handleExportCSV = () => {
         if (filteredPendaftar.length === 0) return;
 
-        const headers = ["No", "ID Registrasi", "Nama Siswa", "Jenis Kelamin", "Nama Ayah", "Nama Ibu", "No Telepon", "Tanggal Daftar", "Status"];
+        const headers = ["No", "ID Registrasi", "NIK", "Nama Siswa", "Jenis Kelamin", "Nama Ayah", "Nama Ibu", "No Telepon", "Tanggal Daftar", "Status"];
         const rows = filteredPendaftar.map((item, index) => [
             index + 1,
             regIdMap.get(item.id) || "",
+            `"${(item.nomor_induk || "").replace(/"/g, '""')}"`,
             `"${(item.nama_lengkap || "").replace(/"/g, '""')}"`,
             item.jenis_kelamin === "L" ? "Laki-laki" : item.jenis_kelamin === "P" ? "Perempuan" : item.jenis_kelamin || "",
             `"${(item.nama_ayah_kandung || "").replace(/"/g, '""')}"`,
@@ -175,10 +222,54 @@ export default function PendaftarTable({ pendaftar }: PendaftarTableProps) {
         document.body.removeChild(link);
     };
 
+    // Open WhatsApp Modal for single contact
+    const handleOpenSingleWhatsApp = (item: PendaftarItem) => {
+        setWhatsAppRecipients([
+            {
+                id: item.id,
+                nama_lengkap: item.nama_lengkap,
+                nama_ayah_kandung: item.nama_ayah_kandung,
+                nomor_telepon: item.nomor_telepon,
+                status_pendaftaran: item.status_pendaftaran,
+                regId: regIdMap.get(item.id),
+            },
+        ]);
+        setIsWhatsAppModalOpen(true);
+    };
+
+    // Open WhatsApp Modal for bulk selected contacts
+    const handleOpenBulkWhatsApp = () => {
+        const selectedList = pendaftar.filter((p) => selectedIds.has(p.id));
+        const recipients: WhatsAppRecipient[] = selectedList.map((p) => ({
+            id: p.id,
+            nama_lengkap: p.nama_lengkap,
+            nama_ayah_kandung: p.nama_ayah_kandung,
+            nomor_telepon: p.nomor_telepon,
+            status_pendaftaran: p.status_pendaftaran,
+            regId: regIdMap.get(p.id),
+        }));
+        setWhatsAppRecipients(recipients);
+        setIsWhatsAppModalOpen(true);
+    };
+
+    // Handle bulk status update callback
+    const handleBulkStatusSuccess = (newStatus: string) => {
+        setPendaftar((prev) =>
+            prev.map((item) => {
+                if (selectedIds.has(item.id)) {
+                    return { ...item, status_pendaftaran: newStatus };
+                }
+                return item;
+            })
+        );
+        setSelectedIds(new Set());
+    };
+
     // Helper for status badge
     const renderStatusBadge = (status: string | null) => {
         switch (status) {
             case "Diterima":
+            case "Akun Dibuat":
                 return (
                     <Badge className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 font-medium">
                         Diterima
@@ -264,6 +355,10 @@ export default function PendaftarTable({ pendaftar }: PendaftarTableProps) {
         { key: "Ditolak", label: "Ditolak", count: stats.ditolak },
     ];
 
+    const hasActiveFilters = Boolean(
+        searchQuery || selectedStatus !== "ALL" || selectedGender || startDate || endDate
+    );
+
     return (
         <div className="space-y-6">
             {/* 1. Interactive Metric Cards */}
@@ -309,16 +404,28 @@ export default function PendaftarTable({ pendaftar }: PendaftarTableProps) {
                             <h2 className="text-lg font-semibold tracking-tight text-foreground">
                                 Data Calon Siswa
                             </h2>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={handleExportCSV}
-                                disabled={filteredPendaftar.length === 0}
-                                className="h-9 gap-1.5 text-xs font-medium"
-                            >
-                                <Download className="h-4 w-4" />
-                                Export CSV
-                            </Button>
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={handleExportExcel}
+                                    disabled={filteredPendaftar.length === 0}
+                                    className="h-9 gap-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/10"
+                                >
+                                    <FileSpreadsheet className="h-4 w-4 text-emerald-600" />
+                                    Export Excel (.xlsx)
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={handleExportCSV}
+                                    disabled={filteredPendaftar.length === 0}
+                                    className="h-9 gap-1.5 text-xs font-medium"
+                                >
+                                    <Download className="h-4 w-4" />
+                                    Export CSV
+                                </Button>
+                            </div>
                         </div>
 
                         {/* Status Tabs Navigation */}
@@ -354,64 +461,94 @@ export default function PendaftarTable({ pendaftar }: PendaftarTableProps) {
                     </div>
                 </div>
 
-                {/* Toolbar: Search & Gender Filter */}
-                <div className="p-4 sm:px-6 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between bg-muted/20 border-b border-border/60">
-                    <div className="flex flex-1 flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-                        <PendaftarSearch
-                            value={searchQuery}
-                            onChange={(query) => {
-                                setSearchQuery(query);
-                                setCurrentPage(1);
-                            }}
-                            placeholder="Cari nama siswa, orang tua, atau ID registrasi..."
-                        />
-                        <div className="w-full sm:w-44">
-                            <select
-                                aria-label="Filter Gender"
-                                value={selectedGender}
-                                onChange={(e) => {
-                                    setSelectedGender(e.target.value);
+                {/* Toolbar: Search, Gender Filter, Date Range Filter */}
+                <div className="p-4 sm:px-6 flex flex-col gap-3 bg-muted/20 border-b border-border/60">
+                    <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
+                        <div className="flex flex-1 flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+                            <PendaftarSearch
+                                value={searchQuery}
+                                onChange={(query) => {
+                                    setSearchQuery(query);
                                     setCurrentPage(1);
                                 }}
-                                className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-xs sm:text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
-                            >
-                                <option value="">Semua Gender</option>
-                                <option value="L">Laki-laki (L)</option>
-                                <option value="P">Perempuan (P)</option>
-                            </select>
+                                placeholder="Cari nama siswa, NIK, orang tua, atau ID registrasi..."
+                            />
+                            <div className="w-full sm:w-44">
+                                <select
+                                    aria-label="Filter Gender"
+                                    value={selectedGender}
+                                    onChange={(e) => {
+                                        setSelectedGender(e.target.value);
+                                        setCurrentPage(1);
+                                    }}
+                                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-xs sm:text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground"
+                                >
+                                    <option value="">Semua Gender</option>
+                                    <option value="L">Laki-laki (L)</option>
+                                    <option value="P">Perempuan (P)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-2">
+                            <PendaftarDateFilter
+                                startDate={startDate}
+                                endDate={endDate}
+                                onStartDateChange={(val) => {
+                                    setStartDate(val);
+                                    setCurrentPage(1);
+                                }}
+                                onEndDateChange={(val) => {
+                                    setEndDate(val);
+                                    setCurrentPage(1);
+                                }}
+                                onResetDates={() => {
+                                    setStartDate("");
+                                    setEndDate("");
+                                    setCurrentPage(1);
+                                }}
+                            />
+
+                            {hasActiveFilters && (
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={handleResetFilter}
+                                    className="h-9 text-xs text-muted-foreground hover:text-foreground gap-1"
+                                >
+                                    <RotateCcw className="h-3.5 w-3.5" />
+                                    Reset Filter
+                                </Button>
+                            )}
                         </div>
                     </div>
-
-                    {(searchQuery || selectedStatus !== "ALL" || selectedGender) && (
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={handleResetFilter}
-                            className="h-9 text-xs text-muted-foreground hover:text-foreground self-end sm:self-auto gap-1"
-                        >
-                            <RotateCcw className="h-3.5 w-3.5" />
-                            Reset Filter
-                        </Button>
-                    )}
                 </div>
 
-                {/* Table View */}
+                {/* Table View with Checkboxes */}
                 <div className="overflow-x-auto">
                     <Table>
                         <TableHeader>
                             <TableRow className="bg-muted/40 hover:bg-muted/40">
-                                <TableHead className="w-[140px] font-semibold">ID Registrasi</TableHead>
-                                <TableHead className="font-semibold min-w-[200px]">Nama Siswa</TableHead>
-                                <TableHead className="font-semibold min-w-[180px]">Nama Orang Tua</TableHead>
-                                <TableHead className="font-semibold w-[120px]">Jenis Kelamin</TableHead>
+                                <TableHead className="w-[45px] text-center">
+                                    <Checkbox
+                                        aria-label="Pilih Semua"
+                                        checked={isAllCurrentPageSelected}
+                                        onCheckedChange={handleToggleSelectAll}
+                                    />
+                                </TableHead>
+                                <TableHead className="w-[130px] font-semibold">ID Registrasi</TableHead>
+                                <TableHead className="font-semibold min-w-[200px]">Nama Calon Siswa</TableHead>
+                                <TableHead className="font-semibold min-w-[170px]">Nama Orang Tua</TableHead>
+                                <TableHead className="font-semibold w-[110px]">Gender</TableHead>
                                 <TableHead className="font-semibold w-[130px]">Tanggal Daftar</TableHead>
-                                <TableHead className="font-semibold w-[150px]">Status</TableHead>
-                                <TableHead className="text-right font-semibold w-[180px]">Aksi</TableHead>
+                                <TableHead className="font-semibold w-[140px]">Status</TableHead>
+                                <TableHead className="text-right font-semibold w-[170px]">Aksi</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {paginatedPendaftar.length > 0 ? (
                                 paginatedPendaftar.map((item) => {
+                                    const isSelected = selectedIds.has(item.id);
                                     const regId = regIdMap.get(item.id) || "MIM-2026-000";
                                     const studentInitials = (item.nama_lengkap || "S")
                                         .split(" ")
@@ -421,15 +558,23 @@ export default function PendaftarTable({ pendaftar }: PendaftarTableProps) {
                                         .join("")
                                         .toUpperCase();
 
-                                    const waNumber = item.nomor_telepon ? formatPhoneNumber(item.nomor_telepon) : null;
-                                    const waUrl = waNumber
-                                        ? `https://wa.me/${waNumber}?text=${encodeURIComponent(
-                                              `Assalamu'alaikum Wr. Wb. Terkait pendaftaran calon siswa MIM PK Dimoro atas nama ${item.nama_lengkap || "siswa"}:`
-                                          )}`
-                                        : null;
-
                                     return (
-                                        <TableRow key={item.id} className="hover:bg-muted/30 transition-colors">
+                                        <TableRow
+                                            key={item.id}
+                                            data-state={isSelected ? "selected" : undefined}
+                                            className={`hover:bg-muted/30 transition-colors ${
+                                                isSelected ? "bg-primary/5 font-medium" : ""
+                                            }`}
+                                        >
+                                            {/* Row Selection Checkbox */}
+                                            <TableCell className="text-center">
+                                                <Checkbox
+                                                    aria-label={`Pilih ${item.nama_lengkap || "Pendaftar"}`}
+                                                    checked={isSelected}
+                                                    onCheckedChange={() => handleToggleSelectRow(item.id)}
+                                                />
+                                            </TableCell>
+
                                             {/* ID Registrasi */}
                                             <TableCell className="font-mono text-xs font-semibold text-primary">
                                                 {regId}
@@ -445,11 +590,14 @@ export default function PendaftarTable({ pendaftar }: PendaftarTableProps) {
                                                         <span className="font-medium text-foreground leading-tight">
                                                             {item.nama_lengkap || "Nama tidak tersedia"}
                                                         </span>
-                                                        {item.nomor_telepon && (
-                                                            <span className="text-[11px] text-muted-foreground mt-0.5">
-                                                                {item.nomor_telepon}
-                                                            </span>
-                                                        )}
+                                                        <div className="flex items-center gap-2 text-[11px] text-muted-foreground mt-0.5">
+                                                            {item.nomor_induk && (
+                                                                <span className="font-mono">NIK: {item.nomor_induk}</span>
+                                                            )}
+                                                            {item.nomor_telepon && (
+                                                                <span>{item.nomor_telepon}</span>
+                                                            )}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </TableCell>
@@ -498,25 +646,18 @@ export default function PendaftarTable({ pendaftar }: PendaftarTableProps) {
                                             {/* Aksi */}
                                             <TableCell className="text-right">
                                                 <div className="flex items-center justify-end gap-1.5">
-                                                    {waUrl && (
-                                                        <Button
-                                                            asChild
-                                                            size="sm"
-                                                            variant="outline"
-                                                            className="h-8 px-2 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800"
-                                                            title="Hubungi via WhatsApp"
-                                                        >
-                                                            <a
-                                                                href={waUrl}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                aria-label="WhatsApp"
-                                                            >
-                                                                <MessageCircle className="h-3.5 w-3.5 mr-1 text-emerald-600" />
-                                                                <span className="text-xs">WhatsApp</span>
-                                                            </a>
-                                                        </Button>
-                                                    )}
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        onClick={() => handleOpenSingleWhatsApp(item)}
+                                                        disabled={!item.nomor_telepon}
+                                                        className="h-8 px-2 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800"
+                                                        title="Kirim Pesan WhatsApp Cepat"
+                                                        aria-label="Kirim Pesan WhatsApp"
+                                                    >
+                                                        <MessageCircle className="h-3.5 w-3.5 mr-1 text-emerald-600" />
+                                                        <span className="text-xs">WhatsApp</span>
+                                                    </Button>
                                                     <Button
                                                         asChild
                                                         size="sm"
@@ -535,7 +676,7 @@ export default function PendaftarTable({ pendaftar }: PendaftarTableProps) {
                                 })
                             ) : (
                                 <TableRow>
-                                    <TableCell colSpan={7} className="text-center py-12">
+                                    <TableCell colSpan={8} className="text-center py-12">
                                         <div className="flex flex-col items-center justify-center max-w-sm mx-auto text-center space-y-3">
                                             <div className="p-3 rounded-full bg-muted text-muted-foreground">
                                                 <Users className="h-6 w-6" />
@@ -545,12 +686,12 @@ export default function PendaftarTable({ pendaftar }: PendaftarTableProps) {
                                                     Tidak ada data pendaftar
                                                 </h3>
                                                 <p className="text-xs text-muted-foreground mt-1">
-                                                    {searchQuery || selectedStatus !== "ALL" || selectedGender
+                                                    {hasActiveFilters
                                                         ? "Tidak ditemukan data pendaftar yang sesuai dengan kriteria filter."
                                                         : "Belum ada calon siswa yang mendaftar."}
                                                 </p>
                                             </div>
-                                            {(searchQuery || selectedStatus !== "ALL" || selectedGender) && (
+                                            {hasActiveFilters && (
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
@@ -623,6 +764,30 @@ export default function PendaftarTable({ pendaftar }: PendaftarTableProps) {
                     </div>
                 )}
             </Card>
+
+            {/* Floating Bulk Action Toolbar */}
+            <PendaftarBulkToolbar
+                selectedCount={selectedIds.size}
+                totalCount={filteredPendaftar.length}
+                onOpenBulkStatus={() => setIsBulkStatusOpen(true)}
+                onOpenBulkWhatsApp={handleOpenBulkWhatsApp}
+                onClearSelection={handleClearSelection}
+            />
+
+            {/* Bulk Status Update Dialog */}
+            <PendaftarBulkStatusDialog
+                open={isBulkStatusOpen}
+                onOpenChange={setIsBulkStatusOpen}
+                selectedIds={Array.from(selectedIds)}
+                onSuccess={handleBulkStatusSuccess}
+            />
+
+            {/* WhatsApp Quick & Batch Modal */}
+            <PendaftarWhatsAppModal
+                open={isWhatsAppModalOpen}
+                onOpenChange={setIsWhatsAppModalOpen}
+                recipients={whatsAppRecipients}
+            />
         </div>
     );
 }

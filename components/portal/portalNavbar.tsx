@@ -69,6 +69,7 @@ export default function PortalNavbar() {
                                 width={40}
                                 height={40}
                                 className="object-contain"
+                                unoptimized
                                 priority
                             />
                         </motion.div>

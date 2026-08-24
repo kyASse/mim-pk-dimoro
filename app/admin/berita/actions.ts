@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
 import { extractStoragePath } from "@/lib/utils/storage";
+import { isRoleAuthorized } from "@/lib/auth/guards";
+import type { UserRole } from "@/lib/auth/types";
 
 // =================================================================
 // ACTION UNTUK MENGHAPUS BERITA
@@ -20,6 +22,16 @@ export async function deleteBeritaAction(beritaId: number, imageUrl: string): Pr
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return { success: false, message: "Sesi telah berakhir. Silakan login kembali." };
+
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+
+    if (!profile || !isRoleAuthorized(profile.role as UserRole, ['super_admin', 'admin', 'admin_tu'])) {
+        return { success: false, message: "Anda tidak memiliki wewenang untuk tindakan ini." };
+    }
 
     const admin = await createAdminClient();
 
@@ -74,6 +86,16 @@ export async function updateBeritaAction(beritaId: number, dataToUpdate: UpdateB
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return { success: false, message: "Sesi telah berakhir. Silakan login kembali." };
 
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+
+    if (!profile || !isRoleAuthorized(profile.role as UserRole, ['super_admin', 'admin', 'admin_tu'])) {
+        return { success: false, message: "Anda tidak memiliki wewenang untuk tindakan ini." };
+    }
+
     const admin = await createAdminClient();
 
     const { error } = await admin
@@ -106,6 +128,16 @@ export async function createBeritaAction(formData: FormData): Promise<{ success:
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
             return { success: false, message: "Sesi telah berakhir. Silakan login kembali." };
+        }
+
+        const { data: profile } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', user.id)
+            .single();
+
+        if (!profile || !isRoleAuthorized(profile.role as UserRole, ['super_admin', 'admin', 'admin_tu'])) {
+            return { success: false, message: "Anda tidak memiliki wewenang untuk tindakan ini." };
         }
 
         const admin = await createAdminClient();
