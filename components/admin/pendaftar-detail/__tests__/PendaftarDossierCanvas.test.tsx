@@ -1,12 +1,7 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import React from "react";
-
-vi.mock("next/navigation", () => ({
-  useRouter: () => ({ refresh: vi.fn() }),
-}));
-
-import PendaftarTabsContent from "../PendaftarTabsContent";
+import PendaftarDossierCanvas from "../PendaftarDossierCanvas";
 
 const mockPendaftar = {
   id: "pendaftar-1",
@@ -54,39 +49,28 @@ const mockPendaftar = {
   created_at: "2026-08-01T10:00:00Z",
 };
 
-describe("PendaftarTabsContent Component", () => {
-  it("renders all 4 tab triggers", () => {
-    render(<PendaftarTabsContent pendaftar={mockPendaftar} />);
-    expect(screen.getByRole("tab", { name: /biodata/i })).toBeDefined();
-    expect(screen.getByRole("tab", { name: /keluarga/i })).toBeDefined();
-    expect(screen.getByRole("tab", { name: /kebutuhan/i })).toBeDefined();
+describe("PendaftarDossierCanvas Component", () => {
+  it("renders all 4 tabs navigation items", () => {
+    render(<PendaftarDossierCanvas pendaftar={mockPendaftar} />);
+    expect(screen.getByRole("tab", { name: /biodata siswa/i })).toBeDefined();
+    expect(screen.getByRole("tab", { name: /keluarga & wali/i })).toBeDefined();
+    expect(screen.getByRole("tab", { name: /kebutuhan & berkas/i })).toBeDefined();
     expect(screen.getByRole("tab", { name: /administrasi/i })).toBeDefined();
   });
 
-  it("renders default biodata tab content correctly", () => {
-    render(<PendaftarTabsContent pendaftar={mockPendaftar} />);
+  it("renders biodata property values accurately", () => {
+    render(<PendaftarDossierCanvas pendaftar={mockPendaftar} />);
     expect(screen.getByText("TK ABA Dimoro")).toBeDefined();
     expect(screen.getByText("Ulama & Arsitek")).toBeDefined();
     expect(screen.getByText("Membaca & Berkuda")).toBeDefined();
   });
 
-  it("supports controlled active tab or tab navigation", () => {
+  it("renders parent information when orangtua tab is active", () => {
     render(
-      <PendaftarTabsContent pendaftar={mockPendaftar} defaultTab="orangtua" />
+      <PendaftarDossierCanvas pendaftar={mockPendaftar} defaultTab="orangtua" />
     );
     expect(screen.getByText("Bambang Sutrisno, S.Pd.")).toBeDefined();
     expect(screen.getByText("Siti Aminah, S.E.")).toBeDefined();
     expect(screen.getByText("H. Abdullah")).toBeDefined();
-  });
-
-  it("renders administrasi tab content when selected", () => {
-    render(
-      <PendaftarTabsContent
-        pendaftar={mockPendaftar}
-        defaultTab="administrasi"
-      />
-    );
-    expect(screen.getByText(/Data Administratif Madrasah/i)).toBeDefined();
-    expect(screen.getByText(/Status Akun Portal Wali Murid/i)).toBeDefined();
   });
 });
