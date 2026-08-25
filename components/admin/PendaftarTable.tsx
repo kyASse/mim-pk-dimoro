@@ -29,6 +29,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import PendaftarSearch from "./PendaftarSearch";
 import PendaftarDateFilter from "./PendaftarDateFilter";
 import PendaftarBulkToolbar from "./PendaftarBulkToolbar";
@@ -564,20 +571,26 @@ export default function PendaftarTable({
             {/* Controls Row: Gender + Date Range + Reset Button */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:items-center gap-2.5 shrink-0">
               {/* Gender Dropdown */}
-              <div className="w-full sm:w-auto lg:w-36">
-                <select
-                  aria-label="Filter Gender"
-                  value={selectedGender}
-                  onChange={(e) => {
-                    setSelectedGender(e.target.value);
+              <div className="w-full sm:w-auto lg:w-40">
+                <Select
+                  value={selectedGender || "ALL"}
+                  onValueChange={(val) => {
+                    setSelectedGender(val === "ALL" ? "" : val);
                     setCurrentPage(1);
                   }}
-                  className="flex h-10 sm:h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm sm:text-xs shadow-2xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground cursor-pointer"
                 >
-                  <option value="">Semua Gender</option>
-                  <option value="L">Laki-laki (L)</option>
-                  <option value="P">Perempuan (P)</option>
-                </select>
+                  <SelectTrigger
+                    aria-label="Filter Gender"
+                    className="h-10 sm:h-9 w-full bg-background text-xs font-medium border-input shadow-2xs cursor-pointer"
+                  >
+                    <SelectValue placeholder="Semua Gender" />
+                  </SelectTrigger>
+                  <SelectContent className="text-xs">
+                    <SelectItem value="ALL">Semua Gender</SelectItem>
+                    <SelectItem value="L">Laki-laki (L)</SelectItem>
+                    <SelectItem value="P">Perempuan (P)</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Connected Date Range Capsule */}

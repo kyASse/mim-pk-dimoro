@@ -132,7 +132,11 @@ describe('Admin PendaftarTable Component', () => {
   it('filters data by gender filter', () => {
     render(<PendaftarTable pendaftar={mockPendaftar} />);
     const genderSelect = screen.getByRole('combobox', { name: /filter gender/i });
-    fireEvent.change(genderSelect, { target: { value: 'P' } });
+    expect(genderSelect).toBeDefined();
+
+    fireEvent.click(genderSelect);
+    const perempuanOption = screen.getByRole('option', { name: /perempuan/i });
+    fireEvent.click(perempuanOption);
 
     expect(screen.getAllByText('Fatimah Zahra').length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText('Citra Dewi').length).toBeGreaterThanOrEqual(1);
