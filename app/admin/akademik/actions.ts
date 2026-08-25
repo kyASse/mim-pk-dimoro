@@ -50,6 +50,54 @@ export async function updateBiayaAction(formData: FormData): Promise<{ success: 
     return { success: true, message: "Biaya pendaftaran berhasil diperbarui." };
 }
 
+export interface UnifiedBiayaItemInput {
+    id: number;
+    biaya_putra: number;
+    biaya_putri: number;
+}
+
+export interface UpdateBiayaAndSppPayload {
+    biaya: UnifiedBiayaItemInput[];
+    catatanSpp: string;
+}
+
+export async function updateBiayaAndSppAction(payload: UpdateBiayaAndSppPayload): Promise<{ success: boolean; message: string }> {
+    const supabase = await createClient();
+
+    for (const item of payload.biaya) {
+        if (!item || typeof item.id !== 'number') continue;
+        const putra = Math.max(0, Math.round(Number(item.biaya_putra) || 0));
+        const putri = Math.max(0, Math.round(Number(item.biaya_putri) || 0));
+
+        const { error: biayaError } = await supabase
+            .from('biaya_pendaftaran')
+            .update({
+                biaya_putra: putra,
+                biaya_putri: putri,
+            })
+            .eq('id', item.id);
+
+        if (biayaError) {
+            console.error(`Error updating biaya_pendaftaran for id ${item.id}:`, biayaError);
+            return { success: false, message: `Gagal memperbarui data biaya: ${biayaError.message}` };
+        }
+    }
+
+    const { error: sppError } = await supabase
+        .from('konten_halaman')
+        .update({ isi: { catatan: payload.catatanSpp } })
+        .eq('slug', 'catatan-spp');
+
+    if (sppError) {
+        console.error('Error updating catatan SPP:', sppError);
+        return { success: false, message: `Gagal memperbarui catatan SPP: ${sppError.message}` };
+    }
+
+    revalidatePath('/admin/akademik');
+    revalidatePath('/pendaftaran');
+    return { success: true, message: 'Data rincian biaya dan catatan SPP berhasil diperbarui.' };
+}
+
 export async function updateCatatanSppAction(formData: FormData): Promise<{ success: boolean; message?: string }> {
     const supabase = await createClient();
     const newCatatan = formData.get('catatan-spp') as string;
