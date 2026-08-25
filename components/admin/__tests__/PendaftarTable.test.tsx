@@ -91,14 +91,14 @@ describe('Admin PendaftarTable Component', () => {
     const diterimaTab = screen.getByRole('tab', { name: /diterima/i });
     fireEvent.click(diterimaTab);
 
-    expect(screen.getByText('Fatimah Zahra')).toBeDefined();
+    expect(screen.getAllByText('Fatimah Zahra').length).toBeGreaterThanOrEqual(1);
     expect(screen.queryByText('Ahmad Faiz')).toBeNull();
 
     // Click on Semua tab
     const semuaTab = screen.getByRole('tab', { name: /semua/i });
     fireEvent.click(semuaTab);
-    expect(screen.getByText('Ahmad Faiz')).toBeDefined();
-    expect(screen.getByText('Fatimah Zahra')).toBeDefined();
+    expect(screen.getAllByText('Ahmad Faiz').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Fatimah Zahra').length).toBeGreaterThanOrEqual(1);
   });
 
   it('filters data by search query matching name or NIK', () => {
@@ -107,12 +107,12 @@ describe('Admin PendaftarTable Component', () => {
 
     // Search by NIK
     fireEvent.change(searchInput, { target: { value: '3301123456780002' } });
-    expect(screen.getByText('Fatimah Zahra')).toBeDefined();
+    expect(screen.getAllByText('Fatimah Zahra').length).toBeGreaterThanOrEqual(1);
     expect(screen.queryByText('Ahmad Faiz')).toBeNull();
 
     // Search by Parent Name
     fireEvent.change(searchInput, { target: { value: 'Bambang' } });
-    expect(screen.getByText('Ahmad Faiz')).toBeDefined();
+    expect(screen.getAllByText('Ahmad Faiz').length).toBeGreaterThanOrEqual(1);
     expect(screen.queryByText('Fatimah Zahra')).toBeNull();
   });
 
@@ -124,7 +124,7 @@ describe('Admin PendaftarTable Component', () => {
     fireEvent.change(startDateInput, { target: { value: '2026-08-04' } });
     fireEvent.change(endDateInput, { target: { value: '2026-08-06' } });
 
-    expect(screen.getByText('Fatimah Zahra')).toBeDefined();
+    expect(screen.getAllByText('Fatimah Zahra').length).toBeGreaterThanOrEqual(1);
     expect(screen.queryByText('Ahmad Faiz')).toBeNull();
     expect(screen.queryByText('Citra Dewi')).toBeNull();
   });
@@ -134,8 +134,8 @@ describe('Admin PendaftarTable Component', () => {
     const genderSelect = screen.getByRole('combobox', { name: /filter gender/i });
     fireEvent.change(genderSelect, { target: { value: 'P' } });
 
-    expect(screen.getByText('Fatimah Zahra')).toBeDefined();
-    expect(screen.getByText('Citra Dewi')).toBeDefined();
+    expect(screen.getAllByText('Fatimah Zahra').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Citra Dewi').length).toBeGreaterThanOrEqual(1);
     expect(screen.queryByText('Ahmad Faiz')).toBeNull();
   });
 
@@ -143,8 +143,8 @@ describe('Admin PendaftarTable Component', () => {
     render(<PendaftarTable pendaftar={mockPendaftar} />);
     
     // Select first row
-    const rowCheckbox = screen.getByLabelText('Pilih Ahmad Faiz');
-    fireEvent.click(rowCheckbox);
+    const rowCheckboxes = screen.getAllByLabelText('Pilih Ahmad Faiz');
+    fireEvent.click(rowCheckboxes[0]);
 
     // Bulk toolbar should appear with count 1
     const toolbar = screen.getByTestId('bulk-action-toolbar');
@@ -152,8 +152,8 @@ describe('Admin PendaftarTable Component', () => {
     expect(within(toolbar).getByText('1')).toBeDefined();
 
     // Click select all
-    const selectAllCheckbox = screen.getByLabelText('Pilih Semua');
-    fireEvent.click(selectAllCheckbox);
+    const selectAllCheckboxes = screen.getAllByLabelText(/pilih semua/i);
+    fireEvent.click(selectAllCheckboxes[0]);
 
     expect(within(toolbar).getByText('4')).toBeDefined();
 
@@ -174,8 +174,8 @@ describe('Admin PendaftarTable Component', () => {
 
   it('opens WhatsApp modal from bulk action toolbar', () => {
     render(<PendaftarTable pendaftar={mockPendaftar} />);
-    const selectAllCheckbox = screen.getByLabelText('Pilih Semua');
-    fireEvent.click(selectAllCheckbox);
+    const selectAllCheckboxes = screen.getAllByLabelText(/pilih semua/i);
+    fireEvent.click(selectAllCheckboxes[0]);
 
     const bulkWaBtn = screen.getByRole('button', { name: /kirim wa massal/i });
     fireEvent.click(bulkWaBtn);

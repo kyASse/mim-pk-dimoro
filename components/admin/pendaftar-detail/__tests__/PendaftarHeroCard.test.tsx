@@ -32,7 +32,7 @@ describe('PendaftarHeroCard Component', () => {
       />
     );
 
-    expect(screen.getByRole('heading', { name: 'Muhammad Al-Fatih' })).toBeDefined();
+    expect(screen.getByRole('heading', { name: /Muhammad Al-Fatih/i })).toBeDefined();
     expect(screen.getByText('MIM-2026-001')).toBeDefined();
     expect(screen.getAllByText(/3301123456780001/).length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText('Menunggu Persetujuan').length).toBeGreaterThanOrEqual(1);

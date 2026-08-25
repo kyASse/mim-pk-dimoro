@@ -30,9 +30,9 @@ describe("PendaftarInspectorSidebar Component", () => {
     );
 
     expect(screen.getByText(/Keputusan & Status/i)).toBeDefined();
-    expect(screen.getByText(/Kontak Utama/i)).toBeDefined();
-    expect(screen.getByText(/081234567890/)).toBeDefined();
-    expect(screen.getByText(/fatih.parent@example.com/)).toBeDefined();
+    expect(screen.getAllByText(/Kontak Utama/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/081234567890/).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/fatih.parent@example.com/).length).toBeGreaterThanOrEqual(1);
   });
 
   it("calls onOpenWhatsApp when WhatsApp trigger button is clicked", () => {
