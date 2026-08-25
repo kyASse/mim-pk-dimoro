@@ -1,48 +1,43 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
-import { linkOrCreateParentAccountAction } from "@/app/admin/siswa/actions";
+import { Link as LinkIcon } from "lucide-react";
+import LinkParentModal from "@/components/admin/siswa/LinkParentModal";
 
-export default function LinkParentForm({ siswaId }: { siswaId: string }) {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (loading) return;
-    setLoading(true);
-    try {
-      const formEl = e.currentTarget as HTMLFormElement;
-      const formData = new FormData(formEl);
-      const res = await linkOrCreateParentAccountAction(siswaId, formData);
-      if (res?.success) {
-        toast.success("Akun orang tua berhasil dibuat/dihubungkan");
-        router.refresh();
-        formEl.reset();
-      } else {
-        toast.error(res?.message || "Gagal membuat/menghubungkan akun orang tua");
-      }
-    } catch (err: any) {
-      toast.error(err?.message || "Terjadi kesalahan tak terduga");
-    } finally {
-      setLoading(false);
-    }
-  }
+export default function LinkParentForm({
+  siswaId,
+  namaSiswa = "Siswa",
+  profileOrangTuaId = null,
+}: {
+  siswaId: string;
+  namaSiswa?: string;
+  profileOrangTuaId?: string | null;
+}) {
+  const [open, setOpen] = useState(false);
 
   return (
-    <form onSubmit={onSubmit} className="flex gap-2">
-      <div className="flex-1">
-        <Label htmlFor={`email-${siswaId}`}>Email Orang Tua</Label>
-        <Input id={`email-${siswaId}`} name="email" type="email" placeholder="parent@mail.com" required />
-      </div>
-      <div className="self-end">
-        <Button type="submit" disabled={loading}>{loading ? "Memproses…" : "Hubungkan/Buat Akun"}</Button>
-      </div>
-    </form>
+    <>
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        onClick={() => setOpen(true)}
+        className="gap-1.5 text-xs h-8"
+      >
+        <LinkIcon className="h-3.5 w-3.5" />
+        Kelola Akun Wali
+      </Button>
+
+      <LinkParentModal
+        siswa={{
+          id: siswaId,
+          nama_lengkap: namaSiswa,
+          profile_orang_tua_id: profileOrangTuaId,
+        }}
+        open={open}
+        onOpenChange={setOpen}
+      />
+    </>
   );
 }

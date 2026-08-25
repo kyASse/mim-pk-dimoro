@@ -196,22 +196,38 @@ ON CONFLICT (id) DO UPDATE SET
 DELETE FROM public.siswa WHERE profile_orang_tua_id = 'b0000000-0000-0000-0000-000000000001';
 
 INSERT INTO public.siswa (id, profile_orang_tua_id, nama_lengkap, tanggal_lahir, kelompok)
-VALUES (
-  'c0000000-0000-0000-0000-000000000001',
-  'b0000000-0000-0000-0000-000000000001',
-  'Fatimah Zahra',
-  '2019-08-20',
-  'Kelas 1A'
-);
+VALUES 
+  (
+    'c0000000-0000-0000-0000-000000000001',
+    'b0000000-0000-0000-0000-000000000001',
+    'Fatimah Zahra',
+    '2019-08-20',
+    'Kelas 1A'
+  ),
+  (
+    'c0000000-0000-0000-0000-000000000002',
+    'b0000000-0000-0000-0000-000000000001',
+    'Abdullah Al-Ghazi',
+    '2017-03-15',
+    'Kelas 3A'
+  );
 
 INSERT INTO public.laporan_perkembangan (siswa_id, semester, tahun_ajaran, catatan_guru, dokumen_rapor_url)
-VALUES (
-  'c0000000-0000-0000-0000-000000000001',
-  'Semester 1 (Ganjil)',
-  '2026/2027',
-  'Ananda Fatimah memiliki perkembangan hafalan yang sangat baik, tartil tajwid tepat, serta aktif dalam kegiatan madrasah.',
-  NULL
-);
+VALUES 
+  (
+    'c0000000-0000-0000-0000-000000000001',
+    'Semester 1 (Ganjil)',
+    '2026/2027',
+    'Ananda Fatimah memiliki perkembangan hafalan yang sangat baik, tartil tajwid tepat, serta aktif dalam kegiatan madrasah.',
+    NULL
+  ),
+  (
+    'c0000000-0000-0000-0000-000000000002',
+    'Semester 1 (Ganjil)',
+    '2026/2027',
+    'Ananda Abdullah menunjukkan kepemimpinan yang baik di kelas, berprestasi di bidang sains dan tahfidz juz 29.',
+    NULL
+  );
 
 -- ============================================================
 -- 11. SEED DATA: Calon Siswa Baru (PPDB) Lengkap Format EMIS 4.0
