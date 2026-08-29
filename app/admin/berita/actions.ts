@@ -219,4 +219,68 @@ export async function createBeritaAction(formData: FormData): Promise<{ success:
     }
 }
 
+// =================================================================
+// ACTION UNTUK UPLOAD GAMBAR INLINE BERITA (TIPTAP EDITOR)
+// =================================================================
+
+/**
+ * Mengunggah gambar inline untuk editor Tiptap pada konten berita.
+ * @param formData - FormData berisi file dengan key 'image'
+ * @returns Objek dengan success flag, url gambar publik, atau pesan kesalahan.
+ */
+export async function uploadBeritaInlineImageAction(
+    formData: FormData
+): Promise<{ success: boolean; url?: string; message?: string }> {
+    try {
+        const supabase = await createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+            return { success: false, message: "Sesi telah berakhir. Silakan login kembali." };
+        }
+
+        const { data: profile } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', user.id)
+            .single();
+
+        if (!profile || !isRoleAuthorized(profile.role as UserRole, ['super_admin', 'admin', 'admin_tu'])) {
+            return { success: false, message: "Anda tidak memiliki wewenang untuk tindakan ini." };
+        }
+
+        const file = formData.get('image') as File | null;
+        if (!file || file.size === 0) {
+            return { success: false, message: "File gambar tidak ditemukan atau kosong." };
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+            return { success: false, message: "Ukuran file gambar terlalu besar (maksimal 10MB)." };
+        }
+
+        const admin = await createAdminClient();
+        const fileName = `${Date.now()}-${file.name.replace(/\s+/g, '_')}`;
+        const filePath = `berita/inline/${fileName}`;
+
+        const { error: uploadError } = await admin.storage
+            .from('konten-publik')
+            .upload(filePath, file);
+
+        if (uploadError) {
+            console.error("Gagal mengunggah gambar inline:", uploadError);
+            return { success: false, message: `Gagal mengunggah gambar: ${uploadError.message}` };
+        }
+
+        const { data: { publicUrl } } = admin.storage
+            .from('konten-publik')
+            .getPublicUrl(filePath);
+
+        return { success: true, url: publicUrl };
+    } catch (err: unknown) {
+        console.error("Error uploadBeritaInlineImageAction:", err);
+        const msg = (err as Error)?.message || "Terjadi kesalahan sistem saat mengunggah gambar.";
+        return { success: false, message: msg };
+    }
+}
+
+
 
