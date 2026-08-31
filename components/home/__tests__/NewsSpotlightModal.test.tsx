@@ -6,7 +6,7 @@ import NewsSpotlightModal, { NewsSpotlightItem } from "../NewsSpotlightModal";
 // Mock motion/react
 vi.mock("motion/react", () => ({
   motion: {
-    div: ({ children, whileInView, initial, animate, exit, transition, ...props }: any) => (
+    div: ({ children, whileInView: _whileInView, initial: _initial, animate: _animate, exit: _exit, transition: _transition, ...props }: any) => (
       <div {...props}>{children}</div>
     ),
     h2: ({ children, ...props }: any) => <h2 {...props}>{children}</h2>,
@@ -19,7 +19,8 @@ vi.mock("motion/react", () => ({
 
 // Mock next/image
 vi.mock("next/image", () => ({
-  default: ({ fill, priority, ...props }: any) => <img {...props} />,
+  /* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */
+  default: ({ fill: _fill, priority: _priority, ...props }: any) => <img {...props} />,
 }));
 
 describe("NewsSpotlightModal Component (TDD)", () => {
