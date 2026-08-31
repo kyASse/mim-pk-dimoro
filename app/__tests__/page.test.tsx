@@ -12,7 +12,11 @@ vi.mock("@/lib/supabase/server", () => ({
 vi.mock("@/components/home/NewsSpotlightModal", () => ({
   default: ({ news }: { news: any }) => (
     <div data-testid="news-spotlight-modal">
-      {news ? `Spotlight: ${news.judul}` : "No Spotlight News"}
+      {Array.isArray(news) && news.length > 0
+        ? `Spotlight (${news.length} items): ${news.map((n) => n.judul).join(", ")}`
+        : news && !Array.isArray(news)
+        ? `Spotlight: ${news.judul}`
+        : "No Spotlight News"}
     </div>
   ),
 }));
@@ -53,52 +57,80 @@ describe("Home Page (app/page.tsx)", () => {
     vi.resetAllMocks();
   });
 
-  const setupMockSupabase = (data: any = null, error: any = null) => {
+  const setupMockSupabase = (data: any = [], error: any = null) => {
     const queryBuilder: any = {
       eq: vi.fn().mockReturnThis(),
       order: vi.fn().mockReturnThis(),
-      limit: vi.fn().mockReturnThis(),
+      limit: vi.fn().mockResolvedValue({ data, error }),
       maybeSingle: vi.fn().mockResolvedValue({ data, error }),
     };
 
+    const mockSelect = vi.fn().mockReturnValue(queryBuilder);
     const mockSupabase = {
       from: vi.fn().mockReturnValue({
-        select: vi.fn().mockReturnValue(queryBuilder),
+        select: mockSelect,
       }),
       queryBuilder,
+      mockSelect,
     };
 
     vi.mocked(createClient).mockResolvedValue(mockSupabase as any);
     return mockSupabase;
   };
 
-  it("fetches the latest published news and renders NewsSpotlightModal with data", async () => {
-    const mockArticle = {
-      id: "news-123",
-      judul: "Pembukaan Pendaftaran Santri Baru",
-      ringkasan: "Pendaftaran tahun ajaran baru telah dibuka.",
-      isi_lengkap: "<p>Detail lengkap pendaftaran...</p>",
-      image_url: "https://example.com/banner.jpg",
-      tanggal_terbit: "2026-08-30T00:00:00Z",
-    };
+  it("fetches up to 5 published news items and renders NewsSpotlightModal with data", async () => {
+    const mockArticles = [
+      {
+        id: "news-1",
+        judul: "Pembukaan Pendaftaran Santri Baru",
+        ringkasan: "Pendaftaran tahun ajaran baru telah dibuka.",
+        isi_lengkap: "<p>Detail lengkap pendaftaran...</p>",
+        image_url: "https://example.com/banner1.jpg",
+        tanggal_terbit: "2026-08-30T00:00:00Z",
+      },
+      {
+        id: "news-2",
+        judul: "Prestasi Juara 1 Tahfidz Tingkat Kabupaten",
+        ringkasan: "Santri MIM PK Dimoro meraih prestasi membanggakan.",
+        isi_lengkap: "<p>Detail lomba...</p>",
+        image_url: "https://example.com/banner2.jpg",
+        tanggal_terbit: "2026-08-28T00:00:00Z",
+      },
+    ];
 
-    const mockSupabase = setupMockSupabase(mockArticle);
+    const mockSupabase = setupMockSupabase(mockArticles);
 
     const jsx = await Home();
     render(jsx);
 
     expect(mockSupabase.from).toHaveBeenCalledWith("berita");
+    expect(mockSupabase.mockSelect).toHaveBeenCalledWith(
+      "id, judul, ringkasan, isi_lengkap, image_url, tanggal_terbit"
+    );
     expect(mockSupabase.queryBuilder.eq).toHaveBeenCalledWith("status", "terbit");
     expect(mockSupabase.queryBuilder.order).toHaveBeenCalledWith("tanggal_terbit", { ascending: false });
-    expect(mockSupabase.queryBuilder.limit).toHaveBeenCalledWith(1);
-    expect(mockSupabase.queryBuilder.maybeSingle).toHaveBeenCalled();
+    expect(mockSupabase.queryBuilder.limit).toHaveBeenCalledWith(5);
 
     expect(screen.getByTestId("news-spotlight-modal")).toBeDefined();
-    expect(screen.getByText("Spotlight: Pembukaan Pendaftaran Santri Baru")).toBeDefined();
+    expect(
+      screen.getByText(
+        "Spotlight (2 items): Pembukaan Pendaftaran Santri Baru, Prestasi Juara 1 Tahfidz Tingkat Kabupaten"
+      )
+    ).toBeDefined();
     expect(screen.getByTestId("home-hero")).toBeDefined();
   });
 
-  it("handles null spotlight news gracefully when no published news exists", async () => {
+  it("handles null or empty spotlight news gracefully when no published news exists", async () => {
+    setupMockSupabase([]);
+
+    const jsx = await Home();
+    render(jsx);
+
+    expect(screen.getByTestId("news-spotlight-modal")).toBeDefined();
+    expect(screen.getByText("No Spotlight News")).toBeDefined();
+  });
+
+  it("handles null data from query gracefully and passes empty list", async () => {
     setupMockSupabase(null);
 
     const jsx = await Home();
@@ -108,7 +140,7 @@ describe("Home Page (app/page.tsx)", () => {
     expect(screen.getByText("No Spotlight News")).toBeDefined();
   });
 
-  it("handles database errors gracefully and returns null news", async () => {
+  it("handles database errors gracefully and returns empty array", async () => {
     const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     setupMockSupabase(null, new Error("Database connection failed"));
 

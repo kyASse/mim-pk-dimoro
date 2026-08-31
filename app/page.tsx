@@ -10,22 +10,21 @@ import GalleryPreview from "@/components/home/GalleryPreview";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import CTASection from "@/components/home/CTASection";
 
-async function fetchSpotlightNews(): Promise<NewsSpotlightItem | null> {
+async function fetchSpotlightNews(): Promise<NewsSpotlightItem[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("berita")
     .select("id, judul, ringkasan, isi_lengkap, image_url, tanggal_terbit")
     .eq("status", "terbit")
     .order("tanggal_terbit", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .limit(5);
 
-  if (error) {
-    console.error("Error fetching spotlight news:", error);
-    return null;
+  if (error || !data) {
+    if (error) console.error("Error fetching spotlight news:", error);
+    return [];
   }
 
-  return data;
+  return data as NewsSpotlightItem[];
 }
 
 export default async function Home() {
