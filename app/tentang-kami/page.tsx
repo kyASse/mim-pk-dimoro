@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   Quote,
-  Sparkles,
   ShieldCheck,
   Award,
   Heart,
@@ -27,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import ValueCard from "@/components/tentang-kami/ValueCard";
 import PageHeader from "@/components/shared/PageHeader";
+import FloatingSubNav, { SubNavItem } from "@/components/shared/FloatingSubNav";
 import SchoolIdentity from "@/components/tentang-kami/SchoolIdentity";
 import Achievements from "@/components/tentang-kami/Achievements";
 import VisionMission from "@/components/tentang-kami/VisionMission";
@@ -40,12 +40,12 @@ import {
 import { HEADMASTER_WELCOME, EXCELLENT_PROGRAMS } from "@/lib/school-data";
 
 // Sticky quick-nav items configuration
-const QUICK_NAV_ITEMS = [
+const QUICK_NAV_ITEMS: SubNavItem[] = [
   { id: "sambutan", label: "Sambutan", icon: Quote },
   { id: "visi-misi", label: "Visi & Misi", icon: Target },
-  { id: "profil-lulusan", label: "Karakter Lulusan", icon: Sparkles },
-  { id: "pendidik", label: "Pendidik", icon: GraduationCap },
-  { id: "identitas", label: "Identitas", icon: School },
+  { id: "profil-lulusan", label: "Karakter Lulusan", icon: GraduationCap },
+  { id: "pendidik", label: "Pendidik", icon: School },
+  { id: "identitas", label: "Identitas", icon: ShieldCheck },
   { id: "nilai-utama", label: "Nilai Utama", icon: Heart },
   { id: "prestasi", label: "Prestasi", icon: Trophy },
   { id: "pendaftaran-cta", label: "Pendaftaran", icon: UserPlus },
@@ -65,7 +65,7 @@ const GRADUATE_PROFILE_CONFIGS = [
   {
     pillar: "Pilar 2",
     title: "Tahfidz & Tartil Qur'an",
-    icon: Sparkles,
+    icon: BookOpen,
     colorClass: "bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20",
     badgeClass: "bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-500/30",
     borderClass: "hover:border-teal-500/40",
@@ -121,34 +121,16 @@ export default function AboutUs() {
         background="bg-primary/20"
       />
 
-      {/* Sticky Quick-Navigation Bar */}
-      <nav
-        aria-label="Navigasi Halaman Tentang Kami"
-        className="sticky top-16 md:top-20 z-30 bg-background/90 backdrop-blur-md border-b border-border/50 py-2.5 shadow-xs transition-all"
-      >
-        <div className="container mx-auto px-4">
-          <div className="flex items-center gap-2 overflow-x-auto py-1 scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-            {QUICK_NAV_ITEMS.map((item) => {
-              const Icon = item.icon;
-              return (
-                <a
-                  key={item.id}
-                  href={`#${item.id}`}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold text-muted-foreground hover:text-primary hover:bg-primary/10 border border-transparent hover:border-primary/20 transition-all shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                >
-                  <Icon className="w-3.5 h-3.5" />
-                  <span>{item.label}</span>
-                </a>
-              );
-            })}
-          </div>
-        </div>
-      </nav>
+      {/* Sticky Floating Sub-Navigation Bar */}
+      <FloatingSubNav
+        items={QUICK_NAV_ITEMS}
+        ariaLabel="Navigasi Halaman Tentang Kami"
+      />
 
       {/* Section 1: Sambutan Kepala Madrasah */}
       <section
         id="sambutan"
-        className="py-16 md:py-24 bg-background relative overflow-hidden scroll-mt-28"
+        className="py-16 md:py-24 bg-background relative overflow-hidden scroll-mt-36"
       >
         {/* Ambient Halo Glow */}
         <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
@@ -262,19 +244,19 @@ export default function AboutUs() {
       </section>
 
       {/* Section 2: Visi & Misi */}
-      <div id="visi-misi" className="scroll-mt-28">
+      <div id="visi-misi" className="scroll-mt-36">
         <VisionMission />
       </div>
 
       {/* Section 3: Profil Lulusan */}
       <section
         id="profil-lulusan"
-        className="py-16 md:py-24 bg-muted/30 border-y border-border/40 relative overflow-hidden scroll-mt-28"
+        className="py-16 md:py-24 bg-muted/30 border-y border-border/40 relative overflow-hidden scroll-mt-36"
       >
         <div className="container mx-auto px-4 space-y-12 relative z-10">
           <div className="text-center max-w-3xl mx-auto space-y-4">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 text-primary text-xs sm:text-sm font-semibold border border-primary/20 shadow-xs">
-              <Sparkles className="w-4 h-4" />
+              <GraduationCap className="w-4 h-4" />
               <span>Profil Lulusan</span>
             </div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground">
@@ -310,28 +292,29 @@ export default function AboutUs() {
                   />
 
                   <div className="relative z-10">
-                    <div className="flex items-center justify-between mb-4">
-                      <div
-                        className={cn(
-                          "p-3 rounded-2xl border transition-transform duration-300 group-hover:scale-110 shadow-xs",
-                          config.colorClass
-                        )}
-                      >
-                        <IconComponent className="w-5 h-5" />
+                    <div className="flex items-start justify-between gap-3 mb-3.5">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div
+                          className={cn(
+                            "p-2.5 rounded-2xl border transition-transform duration-300 group-hover:scale-105 shadow-2xs shrink-0",
+                            config.colorClass
+                          )}
+                        >
+                          <IconComponent className="w-5 h-5" />
+                        </div>
+                        <h3 className="font-bold text-foreground text-base sm:text-lg leading-snug group-hover:text-primary transition-colors">
+                          {config.title}
+                        </h3>
                       </div>
                       <span
                         className={cn(
-                          "text-[11px] font-bold px-2.5 py-1 rounded-full border",
+                          "text-[11px] font-bold px-2.5 py-0.5 rounded-full border shrink-0",
                           config.badgeClass
                         )}
                       >
                         {config.pillar}
                       </span>
                     </div>
-
-                    <h3 className="font-bold text-foreground text-base sm:text-lg mb-2 group-hover:text-primary transition-colors">
-                      {config.title}
-                    </h3>
 
                     <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                       {profile}
@@ -350,24 +333,24 @@ export default function AboutUs() {
       </section>
 
       {/* Section 4: Educators Section */}
-      <div id="pendidik" className="scroll-mt-28">
+      <div id="pendidik" className="scroll-mt-36">
         <EducatorsSection />
       </div>
 
       {/* Section 5: Identitas MI */}
-      <div id="identitas" className="scroll-mt-28">
+      <div id="identitas" className="scroll-mt-36">
         <SchoolIdentity />
       </div>
 
       {/* Section 6: Nilai-Nilai Utama */}
       <section
         id="nilai-utama"
-        className="py-16 md:py-24 bg-background relative overflow-hidden scroll-mt-28"
+        className="py-16 md:py-24 bg-background relative overflow-hidden scroll-mt-36"
       >
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold border border-primary/20">
-              <Sparkles className="w-3.5 h-3.5" />
+              <ShieldCheck className="w-3.5 h-3.5" />
               <span>Prinsip Utama</span>
             </div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground">
@@ -408,14 +391,14 @@ export default function AboutUs() {
       </section>
 
       {/* Section 7: Prestasi */}
-      <div id="prestasi" className="scroll-mt-28">
+      <div id="prestasi" className="scroll-mt-36">
         <Achievements />
       </div>
 
       {/* Section 8: CTA PPDB & Kontak */}
       <section
         id="pendaftaran-cta"
-        className="py-16 md:py-24 bg-background relative overflow-hidden scroll-mt-28"
+        className="py-16 md:py-24 bg-background relative overflow-hidden scroll-mt-36"
       >
         {/* Ambient Radial Background Glow */}
         <div className="absolute inset-0 bg-radial from-primary/10 via-transparent to-transparent pointer-events-none" />

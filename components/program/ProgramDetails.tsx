@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { Clock, Check, CalendarDays, Sparkles } from "lucide-react";
+import { Clock, Check, CalendarDays, Layers } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 
 interface ScheduleItem {
@@ -44,7 +44,7 @@ export default function ProgramDetails({
           {/* Badge over image */}
           <div className="absolute top-4 left-4 z-10">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-background/90 text-foreground backdrop-blur-md border border-border/40 shadow-xs">
-              <Sparkles className="w-3.5 h-3.5 text-primary" />
+              <Layers className="w-3.5 h-3.5 text-primary" />
               Struktur Jenjang
             </span>
           </div>

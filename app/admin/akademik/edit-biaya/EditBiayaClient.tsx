@@ -149,7 +149,7 @@ export default function EditBiayaClient({
             )}
           </div>
           <p className="text-xs text-muted-foreground">
-            Perbarui tabel nominal biaya pendaftaran santri baru dan catatan SPP bulanan.
+            Perbarui tabel nominal biaya pendaftaran siswa baru dan catatan SPP bulanan.
           </p>
         </div>
 

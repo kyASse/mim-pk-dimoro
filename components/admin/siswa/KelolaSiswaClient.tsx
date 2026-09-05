@@ -10,7 +10,6 @@ import {
   ArrowLeft, 
   UserCheck, 
   UserX, 
-  Sparkles,
   Download,
   Plus
 } from "lucide-react";

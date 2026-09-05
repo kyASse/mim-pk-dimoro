@@ -34,7 +34,6 @@ import {
   Loader2,
   MessageCircle,
   RotateCcw,
-  Sparkles,
   AlertCircle,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -136,8 +135,8 @@ export default function ContactForm() {
           {/* Header */}
           <div className="mb-6 space-y-2">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 text-xs font-semibold tracking-wide">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Formulir Pesan Cepat</span>
+              <Mail className="w-3.5 h-3.5" />
+              <span>Formulir Pesan</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
               Kirim Pesan

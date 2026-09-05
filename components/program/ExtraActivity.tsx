@@ -13,7 +13,7 @@ import {
   Users,
   Book,
   Clock,
-  Sparkles,
+  Award,
 } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 
@@ -98,7 +98,7 @@ export default function ExtraActivity({
 }: ExtraActivityProps) {
   const shouldReduceMotion = useReducedMotion();
   const iconConfig = ICON_MAP[icon] || {
-    component: Sparkles,
+    component: Award,
     bg: "bg-primary/10",
     text: "text-primary",
     border: "border-primary/20",

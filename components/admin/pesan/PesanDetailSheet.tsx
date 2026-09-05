@@ -51,7 +51,7 @@ import {
   ChevronDown,
   Clock,
   User,
-  Sparkles,
+  Send,
   RotateCcw,
   FileText,
   GraduationCap,
@@ -190,7 +190,7 @@ export default function PesanDetailSheet({
       <div className="space-y-1.5 mb-2.5">
         <div className="flex items-center justify-between text-xs">
           <span className="flex items-center gap-1 font-medium text-gray-700 dark:text-gray-300">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Template Balasan Cepat:
+            <FileText className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> Template Balasan Cepat:
           </span>
           {selectedTemplate !== 'default' && (
             <button
@@ -346,7 +346,7 @@ export default function PesanDetailSheet({
           {/* Reply Section */}
           <div className="space-y-3">
             <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              <Send className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
               <span>Balas Pesan Cepat</span>
             </label>
             <Tabs

@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import PageHeader from "@/components/shared/PageHeader";
+import FloatingSubNav, { SubNavItem } from "@/components/shared/FloatingSubNav";
 import ProgramDetails from "@/components/program/ProgramDetails";
 import ExtraActivity from "@/components/program/ExtraActivity";
 import IntegratedCurriculumSection from "@/components/program/IntegratedCurriculumSection";
@@ -21,7 +22,6 @@ import {
   Target,
   Users,
   Lightbulb,
-  Sparkles,
   HeartHandshake,
   Layers,
   Trophy,
@@ -40,6 +40,15 @@ import {
 import { EXCELLENT_PROGRAMS } from "@/lib/school-data";
 import { useReducedMotion } from "motion/react";
 
+const PROGRAM_NAV_ITEMS: SubNavItem[] = [
+  { id: "ikhtisar", label: "Ikhtisar", icon: BookOpen },
+  { id: "kurikulum-terpadu", label: "8 Pilar Kurikulum", icon: Layers },
+  { id: "struktur-fase", label: "Struktur Jenjang", icon: GraduationCap },
+  { id: "program-unggulan", label: "Program Unggulan", icon: Star },
+  { id: "ekstrakurikuler", label: "Ekstrakurikuler", icon: Trophy },
+  { id: "kontak-konsultasi", label: "Konsultasi PPDB", icon: MessageSquare },
+];
+
 export default function Program() {
   const shouldReduceMotion = useReducedMotion();
 
@@ -52,65 +61,14 @@ export default function Program() {
         background="bg-accent/20"
       />
 
-      {/* Sticky Quick-Navigation Bar */}
-      <nav
-        aria-label="Navigasi Halaman Program"
-        className="sticky top-16 z-30 bg-background/90 backdrop-blur-md border-y border-border/60 py-2.5 px-4 shadow-2xs"
-      >
-        <div className="container mx-auto">
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
-            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground shrink-0 hidden sm:inline-flex items-center gap-1.5 mr-2">
-              <Compass className="w-3.5 h-3.5 text-primary" />
-              Lompat Ke:
-            </span>
-            <a
-              href="#ikhtisar"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-muted/60 hover:bg-primary/10 hover:text-primary transition-colors shrink-0"
-            >
-              <BookOpen className="w-3.5 h-3.5" />
-              <span>Ikhtisar</span>
-            </a>
-            <a
-              href="#kurikulum-terpadu"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-muted/60 hover:bg-primary/10 hover:text-primary transition-colors shrink-0"
-            >
-              <Layers className="w-3.5 h-3.5" />
-              <span>8 Pilar Kurikulum</span>
-            </a>
-            <a
-              href="#struktur-fase"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-muted/60 hover:bg-primary/10 hover:text-primary transition-colors shrink-0"
-            >
-              <GraduationCap className="w-3.5 h-3.5" />
-              <span>Struktur Jenjang</span>
-            </a>
-            <a
-              href="#program-unggulan"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-muted/60 hover:bg-primary/10 hover:text-primary transition-colors shrink-0"
-            >
-              <Star className="w-3.5 h-3.5 text-amber-500" />
-              <span>Program Unggulan</span>
-            </a>
-            <a
-              href="#ekstrakurikuler"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-muted/60 hover:bg-primary/10 hover:text-primary transition-colors shrink-0"
-            >
-              <Trophy className="w-3.5 h-3.5 text-emerald-500" />
-              <span>Ekstrakurikuler</span>
-            </a>
-            <a
-              href="#kontak-konsultasi"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-primary/15 text-primary hover:bg-primary/25 transition-colors shrink-0 ml-auto"
-            >
-              <MessageSquare className="w-3.5 h-3.5" />
-              <span>Konsultasi PPDB</span>
-            </a>
-          </div>
-        </div>
-      </nav>
+      {/* Sticky Floating Sub-Navigation Bar */}
+      <FloatingSubNav
+        items={PROGRAM_NAV_ITEMS}
+        ariaLabel="Navigasi Halaman Program & Pendidikan"
+      />
 
       {/* 1. Ikhtisar Program Section */}
-      <section id="ikhtisar" className="py-16 md:py-24 relative overflow-hidden">
+      <section id="ikhtisar" className="py-16 md:py-24 relative overflow-hidden scroll-mt-36">
         {/* Decorative Ambient Background Blurs */}
         <div className="absolute -top-24 -left-24 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-1/2 -right-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -121,7 +79,7 @@ export default function Program() {
             <div className="lg:col-span-7 space-y-6">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold border border-primary/20 shadow-2xs">
-                  <Sparkles className="w-3.5 h-3.5" />
+                  <BookOpen className="w-3.5 h-3.5" />
                   Kurikulum Merdeka
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 text-xs font-bold border border-emerald-500/20 shadow-2xs">
@@ -234,7 +192,7 @@ export default function Program() {
       <IntegratedCurriculumSection />
 
       {/* 3. Struktur Kurikulum Per Kelas Section */}
-      <section id="struktur-fase" className="py-16 md:py-24 bg-muted/20 relative">
+      <section id="struktur-fase" className="py-16 md:py-24 bg-muted/20 relative scroll-mt-36">
         <div className="container mx-auto px-4 max-w-6xl space-y-10">
           <div className="text-center max-w-2xl mx-auto space-y-3">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs sm:text-sm font-semibold shadow-2xs">
@@ -309,7 +267,7 @@ export default function Program() {
       </section>
 
       {/* 4. Program Unggulan Detail Section */}
-      <section id="program-unggulan" className="py-16 md:py-24 relative overflow-hidden">
+      <section id="program-unggulan" className="py-16 md:py-24 relative overflow-hidden scroll-mt-36">
         {/* Subtle Glows */}
         <div className="absolute top-1/4 -left-20 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -369,7 +327,7 @@ export default function Program() {
                 {/* 7 Activities */}
                 <div className="lg:col-span-6 space-y-4">
                   <h4 className="font-bold text-foreground text-base sm:text-lg flex items-center gap-2 pb-1 border-b border-border/40">
-                    <Sparkles className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
+                    <BookOpen className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
                     <span>7 Rangkaian Kegiatan Tahfidz:</span>
                   </h4>
                   <ul className="space-y-2.5">
@@ -478,7 +436,7 @@ export default function Program() {
                 {/* 8 Activities */}
                 <div className="lg:col-span-6 space-y-4">
                   <h4 className="font-bold text-foreground text-base sm:text-lg flex items-center gap-2 pb-1 border-b border-border/40">
-                    <Sparkles className="h-4 w-4 text-blue-600 dark:text-blue-400 shrink-0" />
+                    <Lightbulb className="h-4 w-4 text-blue-600 dark:text-blue-400 shrink-0" />
                     <span>8 Kegiatan Utama Klinik Belajar:</span>
                   </h4>
                   <ul className="space-y-2.5">
@@ -542,7 +500,7 @@ export default function Program() {
       </section>
 
       {/* 5. Ekstrakurikuler Section */}
-      <section id="ekstrakurikuler" className="py-16 md:py-24 bg-muted/20 relative">
+      <section id="ekstrakurikuler" className="py-16 md:py-24 bg-muted/20 relative scroll-mt-36">
         <div className="container mx-auto px-4 max-w-6xl space-y-10">
           <div className="text-center max-w-2xl mx-auto space-y-3">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs sm:text-sm font-semibold shadow-2xs">
@@ -591,7 +549,7 @@ export default function Program() {
       </section>
 
       {/* 6. CTA & Konsultasi Section */}
-      <section id="kontak-konsultasi" className="py-16 md:py-24 bg-primary/20 relative overflow-hidden">
+      <section id="kontak-konsultasi" className="py-16 md:py-24 bg-primary/20 relative overflow-hidden scroll-mt-36">
         <div className="container mx-auto px-4 text-center max-w-3xl space-y-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-background/80 backdrop-blur-sm border border-primary/30 text-primary text-xs sm:text-sm font-semibold shadow-2xs">
             <Phone className="h-4 w-4" />

@@ -8,9 +8,9 @@ import {
   GraduationCap, 
   Heart, 
   Phone, 
-  Quote, 
+  Quote,
   ShieldCheck, 
-  Sparkles, 
+  Palette, 
   Star, 
   Trophy, 
   Users 
@@ -38,7 +38,7 @@ export default function DesignSystemShowcase() {
         {/* Section 1: Overview */}
         <section className="space-y-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold border border-primary/20">
-            <Sparkles className="w-3.5 h-3.5" />
+            <Palette className="w-3.5 h-3.5" />
             <span>Sistem Warna Baru</span>
           </div>
           <h2 className="text-3xl font-bold tracking-tight text-foreground">

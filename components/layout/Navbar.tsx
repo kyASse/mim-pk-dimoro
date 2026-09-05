@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, LogIn, Sparkles } from "lucide-react";
+import { Menu, X, LogIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
 import { ThemeSwitcher } from "@/components/theme-switcher";
@@ -91,9 +91,8 @@ export default function Navbar() {
                         <Link href="/pendaftaran">
                             <Button
                                 size="sm"
-                                className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs gap-1.5 px-4 h-8 shadow-sm shadow-emerald-600/30 transition-all hover:shadow-md hover:scale-[1.02] active:scale-[0.98]"
+                                className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-4 h-8 shadow-sm shadow-emerald-600/30 transition-all hover:shadow-md hover:scale-[1.02] active:scale-[0.98]"
                             >
-                                <Sparkles className="w-3.5 h-3.5" />
                                 <span>Daftar PPDB</span>
                             </Button>
                         </Link>

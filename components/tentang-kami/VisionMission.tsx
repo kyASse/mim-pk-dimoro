@@ -7,7 +7,6 @@ import {
   BookOpen,
   Trophy,
   Heart,
-  Sparkles,
   Lightbulb,
   Leaf,
   ShieldCheck,
@@ -44,7 +43,7 @@ const INDICATOR_CONFIGS = [
     iconBgClass: "bg-rose-500/10 text-rose-600 dark:text-rose-400",
   },
   {
-    icon: Sparkles,
+    icon: BookOpen,
     category: "Tahfidz Qur'an",
     color: "teal",
     badgeClass: "bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20",
@@ -82,7 +81,7 @@ const MISSION_CONFIGS = [
     iconBgClass: "bg-primary/10 text-primary",
   },
   {
-    icon: Sparkles,
+    icon: Lightbulb,
     category: "Pembelajaran Inovatif",
     badgeClass: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
     iconBgClass: "bg-amber-500/10 text-amber-600 dark:text-amber-400",

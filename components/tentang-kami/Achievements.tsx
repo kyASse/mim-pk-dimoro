@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import { Award, Trophy, Medal, Star, Sparkles, Crown } from "lucide-react";
+import { Award, Trophy, Medal, Star, Crown } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
 
@@ -199,7 +199,7 @@ export default function Achievements() {
                                                                 <span
                                                                     className={`inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${style.badgeClass}`}
                                                                 >
-                                                                    <Sparkles className="w-3 h-3" />
+                                                                    <Medal className="w-3 h-3" />
                                                                     Tingkat {item.tingkat}
                                                                 </span>
                                                             </div>

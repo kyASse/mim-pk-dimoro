@@ -16,7 +16,6 @@ import {
   MessageSquare,
   Compass,
   GraduationCap,
-  Sparkles,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -143,8 +142,7 @@ export default function Footer() {
                   {SCHOOL_FULL_NAME}
                 </h3>
                 <div className="mt-1">
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20">
-                    <Sparkles className="w-3 h-3" />
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20">
                     Program Khusus (PK)
                   </span>
                 </div>

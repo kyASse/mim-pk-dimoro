@@ -9,7 +9,6 @@ import {
     Award,
     Star,
     Smile,
-    Sparkles,
     ShieldCheck
 } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
@@ -94,9 +93,9 @@ export default function ValueCard({ title, description, icon, color }: ValueCard
                 return <Smile className="w-7 h-7" />;
             case "shield":
                 return <ShieldCheck className="w-7 h-7" />;
-            case "sparkles":
+            case "star":
             default:
-                return <Sparkles className="w-7 h-7" />;
+                return <Award className="w-7 h-7" />;
         }
     };
 

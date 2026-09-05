@@ -4,7 +4,8 @@ import { COMPETENT_EDUCATORS } from "@/lib/school-data";
 import {
   GraduationCap,
   Award,
-  Sparkles,
+  Lightbulb,
+  TrendingUp,
   BookOpen,
   Heart,
   Compass,
@@ -19,7 +20,7 @@ import { motion, useReducedMotion } from "motion/react";
 // Contextual metadata for the 8 Teacher Quality Programs
 const PROGRAM_CONFIGS = [
   {
-    icon: Sparkles,
+    icon: Lightbulb,
     badge: "Pedagogi Aktif",
     badgeClass: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
     iconBgClass: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
@@ -83,7 +84,7 @@ const COMMITMENT_CONFIGS = [
     iconBgClass: "bg-primary/10 text-primary",
   },
   {
-    icon: Sparkles,
+    icon: TrendingUp,
     badge: "Adaptif & Maju",
     badgeClass: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
     iconBgClass: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
@@ -157,27 +158,26 @@ export default function EducatorsSection() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.2 }}
                   transition={{ duration: 0.4, delay: index * 0.05 }}
-                  className="bg-card border border-border/60 hover:border-primary/40 rounded-2xl p-5 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group"
+                  className="bg-card border border-border/60 hover:border-primary/40 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group"
                 >
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between gap-2">
-                      <div
-                        className={`p-2 rounded-xl shrink-0 transition-transform group-hover:scale-105 ${config.iconBgClass}`}
-                      >
-                        <IconComponent className="w-4 h-4" />
-                      </div>
-                      <span className="text-[11px] font-mono font-bold text-muted-foreground/60">
-                        #{String(index + 1).padStart(2, "0")}
-                      </span>
+                  <div className="flex items-start gap-3.5">
+                    <div
+                      className={`p-2.5 rounded-xl shrink-0 mt-0.5 border shadow-2xs transition-transform duration-300 group-hover:scale-105 ${config.iconBgClass}`}
+                    >
+                      <IconComponent className="w-4 h-4" />
                     </div>
-
-                    <div className="space-y-1.5">
-                      <span
-                        className={`inline-block text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded-md border ${config.badgeClass}`}
-                      >
-                        {config.badge}
-                      </span>
-                      <p className="text-xs sm:text-sm font-medium text-foreground/90 leading-snug">
+                    <div className="space-y-1.5 flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <span
+                          className={`text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded-md border ${config.badgeClass}`}
+                        >
+                          {config.badge}
+                        </span>
+                        <span className="text-[11px] font-mono font-bold text-muted-foreground/60">
+                          #{String(index + 1).padStart(2, "0")}
+                        </span>
+                      </div>
+                      <p className="text-xs sm:text-sm font-semibold text-foreground/90 leading-snug">
                         {program}
                       </p>
                     </div>
@@ -226,26 +226,29 @@ export default function EducatorsSection() {
               return (
                 <div
                   key={index}
-                  className={`p-5 rounded-2xl bg-muted/20 border border-border/60 hover:border-primary/40 hover:bg-muted/30 transition-all flex flex-col justify-between space-y-3 group ${
+                  className={`p-4 sm:p-5 rounded-2xl bg-muted/20 border border-border/60 hover:border-primary/40 hover:bg-muted/30 transition-all flex flex-col justify-between group ${
                     index === 0 ? "md:col-span-2 lg:col-span-1" : ""
                   }`}
                 >
-                  <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-start gap-3.5">
                     <div
-                      className={`p-2 rounded-xl shrink-0 transition-transform group-hover:scale-105 ${config.iconBgClass}`}
+                      className={`p-2.5 rounded-xl shrink-0 mt-0.5 border shadow-2xs transition-transform duration-300 group-hover:scale-105 ${config.iconBgClass}`}
                     >
                       <IconComponent className="w-4 h-4" />
                     </div>
-                    <span
-                      className={`text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded-md border ${config.badgeClass}`}
-                    >
-                      {config.badge}
-                    </span>
+                    <div className="space-y-1.5 flex-1 min-w-0">
+                      <div>
+                        <span
+                          className={`inline-block text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded-md border ${config.badgeClass}`}
+                        >
+                          {config.badge}
+                        </span>
+                      </div>
+                      <p className="text-xs sm:text-sm font-medium text-foreground/90 leading-relaxed">
+                        {commitment}
+                      </p>
+                    </div>
                   </div>
-
-                  <p className="text-xs sm:text-sm font-medium text-foreground/90 leading-relaxed">
-                    {commitment}
-                  </p>
                 </div>
               );
             })}

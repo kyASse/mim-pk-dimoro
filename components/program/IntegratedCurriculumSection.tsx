@@ -9,12 +9,10 @@ import {
   Compass,
   ShieldCheck,
   Award,
-  Sparkles,
+  Lightbulb,
   Trophy,
   Clock,
   Layers,
-  GraduationCap,
-  Sparkle,
   CheckCircle2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -83,7 +81,7 @@ const PILLAR_METADATA: Record<string, PillarMeta> = {
     gradientGlow: "from-purple-500/10 via-transparent to-transparent",
   },
   "life-skill": {
-    icon: Sparkles,
+    icon: Lightbulb,
     number: "06",
     category: "Keterampilan Abad 21",
     tagline: "Problem Solving, Koding & Green School",
@@ -122,7 +120,7 @@ export default function IntegratedCurriculumSection() {
 
   return (
     <section
-      className="py-16 md:py-24 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden"
+      className="py-16 md:py-24 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden scroll-mt-36"
       id="kurikulum-terpadu"
     >
       <div className="container mx-auto px-4 max-w-6xl space-y-12">
@@ -267,7 +265,7 @@ export default function IntegratedCurriculumSection() {
                     </div>
 
                     <div className="flex items-center gap-2 self-start md:self-auto shrink-0 px-3.5 py-1.5 rounded-full bg-muted/60 border border-border/60 text-xs font-medium text-muted-foreground">
-                      <Sparkle className="h-3.5 w-3.5 text-primary" />
+                      <Layers className="h-3.5 w-3.5 text-primary" />
                       <span>{pillar.items.length} Fokus Program</span>
                     </div>
                   </div>

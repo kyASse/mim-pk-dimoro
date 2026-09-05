@@ -19,7 +19,7 @@ export const QUICK_REPLY_TEMPLATES: QuickReplyTemplate[] = [
   {
     id: 'ppdb',
     label: 'Informasi PPDB & Syarat',
-    description: 'Informasi alur pendaftaran santri baru, syarat berkas, dan narahubung panitia.',
+    description: 'Informasi alur pendaftaran siswa baru, syarat berkas, dan narahubung panitia.',
     generateText: ({ namaPengirim, subjek }) => {
       const subjekText = subjek ? ` terkait "${subjek}"` : '';
       return (
@@ -30,7 +30,7 @@ export const QUICK_REPLY_TEMPLATES: QuickReplyTemplate[] = [
         `1. Mengisi formulir pendaftaran\n` +
         `2. Fotokopi Akta Kelahiran\n` +
         `3. Fotokopi Kartu Keluarga (KK)\n` +
-        `4. Pas foto calon santri/siswa terbaru\n\n` +
+        `4. Pas foto calon siswa/siswi terbaru\n\n` +
         `Untuk informasi lebih lanjut mengenai jadwal gelombang pendaftaran, Bapak/Ibu dapat menghubungi Panitia PPDB (${SCHOOL_CONTACT_PERSON}: ${SCHOOL_WHATSAPP}).\n\n` +
         `Wassalamu’alaikum Wr. Wb.\n` +
         `Panitia PPDB ${SCHOOL_NAME}`
@@ -51,7 +51,7 @@ export const QUICK_REPLY_TEMPLATES: QuickReplyTemplate[] = [
         `2. Paket Seragam Sekolah\n` +
         `3. Buku Paket & Modul Pembelajaran\n` +
         `4. SPP Bulanan yang sangat terjangkau\n\n` +
-        `Kami juga menyediakan program beasiswa serta keringanan biaya bagi santri berprestasi dan keluarga yang berhak (syarat dan ketentuan berlaku).\n\n` +
+        `Kami juga menyediakan program beasiswa serta keringanan biaya bagi siswa/siswi berprestasi dan keluarga yang berhak (syarat dan ketentuan berlaku).\n\n` +
         `Untuk rincian brosur pembiayaan lengkap, Bapak/Ibu dipersilakan menghubungi kami via WhatsApp atau berkunjung langsung ke madrasah.\n\n` +
         `Wassalamu’alaikum Wr. Wb.\n` +
         `Admin ${SCHOOL_NAME}`
@@ -92,7 +92,7 @@ export const QUICK_REPLY_TEMPLATES: QuickReplyTemplate[] = [
         `• Hari: Senin - Sabtu\n` +
         `• Waktu: Pukul 07.30 - 13.00 WIB\n` +
         `• Lokasi: Kantor Sekretariat ${SCHOOL_NAME}\n\n` +
-        `Bapak/Ibu dapat berkonsultasi langsung dengan dewan guru dan melihat suasana pembelajaran para santri. Mohon konfirmasi perkiraan waktu kedatangan terlebih dahulu.\n\n` +
+        `Bapak/Ibu dapat berkonsultasi langsung dengan dewan guru dan melihat suasana pembelajaran para siswa dan siswi. Mohon konfirmasi perkiraan waktu kedatangan terlebih dahulu.\n\n` +
         `Wassalamu’alaikum Wr. Wb.\n` +
         `Admin ${SCHOOL_NAME}`
       );

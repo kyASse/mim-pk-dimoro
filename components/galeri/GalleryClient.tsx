@@ -10,7 +10,7 @@ import {
   ChevronRight,
   Share2,
   Maximize2,
-  Sparkles,
+  Camera,
   SearchX,
   ImageIcon,
   Calendar,
@@ -401,7 +401,7 @@ export default function GalleryClient({
                       {/* Section Badge & Category */}
                       <div className="flex items-center justify-between flex-wrap gap-2">
                         <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider">
-                          <Sparkles className="size-3.5" />
+                          <Camera className="size-3.5" />
                           <span>Sorotan Momen</span>
                         </div>
                         {spotlightBadgeStyle && (
