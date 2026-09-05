@@ -2,10 +2,19 @@ import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import React from "react";
 import IntegratedCurriculumSection from "../IntegratedCurriculumSection";
+import ProgramDetails from "../ProgramDetails";
+import ExtraActivity from "../ExtraActivity";
 import ProgramPage from "@/app/program/page";
 import { INTEGRATED_CURRICULUM, EXCELLENT_PROGRAMS } from "@/lib/school-data";
 
-// Setup mocks for framer-motion
+// Setup global mocks for test environment
+global.IntersectionObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+}));
+
+// Setup mocks for framer-motion and motion/react
 vi.mock("framer-motion", () => ({
   motion: {
     div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
@@ -14,9 +23,69 @@ vi.mock("framer-motion", () => ({
     p: ({ children, ...props }: any) => <p {...props}>{children}</p>,
   },
   AnimatePresence: ({ children }: any) => <>{children}</>,
+  useReducedMotion: () => false,
+}));
+
+vi.mock("motion/react", () => ({
+  motion: {
+    div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+    li: ({ children, ...props }: any) => <li {...props}>{children}</li>,
+    h2: ({ children, ...props }: any) => <h2 {...props}>{children}</h2>,
+    p: ({ children, ...props }: any) => <p {...props}>{children}</p>,
+  },
+  AnimatePresence: ({ children }: any) => <>{children}</>,
+  useReducedMotion: () => false,
 }));
 
 describe("Program Page & Components", () => {
+  describe("ProgramDetails Component", () => {
+    it("renders title, description, schedules, and learning features", () => {
+      const mockProps = {
+        title: "Fase A & B (Kelas 1-3)",
+        description: "Fokus pada penguatan literasi dasar dan adab harian.",
+        imageUrl: "/images/fase-ab.jpg",
+        schedule: [
+          { day: "Senin - Kamis", hours: "07:00 - 13:00 WIB" },
+          { day: "Jumat", hours: "07:00 - 11:00 WIB" },
+        ],
+        features: ["Tahfidz Juz 30", "Pembiasaan Sholat Dhuha", "Bahasa Arab Dasar"],
+      };
+
+      render(<ProgramDetails {...mockProps} />);
+
+      expect(screen.getByText(mockProps.title)).toBeDefined();
+      expect(screen.getByText(mockProps.description)).toBeDefined();
+      expect(screen.getByText("Jadwal Pembelajaran")).toBeDefined();
+      expect(screen.getByText("Senin - Kamis")).toBeDefined();
+      expect(screen.getByText("07:00 - 13:00 WIB")).toBeDefined();
+      expect(screen.getByText("Jumat")).toBeDefined();
+      expect(screen.getByText("07:00 - 11:00 WIB")).toBeDefined();
+
+      mockProps.features.forEach((feat) => {
+        expect(screen.getByText(feat)).toBeDefined();
+      });
+    });
+  });
+
+  describe("ExtraActivity Component", () => {
+    it("renders title, description, schedule, and maps icon accurately", () => {
+      const mockProps = {
+        title: "Tapak Suci",
+        description: "Seni bela diri khas Muhammadiyah.",
+        icon: "shield",
+        schedule: "Sabtu, 08:00 - 10:00 WIB",
+        imageUrl: "/images/tapak-suci.jpg",
+      };
+
+      render(<ExtraActivity {...mockProps} />);
+
+      expect(screen.getByText(mockProps.title)).toBeDefined();
+      expect(screen.getByText(mockProps.description)).toBeDefined();
+      expect(screen.getByText(mockProps.schedule)).toBeDefined();
+      expect(screen.getByText("Jadwal:")).toBeDefined();
+    });
+  });
+
   describe("IntegratedCurriculumSection", () => {
     it("renders title, description, and 8 curriculum pillar tabs", () => {
       render(<IntegratedCurriculumSection />);
@@ -106,3 +175,4 @@ describe("Program Page & Components", () => {
     });
   });
 });
+

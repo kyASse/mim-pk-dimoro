@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
 import { Quote, Star } from "lucide-react";
+import { SCHOOL_LOGO_PATH } from "@/lib/school-config";
 
 interface TestimonialCardProps {
     name: string;
@@ -12,7 +13,7 @@ interface TestimonialCardProps {
     index?: number;
 }
 
-const DEFAULT_AVATAR = "/logo-mim-pk-dimoro.svg";
+const DEFAULT_AVATAR = SCHOOL_LOGO_PATH;
 
 export default function TestimonialCard({ name, role, testimonial, avatarUrl, index = 0 }: TestimonialCardProps) {
     const shouldReduceMotion = useReducedMotion();

@@ -36,7 +36,8 @@ const nextConfig: NextConfig = {
               "img-src 'self' data: blob: https:",
               "style-src 'self' 'unsafe-inline' https:",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https:",
-              "connect-src 'self' https:",
+              "connect-src 'self' https: http://127.0.0.1:54321 ws://127.0.0.1:54321 http://localhost:54321 ws://localhost:54321",
+              "worker-src 'self' blob:",
               "font-src 'self' https: data:",
               "frame-ancestors 'self'",
               "object-src 'none'",
@@ -50,9 +51,8 @@ const nextConfig: NextConfig = {
 
   images: {
     dangerouslyAllowSVG: true,
-    contentDispositionType: 'attachment',
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    domains: ["images.pexels.com", "placehold.co"],
+    contentDispositionType: 'inline',
+    domains: ["images.unsplash.com", "plus.unsplash.com", "images.pexels.com", "placehold.co"],
     remotePatterns: [
       ...(supabaseUrlConfig
         ? [
@@ -64,6 +64,24 @@ const nextConfig: NextConfig = {
             },
           ]
         : []),
+      {
+        protocol: 'https' as const,
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https' as const,
+        hostname: 'plus.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https' as const,
+        hostname: 'images.pexels.com',
+        port: '',
+        pathname: '/**',
+      },
       {
         protocol: 'https' as const,
         hostname: 'placehold.co',

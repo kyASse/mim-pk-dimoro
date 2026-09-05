@@ -11,6 +11,8 @@ type PendaftarData = {
     id: string;
     nama_lengkap: string | null;
     email: string | null;
+    diterima_di_kelas?: string | null;
+    diterima_pada_tanggal?: string | null;
 };
 export async function updateStatusPendaftaran(id: string, status: string) {
     const supabase = await createClient();
@@ -19,8 +21,32 @@ export async function updateStatusPendaftaran(id: string, status: string) {
         .update({ status_pendaftaran: status })
         .eq('id', id);
 
-    if (!error) revalidatePath('/admin/pendaftar');
+    if (!error) {
+        revalidatePath('/admin/pendaftar');
+        revalidatePath(`/admin/pendaftar/detail/${id}`);
+    }
     return { success: !error, message: error?.message };
+}
+
+export async function bulkUpdateStatusPendaftaran(ids: string[], status: string) {
+    if (!ids || ids.length === 0) {
+        return { success: false, message: "Tidak ada pendaftar yang dipilih." };
+    }
+
+    const supabase = await createClient();
+    const { error } = await supabase
+        .from('pendaftar')
+        .update({ status_pendaftaran: status })
+        .in('id', ids);
+
+    if (!error) {
+        revalidatePath('/admin/pendaftar');
+    }
+
+    return { 
+        success: !error, 
+        message: error ? error.message : `${ids.length} pendaftar berhasil diubah statusnya menjadi ${status}.` 
+    };
 }
 
 export async function updatePendaftarData(id: string, data: Record<string, unknown>) {
@@ -30,7 +56,10 @@ export async function updatePendaftarData(id: string, data: Record<string, unkno
         .update(data)
         .eq('id', id);
 
-    if (!error) revalidatePath('/admin/pendaftar');
+    if (!error) {
+        revalidatePath('/admin/pendaftar');
+        revalidatePath(`/admin/pendaftar/detail/${id}`);
+    }
     return { success: !error, message: error?.message };
 }
 
@@ -45,7 +74,14 @@ export async function acceptAndCreatePortalAccountAction(pendaftar: PendaftarDat
     let newUser: User | null = null;
 
     try {
-        await supabase.from('pendaftar').update({ status_pendaftaran: 'Diterima' }).eq('id', pendaftar.id).throwOnError();
+        const today = new Date().toISOString().split('T')[0];
+        const acceptPayload = {
+            status_pendaftaran: 'Diterima',
+            diterima_di_kelas: pendaftar.diterima_di_kelas || 'Kelas 1',
+            diterima_pada_tanggal: pendaftar.diterima_pada_tanggal || today,
+        };
+
+        await supabase.from('pendaftar').update(acceptPayload).eq('id', pendaftar.id).throwOnError();
 
         const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
         if (listError) throw listError;

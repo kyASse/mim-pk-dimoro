@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button"; 
-import { ChevronRight, UserPlus, Sparkles, ShieldCheck } from "lucide-react";
+import { ChevronRight, UserPlus, GraduationCap, ShieldCheck } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { SCHOOL_NAME, SCHOOL_TAGLINE } from "@/lib/school-config";
 
@@ -39,7 +39,7 @@ export default function HomeHero() {
                             variants={fadeInVariants}
                             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide w-max mb-6 border border-primary/20"
                         >
-                            <Sparkles className="w-3.5 h-3.5" />
+                            <GraduationCap className="w-3.5 h-3.5" />
                             <span>Madrasah Ibtidaiyah Program Khusus</span>
                         </motion.div>
 

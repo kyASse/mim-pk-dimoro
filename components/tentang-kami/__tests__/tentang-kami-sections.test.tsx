@@ -1,8 +1,9 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import React from "react";
 import VisionMission from "../VisionMission";
 import EducatorsSection from "../EducatorsSection";
+import Achievements from "../Achievements";
 import AboutUs from "@/app/tentang-kami/page";
 import { HEADMASTER_WELCOME, VISION_MISSION, COMPETENT_EDUCATORS, EXCELLENT_PROGRAMS } from "@/lib/school-data";
 
@@ -13,11 +14,13 @@ global.IntersectionObserver = vi.fn().mockImplementation(() => ({
   disconnect: vi.fn(),
 }));
 
+const mockSelect = vi.fn().mockImplementation(() => Promise.resolve({ data: [], error: null }));
+
 // Mock Supabase client to avoid environment variable errors when rendering child components like Achievements
 vi.mock("@/lib/supabase/client", () => ({
   createClient: vi.fn(() => ({
     from: vi.fn(() => ({
-      select: vi.fn().mockReturnThis(),
+      select: mockSelect,
       order: vi.fn().mockReturnThis(),
       limit: vi.fn().mockResolvedValue({ data: [], error: null }),
     })),
@@ -32,6 +35,7 @@ vi.mock("framer-motion", () => ({
     p: ({ children, ...props }: any) => <p {...props}>{children}</p>,
   },
   AnimatePresence: ({ children }: any) => <>{children}</>,
+  useReducedMotion: () => false,
 }));
 
 vi.mock("motion/react", () => ({
@@ -41,6 +45,7 @@ vi.mock("motion/react", () => ({
     p: ({ children, ...props }: any) => <p {...props}>{children}</p>,
   },
   AnimatePresence: ({ children }: any) => <>{children}</>,
+  useReducedMotion: () => false,
 }));
 
 describe("Tentang Kami Sections", () => {
@@ -71,7 +76,7 @@ describe("Tentang Kami Sections", () => {
     expect(screen.getByText(COMPETENT_EDUCATORS.commitments[0])).toBeDefined();
   });
 
-  it("renders AboutUs page with Headmaster Welcome, Graduate Profiles, and child sections", () => {
+  it("renders AboutUs page with Headmaster Welcome, Graduate Profiles, and child sections", async () => {
     render(<AboutUs />);
 
     // Headmaster Welcome
@@ -87,5 +92,67 @@ describe("Tentang Kami Sections", () => {
     // Sub-components presence
     expect(screen.getByText("Visi Utama")).toBeDefined();
     expect(screen.getByText(COMPETENT_EDUCATORS.title)).toBeDefined();
+
+    // Wait for Achievements async state updates to finish (empty state default)
+    await screen.findByText("Belum ada data prestasi yang ditampilkan.");
+  });
+});
+
+describe("Achievements Component", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("renders skeleton loader when loading", async () => {
+    // Mock select to return a pending promise
+    let resolveSelect: any;
+    const pendingPromise = new Promise((resolve) => {
+      resolveSelect = resolve;
+    });
+    mockSelect.mockReturnValueOnce(pendingPromise);
+
+    render(<Achievements />);
+
+    // Verify skeleton loader is visible
+    const skeleton = screen.getByTestId("achievements-skeleton");
+    expect(skeleton).toBeDefined();
+    
+    // Resolve the promise to clean up and wait for state updates
+    await act(async () => {
+      resolveSelect({ data: [], error: null });
+    });
+  });
+
+  it("renders achievements list after loading completes", async () => {
+    const mockData = [
+      {
+        nama_prestasi: "Juara 1 Lomba Matematika",
+        tingkat: "Nasional",
+        tahun: 2026,
+        deskripsi: "Kompetisi Matematika Nasional",
+      },
+    ];
+    mockSelect.mockResolvedValueOnce({ data: mockData, error: null });
+
+    render(<Achievements />);
+
+    // Wait for achievements to load and display
+    const achievementTitle = await screen.findByText("Juara 1 Lomba Matematika");
+    expect(achievementTitle).toBeDefined();
+    expect(screen.getByText("Tingkat Nasional")).toBeDefined();
+    expect(screen.getByText("Tahun 2026")).toBeDefined();
+
+    // Verify skeleton is gone
+    expect(screen.queryByTestId("achievements-skeleton")).toBeNull();
+  });
+
+  it("renders empty state if no achievements found", async () => {
+    mockSelect.mockResolvedValueOnce({ data: [], error: null });
+
+    render(<Achievements />);
+
+    const emptyMessage = await screen.findByText("Belum ada data prestasi yang ditampilkan.");
+    expect(emptyMessage).toBeDefined();
+    expect(screen.queryByTestId("achievements-skeleton")).toBeNull();
   });
 });

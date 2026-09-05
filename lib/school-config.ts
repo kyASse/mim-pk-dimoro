@@ -32,7 +32,7 @@ export const SCHOOL_ABOUT_DESCRIPTION =
 /**
  * Path logo di folder public/.
  */
-export const SCHOOL_LOGO_PATH = "/logo-mim-pk-dimoro.svg";
+export const SCHOOL_LOGO_PATH = "/logo-mim-pk-dimoro.png";
 
 /**
  * Alt text untuk logo.
@@ -56,9 +56,14 @@ export const SCHOOL_TAGLINE =
   "Mencetak generasi Muslim yang cerdas, berakhlak mulia, dan berprestasi.";
 
 /**
- * Nomor WhatsApp sekolah untuk konfirmasi pendaftaran.
+ * Nomor WhatsApp & Telepon resmi sekolah (Hotline & PPDB).
  */
-export const SCHOOL_WHATSAPP = "0812-3456-7890";
+export const SCHOOL_WHATSAPP = "+62 821-3388-1991";
+
+/**
+ * Nama narahubung resmi sekolah (Contact Person).
+ */
+export const SCHOOL_CONTACT_PERSON = "Fatim";
 
 /**
  * Alamat email resmi sekolah.

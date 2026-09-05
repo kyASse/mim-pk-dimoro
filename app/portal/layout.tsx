@@ -3,14 +3,16 @@ import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import PortalNavbar from "@/components/portal/portalNavbar";
 
+import { SCHOOL_NAME } from "@/lib/school-config";
+
 const defaultUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}/portal/`
     : "http://localhost:3000/portal/";
 
 export const metadata: Metadata = {
     metadataBase: new URL(defaultUrl),
-    title: "Portal TK ABA Mertosanan",
-    description: "Portal untuk orang tua murid TK ABA Mertosanan",
+    title: `Portal ${SCHOOL_NAME}`,
+    description: `Portal untuk orang tua murid ${SCHOOL_NAME}`,
 }
 
 const geistSans = Geist({

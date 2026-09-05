@@ -1,14 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SCHOOL_NAME } from "@/lib/school-config";
+import { createClient } from "@/lib/supabase/client";
 
-const galleryImages = [
+export interface GalleryPhoto {
+    id: string | number;
+    src: string;
+    alt: string;
+    category: string;
+}
+
+export const FALLBACK_GALLERY_IMAGES: GalleryPhoto[] = [
     {
         id: 1,
         src: "/images/mim_hero_main.jpg",
@@ -48,8 +56,47 @@ const galleryImages = [
 ];
 
 export default function GalleryPreview() {
+    const [images, setImages] = useState<GalleryPhoto[]>(FALLBACK_GALLERY_IMAGES);
     const [selectedImage, setSelectedImage] = useState<number | null>(null);
     const shouldReduceMotion = useReducedMotion();
+
+    useEffect(() => {
+        let isMounted = true;
+
+        async function fetchGallery() {
+            try {
+                const supabase = createClient();
+                const { data, error } = await supabase
+                    .from("galeri")
+                    .select("*")
+                    .order("created_at", { ascending: false })
+                    .limit(6);
+
+                if (error) {
+                    console.error("Error fetching gallery preview:", error);
+                    return;
+                }
+
+                if (isMounted && data && data.length > 0) {
+                    const mapped: GalleryPhoto[] = data.map((item) => ({
+                        id: item.id,
+                        src: item.image_url || "/images/placeholder.jpg",
+                        alt: item.keterangan || "Dokumentasi Kegiatan",
+                        category: item.kategori || "Kegiatan"
+                    }));
+                    setImages(mapped);
+                }
+            } catch (err) {
+                console.error("Unexpected error fetching gallery preview:", err);
+            }
+        }
+
+        fetchGallery();
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
 
     return (
         <section className="py-20 bg-background">
@@ -75,7 +122,7 @@ export default function GalleryPreview() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                    {galleryImages.map((image, index) => (
+                    {images.map((image, index) => (
                         <motion.div
                             key={image.id}
                             initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.95 }}
@@ -106,7 +153,7 @@ export default function GalleryPreview() {
 
                 {/* Lightbox Modal */}
                 <AnimatePresence>
-                    {selectedImage !== null && (
+                    {selectedImage !== null && images[selectedImage] && (
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -131,8 +178,8 @@ export default function GalleryPreview() {
 
                                 <div className="relative aspect-[16/10] w-full bg-black">
                                     <Image
-                                        src={galleryImages[selectedImage].src}
-                                        alt={galleryImages[selectedImage].alt}
+                                        src={images[selectedImage].src}
+                                        alt={images[selectedImage].alt}
                                         fill
                                         className="object-contain"
                                     />
@@ -140,10 +187,10 @@ export default function GalleryPreview() {
                                 
                                 <div className="p-6 bg-card border-t border-border/40">
                                     <span className="px-2.5 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full mb-2 inline-block">
-                                        Kategori: {galleryImages[selectedImage].category}
+                                        Kategori: {images[selectedImage].category}
                                     </span>
                                     <h3 className="text-lg font-bold text-foreground">
-                                        {galleryImages[selectedImage].alt}
+                                        {images[selectedImage].alt}
                                     </h3>
                                 </div>
                             </motion.div>

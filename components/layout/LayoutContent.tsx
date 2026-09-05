@@ -2,6 +2,7 @@ import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { ThemeProvider } from "next-themes";
+import PublicMobileFloatingBar from "./PublicMobileFloatingBar";
 
 export default function LayoutContent({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -15,8 +16,11 @@ export default function LayoutContent({ children }: { children: React.ReactNode 
             disableTransitionOnChange
         >
             {!hideNavbar && <Navbar />}
-            {children}
+            <div className={!hideNavbar ? "pb-20 md:pb-0" : ""}>
+                {children}
+            </div>
             {!hideNavbar && <Footer />}
+            {!hideNavbar && <PublicMobileFloatingBar />}
         </ThemeProvider>
     );
-}
+}

@@ -1,6 +1,7 @@
 // middleware.ts
 import { NextResponse, type NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
+import { ADMIN_ROLES, type UserRole } from '@/lib/auth/types'
 
 export async function middleware(request: NextRequest) {
     // Ikuti pola resmi: gunakan getAll/setAll agar cookie Supabase sinkron di Edge
@@ -38,14 +39,14 @@ export async function middleware(request: NextRequest) {
 
     const pathname = request.nextUrl.pathname;
 
-    // 1) Proteksi login
+    // 1) Proteksi login untuk rute admin & portal
     if (!user && (pathname.startsWith('/admin') || pathname.startsWith('/portal'))) {
         const url = request.nextUrl.clone();
         url.pathname = '/auth/login';
         return NextResponse.redirect(url);
     }
 
-    // 2) Redirect berdasarkan role (setelah login)
+    // 2) Redirect & Proteksi berdasarkan role (setelah login)
     if (user) {
         const { data: profile } = await supabase
             .from('profiles')
@@ -53,8 +54,17 @@ export async function middleware(request: NextRequest) {
             .eq('id', user.id)
             .single();
 
-        const role = profile?.role;
-        if (role === 'orang_tua' && !pathname.startsWith('/portal') && !pathname.startsWith('/api')) {
+        const role = (profile?.role || 'orang_tua') as UserRole;
+
+        // Orang tua dilarang mengakses rute /admin -> redirect ke /portal
+        if (role === 'orang_tua' && pathname.startsWith('/admin')) {
+            const url = request.nextUrl.clone();
+            url.pathname = '/portal';
+            return NextResponse.redirect(url);
+        }
+
+        // Pengguna orang tua yang membuka root /auth/* saat sudah login -> redirect ke /portal
+        if (role === 'orang_tua' && pathname.startsWith('/auth')) {
             const url = request.nextUrl.clone();
             url.pathname = '/portal';
             return NextResponse.redirect(url);

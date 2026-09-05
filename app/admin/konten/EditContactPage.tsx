@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Save, Phone, MapPin, Mail, Clock, Globe, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Save, Phone, MapPin, Mail, Clock, Globe, Eye, EyeOff, Facebook, Instagram, Youtube, Share2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface KontakSekolahItem {
@@ -20,6 +20,9 @@ interface KontakSekolahItem {
     email_admin: string;
     jam_operasional: string;
     maps_embed_url: string | null;
+    facebook_url?: string | null;
+    instagram_url?: string | null;
+    youtube_url?: string | null;
     created_at: string;
     updated_at: string;
 }
@@ -35,7 +38,10 @@ export default function EditContactPage() {
         email_utama: '',
         email_admin: '',
         jam_operasional: '',
-        maps_embed_url: ''
+        maps_embed_url: '',
+        facebook_url: '',
+        instagram_url: '',
+        youtube_url: ''
     });
     const router = useRouter();
     const supabase = createClient();
@@ -61,7 +67,10 @@ export default function EditContactPage() {
                     email_utama: data.email_utama || '',
                     email_admin: data.email_admin || '',
                     jam_operasional: data.jam_operasional || '',
-                    maps_embed_url: data.maps_embed_url || ''
+                    maps_embed_url: data.maps_embed_url || '',
+                    facebook_url: data.facebook_url || '',
+                    instagram_url: data.instagram_url || '',
+                    youtube_url: data.youtube_url || ''
                 });
             }
             setIsLoading(false);
@@ -86,6 +95,9 @@ export default function EditContactPage() {
                     email_admin: formData.email_admin,
                     jam_operasional: formData.jam_operasional,
                     maps_embed_url: formData.maps_embed_url || null,
+                    facebook_url: formData.facebook_url || null,
+                    instagram_url: formData.instagram_url || null,
+                    youtube_url: formData.youtube_url || null,
                     updated_at: new Date().toISOString()
                 })
                 .eq('id', kontakSekolah.id);
@@ -292,6 +304,59 @@ export default function EditContactPage() {
                                     </p>
                                 </div>
 
+                                {/* Media Sosial */}
+                                <div className="space-y-4 pt-4 border-t">
+                                    <div className="flex items-center gap-2">
+                                        <Share2 className="w-4 h-4 text-blue-600" />
+                                        <h3 className="font-semibold text-gray-800 text-sm">Media Sosial</h3>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label htmlFor="facebook_url" className="flex items-center gap-2">
+                                            <Facebook className="w-4 h-4 text-blue-600" />
+                                            Facebook URL
+                                        </Label>
+                                        <Input
+                                            id="facebook_url"
+                                            name="facebook_url"
+                                            type="url"
+                                            value={formData.facebook_url}
+                                            onChange={(e) => handleInputChange('facebook_url', e.target.value)}
+                                            placeholder="https://facebook.com/..."
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label htmlFor="instagram_url" className="flex items-center gap-2">
+                                            <Instagram className="w-4 h-4 text-pink-600" />
+                                            Instagram URL
+                                        </Label>
+                                        <Input
+                                            id="instagram_url"
+                                            name="instagram_url"
+                                            type="url"
+                                            value={formData.instagram_url}
+                                            onChange={(e) => handleInputChange('instagram_url', e.target.value)}
+                                            placeholder="https://instagram.com/..."
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label htmlFor="youtube_url" className="flex items-center gap-2">
+                                            <Youtube className="w-4 h-4 text-red-600" />
+                                            YouTube URL
+                                        </Label>
+                                        <Input
+                                            id="youtube_url"
+                                            name="youtube_url"
+                                            type="url"
+                                            value={formData.youtube_url}
+                                            onChange={(e) => handleInputChange('youtube_url', e.target.value)}
+                                            placeholder="https://youtube.com/..."
+                                        />
+                                    </div>
+                                </div>
+
                                 <div className="flex items-center justify-between pt-4 border-t">
                                     <div className="text-sm text-gray-500 flex items-center gap-2">
                                         <Clock className="w-4 h-4" />
@@ -383,6 +448,32 @@ export default function EditContactPage() {
                                                             loading="lazy"
                                                             referrerPolicy="no-referrer-when-downgrade"
                                                         />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {(formData.facebook_url || formData.instagram_url || formData.youtube_url) && (
+                                            <div className="flex items-start gap-3">
+                                                <Share2 className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                                                <div>
+                                                    <p className="font-medium text-gray-700">Media Sosial</p>
+                                                    <div className="flex flex-wrap gap-3 mt-1">
+                                                        {formData.facebook_url && (
+                                                            <a href={formData.facebook_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm flex items-center gap-1">
+                                                                <Facebook className="w-4 h-4" /> Facebook
+                                                            </a>
+                                                        )}
+                                                        {formData.instagram_url && (
+                                                            <a href={formData.instagram_url} target="_blank" rel="noopener noreferrer" className="text-pink-600 hover:underline text-sm flex items-center gap-1">
+                                                                <Instagram className="w-4 h-4" /> Instagram
+                                                            </a>
+                                                        )}
+                                                        {formData.youtube_url && (
+                                                            <a href={formData.youtube_url} target="_blank" rel="noopener noreferrer" className="text-red-600 hover:underline text-sm flex items-center gap-1">
+                                                                <Youtube className="w-4 h-4" /> YouTube
+                                                            </a>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>

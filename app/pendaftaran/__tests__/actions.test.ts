@@ -73,6 +73,13 @@ describe('submitPendaftaranAction', () => {
     formData.append('kewarganegaraan', 'WNI');
     formData.append('alamat_lengkap', 'Jl. Dimoro No. 1');
     formData.append('nomor_telepon', '08123456789');
+    formData.append('tk_asal', 'TK Aisyiyah 1');
+    formData.append('hobi', 'Membaca');
+    formData.append('transportasi', 'Sepeda Motor');
+    formData.append('alamat_orang_tua', 'Jl. Dimoro No. 1');
+    formData.append('wali_alamat', 'Jl. Solo-Sragen KM 10');
+    formData.append('wali_telepon', '08987654321');
+    formData.append('gaji_orang_tua', 'Rp 2.000.000 - Rp 3.000.000');
     formData.append('memiliki_kebutuhan_khusus', 'true');
     formData.append('jenis_kebutuhan_khusus', JSON.stringify(['autisme']));
 
@@ -82,6 +89,13 @@ describe('submitPendaftaranAction', () => {
     expect(mockAdmin.from).toHaveBeenCalledWith('pendaftar');
     expect(mockInsert).toHaveBeenCalledWith(expect.objectContaining({
       nama_lengkap: 'Ahmad Fulan',
+      tk_asal: 'TK Aisyiyah 1',
+      hobi: 'Membaca',
+      transportasi: 'Sepeda Motor',
+      alamat_orang_tua: 'Jl. Dimoro No. 1',
+      wali_alamat: 'Jl. Solo-Sragen KM 10',
+      wali_telepon: '08987654321',
+      gaji_orang_tua: 'Rp 2.000.000 - Rp 3.000.000',
       memiliki_kebutuhan_khusus: true,
       jenis_kebutuhan_khusus: ['autisme'],
       jalur_pendaftaran: 'Online',

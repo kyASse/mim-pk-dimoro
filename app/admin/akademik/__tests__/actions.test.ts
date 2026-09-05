@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createPrestasiAction, updateBiayaAction } from '../actions';
+import { createPrestasiAction, updateBiayaAction, updateBiayaAndSppAction } from '../actions';
+import { revalidatePath } from 'next/cache';
 
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(),
@@ -79,4 +80,93 @@ describe('Akademik Actions', () => {
       });
     });
   });
+
+  describe('updateBiayaAndSppAction', () => {
+    it('should update both biaya items and catatan SPP successfully', async () => {
+      const mockEqBiaya = vi.fn().mockResolvedValue({ error: null });
+      const mockUpdateBiaya = vi.fn().mockReturnValue({ eq: mockEqBiaya });
+
+      const mockEqSpp = vi.fn().mockResolvedValue({ error: null });
+      const mockUpdateSpp = vi.fn().mockReturnValue({ eq: mockEqSpp });
+
+      const mockSupabase = {
+        from: vi.fn((table: string) => {
+          if (table === 'biaya_pendaftaran') {
+            return { update: mockUpdateBiaya };
+          }
+          if (table === 'konten_halaman') {
+            return { update: mockUpdateSpp };
+          }
+          return {};
+        }),
+      };
+      vi.mocked(createClient).mockResolvedValue(mockSupabase as any);
+
+      const payload = {
+        biaya: [
+          { id: 1, biaya_putra: 600000, biaya_putri: 650000 },
+          { id: 2, biaya_putra: 100000, biaya_putri: 100000 },
+        ],
+        catatanSpp: 'SPP sudah termasuk seragam dan ekstrakurikuler wajib.',
+      };
+
+      const result = await updateBiayaAndSppAction(payload);
+
+      expect(result.success).toBe(true);
+      expect(result.message).toBe('Data rincian biaya dan catatan SPP berhasil diperbarui.');
+      expect(mockUpdateBiaya).toHaveBeenCalledTimes(2);
+      expect(mockUpdateSpp).toHaveBeenCalledWith({
+        isi: { catatan: 'SPP sudah termasuk seragam dan ekstrakurikuler wajib.' },
+      });
+      expect(mockEqSpp).toHaveBeenCalledWith('slug', 'catatan-spp');
+      expect(revalidatePath).toHaveBeenCalledWith('/admin/akademik');
+      expect(revalidatePath).toHaveBeenCalledWith('/pendaftaran');
+    });
+
+    it('should return error when updating biaya fails', async () => {
+      const mockEqBiaya = vi.fn().mockResolvedValue({ error: { message: 'Database error' } });
+      const mockUpdateBiaya = vi.fn().mockReturnValue({ eq: mockEqBiaya });
+
+      const mockSupabase = {
+        from: vi.fn().mockReturnValue({ update: mockUpdateBiaya }),
+      };
+      vi.mocked(createClient).mockResolvedValue(mockSupabase as any);
+
+      const payload = {
+        biaya: [{ id: 1, biaya_putra: 600000, biaya_putri: 650000 }],
+        catatanSpp: 'Catatan SPP',
+      };
+
+      const result = await updateBiayaAndSppAction(payload);
+      expect(result.success).toBe(false);
+      expect(result.message).toContain('Gagal memperbarui data biaya');
+    });
+
+    it('should return error when updating catatan SPP fails', async () => {
+      const mockEqBiaya = vi.fn().mockResolvedValue({ error: null });
+      const mockUpdateBiaya = vi.fn().mockReturnValue({ eq: mockEqBiaya });
+
+      const mockEqSpp = vi.fn().mockResolvedValue({ error: { message: 'SPP table error' } });
+      const mockUpdateSpp = vi.fn().mockReturnValue({ eq: mockEqSpp });
+
+      const mockSupabase = {
+        from: vi.fn((table: string) => {
+          if (table === 'biaya_pendaftaran') return { update: mockUpdateBiaya };
+          if (table === 'konten_halaman') return { update: mockUpdateSpp };
+          return {};
+        }),
+      };
+      vi.mocked(createClient).mockResolvedValue(mockSupabase as any);
+
+      const payload = {
+        biaya: [{ id: 1, biaya_putra: 600000, biaya_putri: 650000 }],
+        catatanSpp: 'Catatan SPP',
+      };
+
+      const result = await updateBiayaAndSppAction(payload);
+      expect(result.success).toBe(false);
+      expect(result.message).toContain('Gagal memperbarui catatan SPP');
+    });
+  });
 });
+

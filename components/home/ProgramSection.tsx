@@ -12,19 +12,22 @@ const programs = [
         title: EXCELLENT_PROGRAMS.tahfidz.title,
         description: EXCELLENT_PROGRAMS.tahfidz.target,
         image: "/images/mim_tahfidz_learning.jpg",
-        href: "/program/tahfidz"
+        href: "/program/tahfidz",
+        variant: "tahfidz" as const
     },
     {
         title: EXCELLENT_PROGRAMS.klinikBelajar.title,
         description: EXCELLENT_PROGRAMS.klinikBelajar.description,
         image: "/images/mim_hero_main.jpg",
-        href: "/program/klinik-belajar"
+        href: "/program/klinik-belajar",
+        variant: "klinik" as const
     },
     {
         title: "Ekstrakurikuler",
         description: "Berbagai pilihan kegiatan mulai dari seni bela diri Tapak Suci, kepanduan Hizbul Wathan (HW), hingga Robotika.",
         image: "/images/mim_tahfidz_learning.jpg",
-        href: "/program/ekstrakurikuler"
+        href: "/program/ekstrakurikuler",
+        variant: "default" as const
     }
 ];
 
@@ -58,6 +61,7 @@ export default function ProgramSection() {
                                 description={program.description}
                                 image={program.image}
                                 href={program.href}
+                                variant={program.variant}
                             />
                         </motion.div>
                     ))}
