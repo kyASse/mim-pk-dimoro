@@ -132,22 +132,26 @@ export function TabKontakFAQ({ initialKontak, initialFAQ }: TabKontakFAQProps) {
   return (
     <div className="space-y-8">
       {/* 1. SEKSI INFORMASI KONTAK SEKOLAH */}
-      <Card className="border-gray-200/80 shadow-sm">
-        <CardHeader className="border-b border-gray-100 bg-gray-50/50 pb-4">
-          <div className="flex items-center space-x-2">
-            <PhoneCall className="w-5 h-5 text-emerald-600" />
-            <CardTitle className="text-base sm:text-lg font-bold text-gray-900">
-              Informasi Kontak & Jam Operasional
-            </CardTitle>
+      <Card className="border-border/80 bg-card shadow-xs rounded-2xl overflow-hidden">
+        <CardHeader className="p-4 sm:p-6 border-b border-border/60 bg-muted/30 dark:bg-muted/15">
+          <div className="flex items-start gap-3.5 sm:gap-4">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+              <PhoneCall className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
+            </div>
+            <div className="space-y-1 min-w-0 flex-1">
+              <CardTitle className="text-base sm:text-lg font-bold text-foreground leading-snug">
+                Informasi Kontak & Jam Operasional
+              </CardTitle>
+              <CardDescription className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Nomor telepon, WhatsApp, email, dan alamat kantor madrasah.
+              </CardDescription>
+            </div>
           </div>
-          <CardDescription className="text-xs sm:text-sm text-gray-500">
-            Nomor telepon, WhatsApp, email, dan alamat kantor madrasah.
-          </CardDescription>
         </CardHeader>
         <CardContent className="p-4 sm:p-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Nomor WhatsApp Resmi</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Nomor WhatsApp Resmi</Label>
               <Input
                 value={kontak.whatsapp}
                 onChange={(e) => setKontak({ ...kontak, whatsapp: e.target.value })}
@@ -156,7 +160,7 @@ export function TabKontakFAQ({ initialKontak, initialFAQ }: TabKontakFAQProps) {
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Email Utama Madrasah</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Email Utama Madrasah</Label>
               <Input
                 value={kontak.email_utama}
                 onChange={(e) => setKontak({ ...kontak, email_utama: e.target.value })}
@@ -165,7 +169,7 @@ export function TabKontakFAQ({ initialKontak, initialFAQ }: TabKontakFAQProps) {
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Email Layanan Admin / TU</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Email Layanan Admin / TU</Label>
               <Input
                 value={kontak.email_admin}
                 onChange={(e) => setKontak({ ...kontak, email_admin: e.target.value })}
@@ -175,7 +179,7 @@ export function TabKontakFAQ({ initialKontak, initialFAQ }: TabKontakFAQProps) {
             </div>
 
             <div className="sm:col-span-2 lg:col-span-3 space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Jam Operasional Pelayanan</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Jam Operasional Pelayanan</Label>
               <Input
                 value={kontak.jam_operasional}
                 onChange={(e) => setKontak({ ...kontak, jam_operasional: e.target.value })}
@@ -185,7 +189,7 @@ export function TabKontakFAQ({ initialKontak, initialFAQ }: TabKontakFAQProps) {
             </div>
 
             <div className="sm:col-span-2 lg:col-span-3 space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Alamat Lengkap</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Alamat Lengkap</Label>
               <Textarea
                 rows={2}
                 value={kontak.alamat}
@@ -196,7 +200,7 @@ export function TabKontakFAQ({ initialKontak, initialFAQ }: TabKontakFAQProps) {
             </div>
 
             <div className="sm:col-span-2 lg:col-span-3 space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">
+              <Label className="text-xs font-semibold text-foreground/80">
                 Google Maps Embed URL / Link iframe
               </Label>
               <Input
@@ -209,7 +213,7 @@ export function TabKontakFAQ({ initialKontak, initialFAQ }: TabKontakFAQProps) {
 
             {/* Media Sosial */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Instagram URL</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Instagram URL</Label>
               <Input
                 value={kontak.instagram_url || ""}
                 onChange={(e) => setKontak({ ...kontak, instagram_url: e.target.value })}
@@ -218,7 +222,7 @@ export function TabKontakFAQ({ initialKontak, initialFAQ }: TabKontakFAQProps) {
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Facebook URL</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Facebook URL</Label>
               <Input
                 value={kontak.facebook_url || ""}
                 onChange={(e) => setKontak({ ...kontak, facebook_url: e.target.value })}
@@ -227,7 +231,7 @@ export function TabKontakFAQ({ initialKontak, initialFAQ }: TabKontakFAQProps) {
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">YouTube Channel URL</Label>
+              <Label className="text-xs font-semibold text-foreground/80">YouTube Channel URL</Label>
               <Input
                 value={kontak.youtube_url || ""}
                 onChange={(e) => setKontak({ ...kontak, youtube_url: e.target.value })}
@@ -240,24 +244,26 @@ export function TabKontakFAQ({ initialKontak, initialFAQ }: TabKontakFAQProps) {
       </Card>
 
       {/* 2. SEKSI KELOLA DAFTAR FAQ (TANYA JAWAB PUBLIK) */}
-      <Card className="border-gray-200/80 shadow-sm">
-        <CardHeader className="border-b border-gray-100 bg-gray-50/50 pb-4">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <div>
-              <div className="flex items-center space-x-2">
-                <HelpCircle className="w-5 h-5 text-emerald-600" />
-                <CardTitle className="text-base sm:text-lg font-bold text-gray-900">
+      <Card className="border-border/80 bg-card shadow-xs rounded-2xl overflow-hidden">
+        <CardHeader className="p-4 sm:p-6 border-b border-border/60 bg-muted/30 dark:bg-muted/15">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+            <div className="flex items-start gap-3.5 sm:gap-4 min-w-0">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                <HelpCircle className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
+              </div>
+              <div className="space-y-1 min-w-0">
+                <CardTitle className="text-base sm:text-lg font-bold text-foreground leading-snug">
                   Daftar Pertanyaan Umum (FAQ) ({faqList.length} Pertanyaan)
                 </CardTitle>
+                <CardDescription className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  Tanya jawab yang ditampilkan pada akordion halaman Kontak dan Informasi PPDB.
+                </CardDescription>
               </div>
-              <CardDescription className="text-xs sm:text-sm text-gray-500 mt-1">
-                Tanya jawab yang ditampilkan pada akordion halaman Kontak dan Informasi PPDB.
-              </CardDescription>
             </div>
             <Button
               type="button"
               onClick={handleOpenAddFaq}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-9 font-medium shrink-0"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-9 font-medium shrink-0 shadow-sm self-start sm:self-auto"
             >
               <Plus className="w-4 h-4 mr-1.5" />
               Tambah Pertanyaan FAQ
@@ -269,14 +275,14 @@ export function TabKontakFAQ({ initialKontak, initialFAQ }: TabKontakFAQProps) {
             {faqList.map((faq, idx) => (
               <div
                 key={faq.id || idx}
-                className="p-4 rounded-xl border border-gray-200 bg-white shadow-xs space-y-2"
+                className="p-4 rounded-xl border border-border/80 bg-card/60 dark:bg-muted/10 shadow-xs space-y-2"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="text-[10px] text-emerald-700 border-emerald-300">
+                    <Badge variant="outline" className="text-[10px] text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20">
                       #{idx + 1} {faq.category || "Umum"}
                     </Badge>
-                    <h5 className="font-bold text-sm text-gray-900">{faq.question}</h5>
+                    <h5 className="font-bold text-sm text-foreground">{faq.question}</h5>
                   </div>
 
                   <div className="flex items-center gap-1 shrink-0">
@@ -285,7 +291,7 @@ export function TabKontakFAQ({ initialKontak, initialFAQ }: TabKontakFAQProps) {
                       variant="ghost"
                       size="sm"
                       onClick={() => handleOpenEditFaq(faq)}
-                      className="h-7 w-7 p-0 text-muted-foreground hover:text-emerald-600"
+                      className="h-7 w-7 p-0 text-muted-foreground hover:text-emerald-600 dark:hover:text-emerald-400"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                     </Button>
@@ -294,14 +300,14 @@ export function TabKontakFAQ({ initialKontak, initialFAQ }: TabKontakFAQProps) {
                       variant="ghost"
                       size="sm"
                       onClick={() => handleRemoveFaq(faq.id)}
-                      className="h-7 w-7 p-0 text-muted-foreground hover:text-red-600"
+                      className="h-7 w-7 p-0 text-muted-foreground hover:text-red-600 dark:hover:text-red-400"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </Button>
                   </div>
                 </div>
 
-                <p className="text-xs text-muted-foreground leading-relaxed pl-1 border-l-2 border-emerald-200">
+                <p className="text-xs text-muted-foreground leading-relaxed pl-2.5 border-l-2 border-emerald-500/40">
                   {faq.answer}
                 </p>
               </div>
@@ -312,16 +318,16 @@ export function TabKontakFAQ({ initialKontak, initialFAQ }: TabKontakFAQProps) {
 
       {/* Modal Dialog Add / Edit FAQ */}
       <Dialog open={isFaqModalOpen} onOpenChange={setIsFaqModalOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md bg-card border-border/80 text-card-foreground shadow-2xl">
           <DialogHeader>
-            <DialogTitle className="text-base font-bold text-gray-900">
+            <DialogTitle className="text-base font-bold text-foreground">
               {editingFaq.question ? "Edit Pertanyaan FAQ" : "Tambah Pertanyaan FAQ"}
             </DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4 py-2">
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Kategori</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Kategori</Label>
               <Input
                 value={editingFaq.category || "Umum"}
                 onChange={(e) => setEditingFaq({ ...editingFaq, category: e.target.value })}
@@ -331,7 +337,7 @@ export function TabKontakFAQ({ initialKontak, initialFAQ }: TabKontakFAQProps) {
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Pertanyaan (Question)</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Pertanyaan (Question)</Label>
               <Input
                 value={editingFaq.question || ""}
                 onChange={(e) => setEditingFaq({ ...editingFaq, question: e.target.value })}
@@ -341,7 +347,7 @@ export function TabKontakFAQ({ initialKontak, initialFAQ }: TabKontakFAQProps) {
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Jawaban (Answer)</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Jawaban (Answer)</Label>
               <Textarea
                 rows={4}
                 value={editingFaq.answer || ""}
@@ -358,14 +364,14 @@ export function TabKontakFAQ({ initialKontak, initialFAQ }: TabKontakFAQProps) {
               variant="outline"
               size="sm"
               onClick={() => setIsFaqModalOpen(false)}
-              className="h-9 text-xs"
+              className="h-9 text-xs border-border/80 hover:bg-muted/50"
             >
               Batal
             </Button>
             <Button
               type="button"
               onClick={handleSaveFaqModal}
-              className="h-9 text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-medium"
+              className="h-9 text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-medium shadow-sm"
             >
               Simpan ke Daftar
             </Button>

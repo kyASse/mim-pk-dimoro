@@ -189,7 +189,7 @@ export function ImageUploader({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <Label className="text-sm font-semibold text-gray-800">{label}</Label>
+        <Label className="text-sm font-semibold text-foreground">{label}</Label>
         {defaultUrl && value && value !== defaultUrl && (
           <Button
             type="button"
@@ -197,7 +197,7 @@ export function ImageUploader({
             size="sm"
             onClick={() => onChange(defaultUrl)}
             disabled={disabled || isUploading}
-            className="h-7 text-xs text-muted-foreground hover:text-emerald-600 px-2"
+            className="h-7 text-xs text-muted-foreground hover:text-emerald-600 dark:hover:text-emerald-400 px-2"
           >
             <RefreshCw className="w-3 h-3 mr-1" />
             Reset ke Default
@@ -224,8 +224,8 @@ export function ImageUploader({
         onDrop={onDrop}
         className={`relative border-2 border-dashed rounded-xl overflow-hidden transition-all duration-200 ${
           isDragging
-            ? "border-emerald-500 bg-emerald-50/50"
-            : "border-gray-200 hover:border-gray-300 bg-gray-50/50"
+            ? "border-emerald-500 bg-emerald-500/10"
+            : "border-border/80 hover:border-emerald-500/40 bg-muted/20 hover:bg-muted/30"
         } ${disabled ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}
       >
         {value ? (
@@ -239,7 +239,7 @@ export function ImageUploader({
             />
 
             {/* Overlay on hover */}
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-4 text-white">
+            <div className="absolute inset-0 bg-black/50 backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-4 text-white">
               <Button
                 type="button"
                 variant="secondary"
@@ -254,7 +254,7 @@ export function ImageUploader({
             </div>
 
             {/* Badge URL tersimpan */}
-            <div className="absolute bottom-2 left-2 bg-black/70 backdrop-blur-sm text-[11px] text-white px-2 py-0.5 rounded flex items-center gap-1">
+            <div className="absolute bottom-2 left-2 bg-black/75 backdrop-blur-sm text-[11px] text-white px-2 py-0.5 rounded-md flex items-center gap-1 border border-white/10">
               <CheckCircle2 className="w-3 h-3 text-emerald-400" />
               Tersimpan
             </div>
@@ -264,7 +264,7 @@ export function ImageUploader({
             onClick={() => !disabled && !isUploading && fileInputRef.current?.click()}
             className="flex flex-col items-center justify-center p-6 text-center space-y-2 min-h-[140px]"
           >
-            <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center ring-1 ring-emerald-500/20">
               {isUploading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
@@ -272,10 +272,10 @@ export function ImageUploader({
               )}
             </div>
             <div className="space-y-0.5">
-              <p className="text-sm font-medium text-gray-700">
+              <p className="text-sm font-medium text-foreground">
                 {isUploading ? "Mengunggah..." : "Klik atau seret gambar ke sini"}
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted-foreground">
                 Otomatis dikonversi ke WebP untuk performa optimal
               </p>
             </div>

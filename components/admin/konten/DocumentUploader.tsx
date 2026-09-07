@@ -86,9 +86,9 @@ export function DocumentUploader({
   };
 
   return (
-    <div className="space-y-3 p-4 border border-gray-200 rounded-xl bg-gray-50/60">
+    <div className="space-y-3 p-4 border border-border/80 rounded-xl bg-muted/20 dark:bg-muted/10">
       <div className="flex items-center justify-between">
-        <Label className="text-sm font-semibold text-gray-800">{label}</Label>
+        <Label className="text-sm font-semibold text-foreground">{label}</Label>
         {defaultUrl && value && value !== defaultUrl && (
           <Button
             type="button"
@@ -96,7 +96,7 @@ export function DocumentUploader({
             size="sm"
             onClick={() => onChange(defaultUrl)}
             disabled={disabled || isUploading}
-            className="h-7 text-xs text-muted-foreground hover:text-emerald-600 px-2"
+            className="h-7 text-xs text-muted-foreground hover:text-emerald-600 dark:hover:text-emerald-400 px-2"
           >
             <RefreshCw className="w-3 h-3 mr-1" />
             Reset ke File Bawaan
@@ -117,13 +117,13 @@ export function DocumentUploader({
         disabled={disabled || isUploading}
       />
 
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 bg-white border border-gray-200 rounded-lg">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3.5 bg-card border border-border/80 rounded-xl shadow-xs">
         <div className="flex items-center space-x-3 overflow-hidden">
-          <div className="w-10 h-10 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 ring-1 ring-red-500/20 flex items-center justify-center shrink-0">
             <FileText className="w-5 h-5" />
           </div>
           <div className="min-w-0">
-            <p className="text-sm font-medium text-gray-900 truncate">
+            <p className="text-sm font-medium text-foreground truncate">
               {value ? value.split("/").pop() || "Formulir PDF" : "Belum ada dokumen"}
             </p>
             <p className="text-xs text-muted-foreground flex items-center gap-1">
@@ -140,7 +140,7 @@ export function DocumentUploader({
               variant="outline"
               size="sm"
               asChild
-              className="h-9 text-xs"
+              className="h-9 text-xs border-border/80 hover:bg-muted/50"
             >
               <a href={value} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="w-3.5 h-3.5 mr-1.5" />

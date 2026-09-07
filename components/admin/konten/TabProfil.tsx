@@ -113,17 +113,21 @@ export function TabProfil({
   return (
     <div className="space-y-8">
       {/* 1. SEKSI SAMBUTAN KEPALA MADRASAH */}
-      <Card className="border-gray-200/80 shadow-sm">
-        <CardHeader className="border-b border-gray-100 bg-gray-50/50 pb-4">
-          <div className="flex items-center space-x-2">
-            <UserCheck className="w-5 h-5 text-emerald-600" />
-            <CardTitle className="text-base sm:text-lg font-bold text-gray-900">
-              Sambutan Kepala Madrasah
-            </CardTitle>
+      <Card className="border-border/80 bg-card shadow-xs rounded-2xl overflow-hidden">
+        <CardHeader className="p-4 sm:p-6 border-b border-border/60 bg-muted/30 dark:bg-muted/15">
+          <div className="flex items-start gap-3.5 sm:gap-4">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+              <UserCheck className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
+            </div>
+            <div className="space-y-1 min-w-0 flex-1">
+              <CardTitle className="text-base sm:text-lg font-bold text-foreground leading-snug">
+                Sambutan Kepala Madrasah
+              </CardTitle>
+              <CardDescription className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Foto resmi, kutipan singkat, dan teks sambutan lengkap kepala madrasah.
+              </CardDescription>
+            </div>
           </div>
-          <CardDescription className="text-xs sm:text-sm text-gray-500">
-            Foto resmi, kutipan singkat, dan teks sambutan lengkap kepala madrasah.
-          </CardDescription>
         </CardHeader>
         <CardContent className="p-4 sm:p-6 space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -131,7 +135,7 @@ export function TabProfil({
             <div className="lg:col-span-8 space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="sm:col-span-2 space-y-1.5">
-                  <Label className="text-xs font-semibold text-gray-700">Nama Lengkap</Label>
+                  <Label className="text-xs font-semibold text-foreground/80">Nama Lengkap</Label>
                   <Input
                     value={kepsek.nama}
                     onChange={(e) => setKepsek({ ...kepsek, nama: e.target.value })}
@@ -140,7 +144,7 @@ export function TabProfil({
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-semibold text-gray-700">Gelar / Jabatan</Label>
+                  <Label className="text-xs font-semibold text-foreground/80">Gelar / Jabatan</Label>
                   <Input
                     value={kepsek.gelar}
                     onChange={(e) => setKepsek({ ...kepsek, gelar: e.target.value })}
@@ -151,7 +155,7 @@ export function TabProfil({
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-gray-700">
+                <Label className="text-xs font-semibold text-foreground/80">
                   Ringkasan / Kutipan Pembuka (Highlight Quote)
                 </Label>
                 <Textarea
@@ -166,7 +170,7 @@ export function TabProfil({
               {/* Paragraf Sambutan Lengkap */}
               <div className="space-y-3 pt-2">
                 <div className="flex items-center justify-between">
-                  <Label className="text-xs font-semibold text-gray-700">
+                  <Label className="text-xs font-semibold text-foreground/80">
                     Paragraf Sambutan Lengkap ({kepsek.paragraphs.length} Paragraf)
                   </Label>
                   <Button
@@ -174,7 +178,7 @@ export function TabProfil({
                     variant="outline"
                     size="sm"
                     onClick={handleAddParagraph}
-                    className="h-7 text-xs"
+                    className="h-7 text-xs border-border/80 hover:bg-muted/50"
                   >
                     <Plus className="w-3.5 h-3.5 mr-1" />
                     Tambah Paragraf
@@ -185,7 +189,7 @@ export function TabProfil({
                   {kepsek.paragraphs.map((paragraf, idx) => (
                     <div key={idx} className="relative group">
                       <div className="flex items-start gap-2">
-                        <span className="text-xs font-bold text-gray-400 mt-2 w-5 text-right shrink-0">
+                        <span className="text-xs font-bold text-muted-foreground mt-2 w-5 text-right shrink-0">
                           {idx + 1}.
                         </span>
                         <Textarea
@@ -229,22 +233,26 @@ export function TabProfil({
       </Card>
 
       {/* 2. SEKSI VISI, MISI & MOTTO */}
-      <Card className="border-gray-200/80 shadow-sm">
-        <CardHeader className="border-b border-gray-100 bg-gray-50/50 pb-4">
-          <div className="flex items-center space-x-2">
-            <Compass className="w-5 h-5 text-emerald-600" />
-            <CardTitle className="text-base sm:text-lg font-bold text-gray-900">
-              Visi, Misi & Motto Madrasah
-            </CardTitle>
+      <Card className="border-border/80 bg-card shadow-xs rounded-2xl overflow-hidden">
+        <CardHeader className="p-4 sm:p-6 border-b border-border/60 bg-muted/30 dark:bg-muted/15">
+          <div className="flex items-start gap-3.5 sm:gap-4">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+              <Compass className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
+            </div>
+            <div className="space-y-1 min-w-0 flex-1">
+              <CardTitle className="text-base sm:text-lg font-bold text-foreground leading-snug">
+                Visi, Misi & Motto Madrasah
+              </CardTitle>
+              <CardDescription className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Arah panduan strategis dan landasan pendidikan madrasah.
+              </CardDescription>
+            </div>
           </div>
-          <CardDescription className="text-xs sm:text-sm text-gray-500">
-            Arah panduan strategis dan landasan pendidikan madrasah.
-          </CardDescription>
         </CardHeader>
         <CardContent className="p-4 sm:p-6 space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Motto Madrasah</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Motto Madrasah</Label>
               <Input
                 value={vm.motto}
                 onChange={(e) => setVm({ ...vm, motto: e.target.value })}
@@ -253,7 +261,7 @@ export function TabProfil({
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Visi Madrasah</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Visi Madrasah</Label>
               <Input
                 value={vm.visi}
                 onChange={(e) => setVm({ ...vm, visi: e.target.value })}
@@ -264,13 +272,13 @@ export function TabProfil({
 
           {/* Indikator Visi */}
           <div className="space-y-2 pt-2">
-            <Label className="text-xs font-semibold text-gray-700">
+            <Label className="text-xs font-semibold text-foreground/80">
               Butir Indikator Visi ({vm.indikator_visi?.length || 0} Butir)
             </Label>
             <div className="space-y-2">
               {vm.indikator_visi?.map((indikator, idx) => (
                 <div key={idx} className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-emerald-600 w-5 text-right shrink-0">
+                  <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 w-5 text-right shrink-0">
                     {idx + 1}.
                   </span>
                   <Input
@@ -313,7 +321,7 @@ export function TabProfil({
                 variant="outline"
                 size="sm"
                 onClick={handleAddIndikator}
-                className="h-10 sm:h-8 px-3 text-xs"
+                className="h-10 sm:h-8 px-3 text-xs border-border/80 hover:bg-muted/50"
               >
                 <Plus className="w-3.5 h-3.5 mr-1" />
                 Tambah
@@ -323,13 +331,13 @@ export function TabProfil({
 
           {/* Butir Misi */}
           <div className="space-y-2 pt-2">
-            <Label className="text-xs font-semibold text-gray-700">
+            <Label className="text-xs font-semibold text-foreground/80">
               Butir Misi Madrasah ({vm.misi?.length || 0} Butir)
             </Label>
             <div className="space-y-2">
               {vm.misi?.map((item, idx) => (
                 <div key={idx} className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-emerald-600 w-5 text-right shrink-0">
+                  <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 w-5 text-right shrink-0">
                     {idx + 1}.
                   </span>
                   <Input
@@ -372,7 +380,7 @@ export function TabProfil({
                 variant="outline"
                 size="sm"
                 onClick={handleAddMisi}
-                className="h-10 sm:h-8 px-3 text-xs"
+                className="h-10 sm:h-8 px-3 text-xs border-border/80 hover:bg-muted/50"
               >
                 <Plus className="w-3.5 h-3.5 mr-1" />
                 Tambah
@@ -383,22 +391,26 @@ export function TabProfil({
       </Card>
 
       {/* 3. SEKSI IDENTITAS RESMI & LEGALITAS */}
-      <Card className="border-gray-200/80 shadow-sm">
-        <CardHeader className="border-b border-gray-100 bg-gray-50/50 pb-4">
-          <div className="flex items-center space-x-2">
-            <Building2 className="w-5 h-5 text-emerald-600" />
-            <CardTitle className="text-base sm:text-lg font-bold text-gray-900">
-              Identitas & Legalitas Madrasah
-            </CardTitle>
+      <Card className="border-border/80 bg-card shadow-xs rounded-2xl overflow-hidden">
+        <CardHeader className="p-4 sm:p-6 border-b border-border/60 bg-muted/30 dark:bg-muted/15">
+          <div className="flex items-start gap-3.5 sm:gap-4">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+              <Building2 className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
+            </div>
+            <div className="space-y-1 min-w-0 flex-1">
+              <CardTitle className="text-base sm:text-lg font-bold text-foreground leading-snug">
+                Identitas & Legalitas Madrasah
+              </CardTitle>
+              <CardDescription className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                NPSN, NSM, status akreditasi, dan alamat administrasi resmi.
+              </CardDescription>
+            </div>
           </div>
-          <CardDescription className="text-xs sm:text-sm text-gray-500">
-            NPSN, NSM, status akreditasi, dan alamat administrasi resmi.
-          </CardDescription>
         </CardHeader>
         <CardContent className="p-4 sm:p-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">NPSN</Label>
+              <Label className="text-xs font-semibold text-foreground/80">NPSN</Label>
               <Input
                 value={identity.npsn}
                 onChange={(e) => setIdentity({ ...identity, npsn: e.target.value })}
@@ -406,7 +418,7 @@ export function TabProfil({
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">NSM</Label>
+              <Label className="text-xs font-semibold text-foreground/80">NSM</Label>
               <Input
                 value={identity.nsm}
                 onChange={(e) => setIdentity({ ...identity, nsm: e.target.value })}
@@ -414,7 +426,7 @@ export function TabProfil({
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Akreditasi</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Akreditasi</Label>
               <div className="grid grid-cols-2 gap-2">
                 <Input
                   value={identity.akreditasi}
@@ -432,7 +444,7 @@ export function TabProfil({
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Tanggal Berdiri</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Tanggal Berdiri</Label>
               <Input
                 value={identity.tanggal_berdiri}
                 onChange={(e) => setIdentity({ ...identity, tanggal_berdiri: e.target.value })}
@@ -440,7 +452,7 @@ export function TabProfil({
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Status Madrasah</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Status Madrasah</Label>
               <Input
                 value={identity.status_sekolah}
                 onChange={(e) => setIdentity({ ...identity, status_sekolah: e.target.value })}
@@ -448,7 +460,7 @@ export function TabProfil({
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Bentuk Pendidikan</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Bentuk Pendidikan</Label>
               <Input
                 value={identity.bentuk_pendidikan}
                 onChange={(e) => setIdentity({ ...identity, bentuk_pendidikan: e.target.value })}
@@ -457,7 +469,7 @@ export function TabProfil({
             </div>
 
             <div className="sm:col-span-2 lg:col-span-3 space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Alamat Lengkap</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Alamat Lengkap</Label>
               <Input
                 value={identity.alamat_lengkap}
                 onChange={(e) => setIdentity({ ...identity, alamat_lengkap: e.target.value })}
@@ -466,7 +478,7 @@ export function TabProfil({
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Desa / Kelurahan</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Desa / Kelurahan</Label>
               <Input
                 value={identity.desa_kelurahan}
                 onChange={(e) => setIdentity({ ...identity, desa_kelurahan: e.target.value })}
@@ -474,7 +486,7 @@ export function TabProfil({
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Kecamatan</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Kecamatan</Label>
               <Input
                 value={identity.kecamatan}
                 onChange={(e) => setIdentity({ ...identity, kecamatan: e.target.value })}
@@ -482,7 +494,7 @@ export function TabProfil({
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Kabupaten</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Kabupaten</Label>
               <Input
                 value={identity.kabupaten}
                 onChange={(e) => setIdentity({ ...identity, kabupaten: e.target.value })}

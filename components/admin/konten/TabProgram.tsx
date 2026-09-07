@@ -136,23 +136,27 @@ export function TabProgram({ initialProgram, initialEskul }: TabProgramProps) {
   return (
     <div className="space-y-8">
       {/* 1. SEKSI PENGANTAR & SHOWCASE PROGRAM */}
-      <Card className="border-gray-200/80 shadow-sm">
-        <CardHeader className="border-b border-gray-100 bg-gray-50/50 pb-4">
-          <div className="flex items-center space-x-2">
-            <BookOpen className="w-5 h-5 text-emerald-600" />
-            <CardTitle className="text-base sm:text-lg font-bold text-gray-900">
-              Pengantar & Showcase Foto Kurikulum
-            </CardTitle>
+      <Card className="border-border/80 bg-card shadow-xs rounded-2xl overflow-hidden">
+        <CardHeader className="p-4 sm:p-6 border-b border-border/60 bg-muted/30 dark:bg-muted/15">
+          <div className="flex items-start gap-3.5 sm:gap-4">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+              <BookOpen className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
+            </div>
+            <div className="space-y-1 min-w-0 flex-1">
+              <CardTitle className="text-base sm:text-lg font-bold text-foreground leading-snug">
+                Pengantar & Showcase Foto Kurikulum
+              </CardTitle>
+              <CardDescription className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Teks pembuka dan banner foto showcase halaman program sekolah.
+              </CardDescription>
+            </div>
           </div>
-          <CardDescription className="text-xs sm:text-sm text-gray-500">
-            Teks pembuka dan banner foto showcase halaman program sekolah.
-          </CardDescription>
         </CardHeader>
         <CardContent className="p-4 sm:p-6 space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <div className="lg:col-span-7 space-y-4">
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-gray-700">Judul Pengantar</Label>
+                <Label className="text-xs font-semibold text-foreground/80">Judul Pengantar</Label>
                 <Input
                   value={program.pengantar_judul}
                   onChange={(e) => setProgram({ ...program, pengantar_judul: e.target.value })}
@@ -162,7 +166,7 @@ export function TabProgram({ initialProgram, initialEskul }: TabProgramProps) {
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-gray-700">Deskripsi Pengantar</Label>
+                <Label className="text-xs font-semibold text-foreground/80">Deskripsi Pengantar</Label>
                 <Textarea
                   rows={3}
                   value={program.pengantar_deskripsi}
@@ -176,7 +180,7 @@ export function TabProgram({ initialProgram, initialEskul }: TabProgramProps) {
               {/* Target Program Tahfidz & Klinik Belajar */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-semibold text-gray-700">Target Tahfidz</Label>
+                  <Label className="text-xs font-semibold text-foreground/80">Target Tahfidz</Label>
                   <Input
                     value={program.tahfidz_target}
                     onChange={(e) => setProgram({ ...program, tahfidz_target: e.target.value })}
@@ -185,7 +189,7 @@ export function TabProgram({ initialProgram, initialEskul }: TabProgramProps) {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-semibold text-gray-700">Tujuan Tahfidz</Label>
+                  <Label className="text-xs font-semibold text-foreground/80">Tujuan Tahfidz</Label>
                   <Input
                     value={program.tahfidz_objective}
                     onChange={(e) => setProgram({ ...program, tahfidz_objective: e.target.value })}
@@ -196,7 +200,7 @@ export function TabProgram({ initialProgram, initialEskul }: TabProgramProps) {
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-gray-700">
+                <Label className="text-xs font-semibold text-foreground/80">
                   Deskripsi Klinik Belajar (Bimbingan Tambahan)
                 </Label>
                 <Textarea
@@ -224,29 +228,33 @@ export function TabProgram({ initialProgram, initialEskul }: TabProgramProps) {
       </Card>
 
       {/* 2. SEKSI JAM KBM FASE 1-3 & FASE 4-6 */}
-      <Card className="border-gray-200/80 shadow-sm">
-        <CardHeader className="border-b border-gray-100 bg-gray-50/50 pb-4">
-          <div className="flex items-center space-x-2">
-            <Clock className="w-5 h-5 text-emerald-600" />
-            <CardTitle className="text-base sm:text-lg font-bold text-gray-900">
-              Jam Belajar KBM per Fase
-            </CardTitle>
+      <Card className="border-border/80 bg-card shadow-xs rounded-2xl overflow-hidden">
+        <CardHeader className="p-4 sm:p-6 border-b border-border/60 bg-muted/30 dark:bg-muted/15">
+          <div className="flex items-start gap-3.5 sm:gap-4">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+              <Clock className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
+            </div>
+            <div className="space-y-1 min-w-0 flex-1">
+              <CardTitle className="text-base sm:text-lg font-bold text-foreground leading-snug">
+                Jam Belajar KBM per Fase
+              </CardTitle>
+              <CardDescription className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Jadwal kegiatan belajar mengajar harian untuk Fase Bawah (Kelas 1-3) dan Fase Atas (Kelas 4-6).
+              </CardDescription>
+            </div>
           </div>
-          <CardDescription className="text-xs sm:text-sm text-gray-500">
-            Jadwal kegiatan belajar mengajar harian untuk Fase Bawah (Kelas 1-3) dan Fase Atas (Kelas 4-6).
-          </CardDescription>
         </CardHeader>
         <CardContent className="p-4 sm:p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Fase Bawah (Kelas 1-3) */}
-            <div className="p-4 rounded-xl border border-gray-200 bg-gray-50/40 space-y-4">
-              <div className="flex items-center justify-between border-b pb-2">
-                <h4 className="font-bold text-sm text-gray-900">Fase A & B (Kelas 1 - 3)</h4>
-                <Badge variant="secondary" className="text-xs">Fase Bawah</Badge>
+            <div className="p-4 sm:p-5 rounded-xl border border-border/80 bg-muted/20 dark:bg-muted/10 space-y-4">
+              <div className="flex items-center justify-between border-b border-border/60 pb-2.5">
+                <h4 className="font-bold text-sm text-foreground">Fase A & B (Kelas 1 - 3)</h4>
+                <Badge variant="secondary" className="text-xs bg-muted/60 text-muted-foreground border-border/60">Fase Bawah</Badge>
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-gray-700">Judul Fase</Label>
+                <Label className="text-xs font-semibold text-foreground/80">Judul Fase</Label>
                 <Input
                   value={program.fase_bawah.judul}
                   onChange={(e) =>
@@ -260,7 +268,7 @@ export function TabProgram({ initialProgram, initialEskul }: TabProgramProps) {
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-gray-700">Deskripsi</Label>
+                <Label className="text-xs font-semibold text-foreground/80">Deskripsi</Label>
                 <Textarea
                   rows={2}
                   value={program.fase_bawah.deskripsi}
@@ -276,7 +284,7 @@ export function TabProgram({ initialProgram, initialEskul }: TabProgramProps) {
 
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-1">
-                  <Label className="text-xs text-gray-600">Senin - Kamis</Label>
+                  <Label className="text-xs font-medium text-muted-foreground">Senin - Kamis</Label>
                   <Input
                     value={
                       program.fase_bawah.jam_kbm?.find((j) => j.hari.includes("Senin"))?.jam ||
@@ -306,7 +314,7 @@ export function TabProgram({ initialProgram, initialEskul }: TabProgramProps) {
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-xs text-gray-600">Jumat</Label>
+                  <Label className="text-xs font-medium text-muted-foreground">Jumat</Label>
                   <Input
                     value={
                       program.fase_bawah.jam_kbm?.find((j) => j.hari.includes("Jumat"))?.jam ||
@@ -353,14 +361,14 @@ export function TabProgram({ initialProgram, initialEskul }: TabProgramProps) {
             </div>
 
             {/* Fase Atas (Kelas 4-6) */}
-            <div className="p-4 rounded-xl border border-gray-200 bg-gray-50/40 space-y-4">
-              <div className="flex items-center justify-between border-b pb-2">
-                <h4 className="font-bold text-sm text-gray-900">Fase B & C (Kelas 4 - 6)</h4>
-                <Badge variant="secondary" className="text-xs">Fase Atas</Badge>
+            <div className="p-4 sm:p-5 rounded-xl border border-border/80 bg-muted/20 dark:bg-muted/10 space-y-4">
+              <div className="flex items-center justify-between border-b border-border/60 pb-2.5">
+                <h4 className="font-bold text-sm text-foreground">Fase B & C (Kelas 4 - 6)</h4>
+                <Badge variant="secondary" className="text-xs bg-muted/60 text-muted-foreground border-border/60">Fase Atas</Badge>
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-gray-700">Judul Fase</Label>
+                <Label className="text-xs font-semibold text-foreground/80">Judul Fase</Label>
                 <Input
                   value={program.fase_atas.judul}
                   onChange={(e) =>
@@ -374,7 +382,7 @@ export function TabProgram({ initialProgram, initialEskul }: TabProgramProps) {
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-gray-700">Deskripsi</Label>
+                <Label className="text-xs font-semibold text-foreground/80">Deskripsi</Label>
                 <Textarea
                   rows={2}
                   value={program.fase_atas.deskripsi}
@@ -390,7 +398,7 @@ export function TabProgram({ initialProgram, initialEskul }: TabProgramProps) {
 
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-1">
-                  <Label className="text-xs text-gray-600">Senin - Kamis</Label>
+                  <Label className="text-xs font-medium text-muted-foreground">Senin - Kamis</Label>
                   <Input
                     value={
                       program.fase_atas.jam_kbm?.find((j) => j.hari.includes("Senin"))?.jam ||
@@ -420,7 +428,7 @@ export function TabProgram({ initialProgram, initialEskul }: TabProgramProps) {
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-xs text-gray-600">Jumat</Label>
+                  <Label className="text-xs font-medium text-muted-foreground">Jumat</Label>
                   <Input
                     value={
                       program.fase_atas.jam_kbm?.find((j) => j.hari.includes("Jumat"))?.jam ||
@@ -470,24 +478,26 @@ export function TabProgram({ initialProgram, initialEskul }: TabProgramProps) {
       </Card>
 
       {/* 3. SEKSI KELOLA EKSTRAKURIKULER (CRUD) */}
-      <Card className="border-gray-200/80 shadow-sm">
-        <CardHeader className="border-b border-gray-100 bg-gray-50/50 pb-4">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <div>
-              <div className="flex items-center space-x-2">
-                <Award className="w-5 h-5 text-emerald-600" />
-                <CardTitle className="text-base sm:text-lg font-bold text-gray-900">
+      <Card className="border-border/80 bg-card shadow-xs rounded-2xl overflow-hidden">
+        <CardHeader className="p-4 sm:p-6 border-b border-border/60 bg-muted/30 dark:bg-muted/15">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+            <div className="flex items-start gap-3.5 sm:gap-4 min-w-0">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                <Award className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
+              </div>
+              <div className="space-y-1 min-w-0">
+                <CardTitle className="text-base sm:text-lg font-bold text-foreground leading-snug">
                   Daftar Ekstrakurikuler ({eskulList.length} Kegiatan)
                 </CardTitle>
+                <CardDescription className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  Kelola daftar kegiatan ekstrakurikuler, jadwal pelaksanaan, dan foto dokumentasi.
+                </CardDescription>
               </div>
-              <CardDescription className="text-xs sm:text-sm text-gray-500 mt-1">
-                Kelola daftar kegiatan ekstrakurikuler, jadwal pelaksanaan, dan foto dokumentasi.
-              </CardDescription>
             </div>
             <Button
               type="button"
               onClick={handleOpenAddEskul}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-9 font-medium shrink-0"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-9 font-medium shrink-0 shadow-sm self-start sm:self-auto"
             >
               <Plus className="w-4 h-4 mr-1.5" />
               Tambah Ekstrakurikuler
@@ -499,14 +509,14 @@ export function TabProgram({ initialProgram, initialEskul }: TabProgramProps) {
             {eskulList.map((item) => (
               <div
                 key={item.id}
-                className="p-4 rounded-xl border border-gray-200 bg-white shadow-sm flex flex-col justify-between space-y-3"
+                className="p-4 rounded-xl border border-border/80 bg-card/60 dark:bg-muted/10 shadow-xs flex flex-col justify-between space-y-3"
               >
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <h5 className="font-bold text-sm text-gray-900 line-clamp-1">
+                    <h5 className="font-bold text-sm text-foreground line-clamp-1">
                       {item.nama_eskul}
                     </h5>
-                    <Badge variant="outline" className="text-[10px] text-emerald-700 border-emerald-300">
+                    <Badge variant="outline" className="text-[10px] text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20">
                       {item.jadwal || "Sesuai Jadwal"}
                     </Badge>
                   </div>
@@ -515,13 +525,13 @@ export function TabProgram({ initialProgram, initialEskul }: TabProgramProps) {
                   </p>
                 </div>
 
-                <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-border/60">
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
                     onClick={() => handleOpenEditEskul(item)}
-                    className="h-8 text-xs px-2.5"
+                    className="h-8 text-xs px-2.5 border-border/80 hover:bg-muted/50"
                   >
                     <Edit2 className="w-3.5 h-3.5 mr-1" />
                     Edit
@@ -531,7 +541,7 @@ export function TabProgram({ initialProgram, initialEskul }: TabProgramProps) {
                     variant="ghost"
                     size="sm"
                     onClick={() => handleDeleteEskul(item.id)}
-                    className="h-8 text-xs px-2.5 text-red-600 hover:text-red-700 hover:bg-red-50"
+                    className="h-8 text-xs px-2.5 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-500/10"
                   >
                     <Trash2 className="w-3.5 h-3.5 mr-1" />
                     Hapus
@@ -545,16 +555,16 @@ export function TabProgram({ initialProgram, initialEskul }: TabProgramProps) {
 
       {/* Modal Dialog Add / Edit Eskul */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto bg-card border-border/80 text-card-foreground shadow-2xl">
           <DialogHeader>
-            <DialogTitle className="text-base font-bold text-gray-900">
+            <DialogTitle className="text-base font-bold text-foreground">
               {editingEskul.id ? "Edit Ekstrakurikuler" : "Tambah Ekstrakurikuler"}
             </DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4 py-2">
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Nama Ekstrakurikuler</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Nama Ekstrakurikuler</Label>
               <Input
                 value={editingEskul.nama_eskul || ""}
                 onChange={(e) =>
@@ -566,7 +576,7 @@ export function TabProgram({ initialProgram, initialEskul }: TabProgramProps) {
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Jadwal Pelaksanaan</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Jadwal Pelaksanaan</Label>
               <Input
                 value={editingEskul.jadwal || ""}
                 onChange={(e) => setEditingEskul({ ...editingEskul, jadwal: e.target.value })}
@@ -576,7 +586,7 @@ export function TabProgram({ initialProgram, initialEskul }: TabProgramProps) {
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-700">Deskripsi Singkat</Label>
+              <Label className="text-xs font-semibold text-foreground/80">Deskripsi Singkat</Label>
               <Textarea
                 rows={3}
                 value={editingEskul.deskripsi || ""}
@@ -604,7 +614,7 @@ export function TabProgram({ initialProgram, initialEskul }: TabProgramProps) {
               variant="outline"
               size="sm"
               onClick={() => setIsModalOpen(false)}
-              className="h-9 text-xs"
+              className="h-9 text-xs border-border/80 hover:bg-muted/50"
             >
               Batal
             </Button>

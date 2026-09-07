@@ -113,17 +113,21 @@ export function TabPPDB({
   return (
     <div className="space-y-8">
       {/* 1. SEKSI FORMULIR PDF OFFLINE */}
-      <Card className="border-gray-200/80 shadow-sm">
-        <CardHeader className="border-b border-gray-100 bg-gray-50/50 pb-4">
-          <div className="flex items-center space-x-2">
-            <FileText className="w-5 h-5 text-emerald-600" />
-            <CardTitle className="text-base sm:text-lg font-bold text-gray-900">
-              Formulir Pendaftaran Fisik (PDF)
-            </CardTitle>
+      <Card className="border-border/80 bg-card shadow-xs rounded-2xl overflow-hidden">
+        <CardHeader className="p-4 sm:p-6 border-b border-border/60 bg-muted/30 dark:bg-muted/15">
+          <div className="flex items-start gap-3.5 sm:gap-4">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+              <FileText className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
+            </div>
+            <div className="space-y-1 min-w-0 flex-1">
+              <CardTitle className="text-base sm:text-lg font-bold text-foreground leading-snug">
+                Formulir Pendaftaran Fisik (PDF)
+              </CardTitle>
+              <CardDescription className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                File PDF resmi yang diunduh oleh calon wali murid untuk pendaftaran jalur offline / langsung.
+              </CardDescription>
+            </div>
           </div>
-          <CardDescription className="text-xs sm:text-sm text-gray-500">
-            File PDF resmi yang diunduh oleh calon wali murid untuk pendaftaran jalur offline / langsung.
-          </CardDescription>
         </CardHeader>
         <CardContent className="p-4 sm:p-6">
           <DocumentUploader
@@ -139,11 +143,13 @@ export function TabPPDB({
       {/* 2. SEKSI PERSYARATAN & JADWAL & SPP */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Persyaratan Pendaftaran */}
-        <Card className="border-gray-200/80 shadow-sm">
-          <CardHeader className="border-b border-gray-100 bg-gray-50/50 pb-4">
-            <div className="flex items-center space-x-2">
-              <FileText className="w-4 h-4 text-emerald-600" />
-              <CardTitle className="text-sm sm:text-base font-bold text-gray-900">
+        <Card className="border-border/80 bg-card shadow-xs rounded-2xl overflow-hidden">
+          <CardHeader className="p-4 border-b border-border/60 bg-muted/30 dark:bg-muted/15">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 shadow-2xs">
+                <FileText className="w-4 h-4" />
+              </div>
+              <CardTitle className="text-sm sm:text-base font-bold text-foreground leading-tight">
                 Persyaratan Berkas
               </CardTitle>
             </div>
@@ -163,11 +169,13 @@ export function TabPPDB({
         </Card>
 
         {/* Jadwal Gelombang */}
-        <Card className="border-gray-200/80 shadow-sm">
-          <CardHeader className="border-b border-gray-100 bg-gray-50/50 pb-4">
-            <div className="flex items-center space-x-2">
-              <Calendar className="w-4 h-4 text-emerald-600" />
-              <CardTitle className="text-sm sm:text-base font-bold text-gray-900">
+        <Card className="border-border/80 bg-card shadow-xs rounded-2xl overflow-hidden">
+          <CardHeader className="p-4 border-b border-border/60 bg-muted/30 dark:bg-muted/15">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 shadow-2xs">
+                <Calendar className="w-4 h-4" />
+              </div>
+              <CardTitle className="text-sm sm:text-base font-bold text-foreground leading-tight">
                 Jadwal & Gelombang
               </CardTitle>
             </div>
@@ -187,11 +195,13 @@ export function TabPPDB({
         </Card>
 
         {/* Catatan SPP */}
-        <Card className="border-gray-200/80 shadow-sm">
-          <CardHeader className="border-b border-gray-100 bg-gray-50/50 pb-4">
-            <div className="flex items-center space-x-2">
-              <Wallet className="w-4 h-4 text-emerald-600" />
-              <CardTitle className="text-sm sm:text-base font-bold text-gray-900">
+        <Card className="border-border/80 bg-card shadow-xs rounded-2xl overflow-hidden">
+          <CardHeader className="p-4 border-b border-border/60 bg-muted/30 dark:bg-muted/15">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 shadow-2xs">
+                <Wallet className="w-4 h-4" />
+              </div>
+              <CardTitle className="text-sm sm:text-base font-bold text-foreground leading-tight">
                 Catatan Pembiayaan / SPP
               </CardTitle>
             </div>
@@ -212,17 +222,21 @@ export function TabPPDB({
       </div>
 
       {/* 3. SEKSI ALUR PENDAFTARAN ONLINE & OFFLINE */}
-      <Card className="border-gray-200/80 shadow-sm">
-        <CardHeader className="border-b border-gray-100 bg-gray-50/50 pb-4">
-          <div className="flex items-center space-x-2">
-            <GitFork className="w-5 h-5 text-emerald-600" />
-            <CardTitle className="text-base sm:text-lg font-bold text-gray-900">
-              Tahapan Alur Pendaftaran (Online & Offline)
-            </CardTitle>
+      <Card className="border-border/80 bg-card shadow-xs rounded-2xl overflow-hidden">
+        <CardHeader className="p-4 sm:p-6 border-b border-border/60 bg-muted/30 dark:bg-muted/15">
+          <div className="flex items-start gap-3.5 sm:gap-4">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+              <GitFork className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
+            </div>
+            <div className="space-y-1 min-w-0 flex-1">
+              <CardTitle className="text-base sm:text-lg font-bold text-foreground leading-snug">
+                Tahapan Alur Pendaftaran (Online & Offline)
+              </CardTitle>
+              <CardDescription className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Panduan langkah demi langkah proses pendaftaran yang tampil di halaman PPDB.
+              </CardDescription>
+            </div>
           </div>
-          <CardDescription className="text-xs sm:text-sm text-gray-500">
-            Panduan langkah demi langkah proses pendaftaran yang tampil di halaman PPDB.
-          </CardDescription>
         </CardHeader>
         <CardContent className="p-4 sm:p-6 space-y-8">
           {/* Alur Online */}
@@ -239,7 +253,7 @@ export function TabPPDB({
                 variant="outline"
                 size="sm"
                 onClick={handleAddOnlineStep}
-                className="h-7 text-xs"
+                className="h-7 text-xs border-border/80 hover:bg-muted/50"
               >
                 <Plus className="w-3.5 h-3.5 mr-1" />
                 Tambah Tahap Online
@@ -250,17 +264,17 @@ export function TabPPDB({
               {flow.alur_online.map((step, idx) => (
                 <div
                   key={idx}
-                  className="p-3 rounded-lg border border-gray-200 bg-white shadow-xs space-y-2 relative"
+                  className="p-3.5 rounded-xl border border-border/80 bg-card/60 dark:bg-muted/10 shadow-xs space-y-2 relative"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-blue-700">Tahap #{idx + 1}</span>
+                    <span className="text-xs font-bold text-blue-600 dark:text-blue-400">Tahap #{idx + 1}</span>
                     {flow.alur_online.length > 1 && (
                       <Button
                         type="button"
                         variant="ghost"
                         size="sm"
                         onClick={() => handleRemoveOnlineStep(idx)}
-                        className="h-6 w-6 p-0 text-muted-foreground hover:text-red-600"
+                        className="h-6 w-6 p-0 text-muted-foreground hover:text-red-600 dark:hover:text-red-400"
                       >
                         <Trash2 className="w-3 h-3" />
                       </Button>
@@ -285,7 +299,7 @@ export function TabPPDB({
           </div>
 
           {/* Alur Offline */}
-          <div className="space-y-4 pt-4 border-t border-gray-100">
+          <div className="space-y-4 pt-4 border-t border-border/60">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Badge className="bg-emerald-600 text-white text-xs">Jalur Offline / Langsung</Badge>
@@ -298,7 +312,7 @@ export function TabPPDB({
                 variant="outline"
                 size="sm"
                 onClick={handleAddOfflineStep}
-                className="h-7 text-xs"
+                className="h-7 text-xs border-border/80 hover:bg-muted/50"
               >
                 <Plus className="w-3.5 h-3.5 mr-1" />
                 Tambah Tahap Offline
@@ -309,17 +323,17 @@ export function TabPPDB({
               {flow.alur_offline.map((step, idx) => (
                 <div
                   key={idx}
-                  className="p-3 rounded-lg border border-gray-200 bg-white shadow-xs space-y-2 relative"
+                  className="p-3.5 rounded-xl border border-border/80 bg-card/60 dark:bg-muted/10 shadow-xs space-y-2 relative"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-emerald-700">Tahap #{idx + 1}</span>
+                    <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">Tahap #{idx + 1}</span>
                     {flow.alur_offline.length > 1 && (
                       <Button
                         type="button"
                         variant="ghost"
                         size="sm"
                         onClick={() => handleRemoveOfflineStep(idx)}
-                        className="h-6 w-6 p-0 text-muted-foreground hover:text-red-600"
+                        className="h-6 w-6 p-0 text-muted-foreground hover:text-red-600 dark:hover:text-red-400"
                       >
                         <Trash2 className="w-3 h-3" />
                       </Button>
