@@ -15,7 +15,7 @@
 **Files:**
 - Create: `docs/deployment/README.md`
 
-- [ ] **Step 1: Tulis isi file `docs/deployment/README.md`**
+- [x] **Step 1: Tulis isi file `docs/deployment/README.md`**
 Buat dokumen index yang mencakup:
 1. Ringkasan arsitektur sistem (Browser $\rightarrow$ Hostinger DNS $\rightarrow$ Vercel Edge $\rightarrow$ Next.js 15 $\rightarrow$ Supabase Cloud).
 2. Diagram alur interaksi.
@@ -23,10 +23,10 @@ Buat dokumen index yang mencakup:
 4. Peta navigasi dokumen (Modul 01 s.d. 04).
 5. Checklist global progres deployment (`[ ] Belum`, `[-] Sedang`, `[x] Selesai`).
 
-- [ ] **Step 2: Verifikasi file terbuat dan format markdown valid**
+- [x] **Step 2: Verifikasi file terbuat dan format markdown valid**
 Pastikan tidak ada link rusak, struktur heading rapi, dan tabel checklist lengkap.
 
-- [ ] **Step 3: Commit file**
+- [x] **Step 3: Commit file**
 ```bash
 git add -f docs/deployment/README.md docs/superpowers/specs/2026-09-07-deployment-guide-design.md
 git commit -m "docs: add deployment guide index and architecture overview"
@@ -39,7 +39,7 @@ git commit -m "docs: add deployment guide index and architecture overview"
 **Files:**
 - Create: `docs/deployment/01-persiapan-dan-supabase.md`
 
-- [ ] **Step 1: Tulis isi file `docs/deployment/01-persiapan-dan-supabase.md`**
+- [x] **Step 1: Tulis isi file `docs/deployment/01-persiapan-dan-supabase.md`**
 Buat panduan lengkap konfigurasi Supabase produksi yang mencakup:
 1. Ekstraksi Environment Variables:
    - `NEXT_PUBLIC_SUPABASE_URL` (Project URL)
@@ -55,10 +55,10 @@ Buat panduan lengkap konfigurasi Supabase produksi yang mencakup:
    - Memastikan tabel produksi sinkron dan RLS aktif.
 5. Checklist mandiri Modul 01.
 
-- [ ] **Step 2: Verifikasi isi dokumen dan kejelasan langkah teknis**
+- [x] **Step 2: Verifikasi isi dokumen dan kejelasan langkah teknis**
 Pastikan instruksi mudah dipahami dan tidak ada placeholder/TODO.
 
-- [ ] **Step 3: Commit file**
+- [x] **Step 3: Commit file**
 ```bash
 git add -f docs/deployment/01-persiapan-dan-supabase.md
 git commit -m "docs: add supabase production configuration module"
@@ -71,7 +71,7 @@ git commit -m "docs: add supabase production configuration module"
 **Files:**
 - Create: `docs/deployment/02-deployment-vercel.md`
 
-- [ ] **Step 1: Tulis isi file `docs/deployment/02-deployment-vercel.md`**
+- [x] **Step 1: Tulis isi file `docs/deployment/02-deployment-vercel.md`**
 Buat panduan deployment Vercel yang mencakup:
 1. Persiapan lokal & Git:
    - Verifikasi branch `main` atau `production`.
@@ -87,10 +87,10 @@ Buat panduan deployment Vercel yang mencakup:
    - Verifikasi preview URL bawaan (`<project>.vercel.app`).
 5. Checklist mandiri Modul 02.
 
-- [ ] **Step 2: Verifikasi isi dokumen dan instruksi konfigurasi Vercel**
+- [x] **Step 2: Verifikasi isi dokumen dan instruksi konfigurasi Vercel**
 Pastikan nama setting dan tombol di dashboard Vercel akurat.
 
-- [ ] **Step 3: Commit file**
+- [x] **Step 3: Commit file**
 ```bash
 git add -f docs/deployment/02-deployment-vercel.md
 git commit -m "docs: add vercel deployment and build module"
@@ -103,7 +103,7 @@ git commit -m "docs: add vercel deployment and build module"
 **Files:**
 - Create: `docs/deployment/03-konfigurasi-dns-hostinger.md`
 
-- [ ] **Step 1: Tulis isi file `docs/deployment/03-konfigurasi-dns-hostinger.md`**
+- [x] **Step 1: Tulis isi file `docs/deployment/03-konfigurasi-dns-hostinger.md`**
 Buat panduan pemetaan DNS Hostinger dan Custom Domain Vercel yang mencakup:
 1. Penambahan Domain di Vercel:
    - *Project Settings* $\rightarrow$ *Domains*.
@@ -122,10 +122,10 @@ Buat panduan pemetaan DNS Hostinger dan Custom Domain Vercel yang mencakup:
    - Otomatisasi sertifikat SSL tanpa perlu konfigurasi manual.
 5. Checklist mandiri Modul 03.
 
-- [ ] **Step 2: Verifikasi tabel DNS dan panduan hPanel Hostinger**
+- [x] **Step 2: Verifikasi tabel DNS dan panduan hPanel Hostinger**
 Pastikan parameter IP dan CNAME Vercel tepat dan mudah disalin.
 
-- [ ] **Step 3: Commit file**
+- [x] **Step 3: Commit file**
 ```bash
 git add -f docs/deployment/03-konfigurasi-dns-hostinger.md
 git commit -m "docs: add hostinger dns and vercel custom domain module"
@@ -138,7 +138,7 @@ git commit -m "docs: add hostinger dns and vercel custom domain module"
 **Files:**
 - Create: `docs/deployment/04-verifikasi-troubleshooting.md`
 
-- [ ] **Step 1: Tulis isi file `docs/deployment/04-verifikasi-troubleshooting.md`**
+- [x] **Step 1: Tulis isi file `docs/deployment/04-verifikasi-troubleshooting.md`**
 Buat panduan pengujian dan troubleshooting yang mencakup:
 1. Checklist Audit Pasca-Deploy:
    - Verifikasi HTTPS & SSL badge di browser.
@@ -153,10 +153,10 @@ Buat panduan pengujian dan troubleshooting yang mencakup:
    - Kasus 4: *Build Failed saat Deploy di Vercel* (cek Node.js version, TypeScript errors, missing env vars).
 3. Checklist mandiri Modul 04.
 
-- [ ] **Step 2: Verifikasi kelengkapan kasus error dan langkah solusinya**
+- [x] **Step 2: Verifikasi kelengkapan kasus error dan langkah solusinya**
 Pastikan solusi bersifat teknis, dapat langsung dieksekusi, dan to the point.
 
-- [ ] **Step 3: Commit file**
+- [x] **Step 3: Commit file**
 ```bash
 git add -f docs/deployment/04-verifikasi-troubleshooting.md
 git commit -m "docs: add post-deployment verification and troubleshooting module"
@@ -170,10 +170,10 @@ git commit -m "docs: add post-deployment verification and troubleshooting module
 - Modify: `docs/deployment/README.md` (jika ada update link atau status)
 - Check: Semua file di `docs/deployment/`
 
-- [ ] **Step 1: Uji seluruh tautan relatif antar dokumen modul**
+- [x] **Step 1: Uji seluruh tautan relatif antar dokumen modul**
 Pastikan dari `README.md` bisa mengklik ke modul `01`, `02`, `03`, `04`, dan setiap modul memiliki link kembali ke `README.md` atau modul selanjutnya.
 
-- [ ] **Step 2: Commit finalisasi rencana implementasi dan dokumentasi**
+- [x] **Step 2: Commit finalisasi rencana implementasi dan dokumentasi**
 ```bash
 git add -f docs/deployment/ docs/superpowers/plans/2026-09-07-deployment-guide.md
 git commit -m "docs: finalize deployment guide documentation suite"
