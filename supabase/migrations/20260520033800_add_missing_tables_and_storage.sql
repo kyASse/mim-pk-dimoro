@@ -193,27 +193,33 @@ VALUES (
 -- ============================================================
 
 -- konten-publik: siapapun bisa baca, hanya authenticated yg bisa upload/delete
+DROP POLICY IF EXISTS "Public read konten-publik" ON storage.objects;
 CREATE POLICY "Public read konten-publik"
   ON storage.objects FOR SELECT
   USING (bucket_id = 'konten-publik');
 
+DROP POLICY IF EXISTS "Authenticated upload konten-publik" ON storage.objects;
 CREATE POLICY "Authenticated upload konten-publik"
   ON storage.objects FOR INSERT
   WITH CHECK (bucket_id = 'konten-publik' AND auth.role() = 'authenticated');
 
+DROP POLICY IF EXISTS "Authenticated delete konten-publik" ON storage.objects;
 CREATE POLICY "Authenticated delete konten-publik"
   ON storage.objects FOR DELETE
   USING (bucket_id = 'konten-publik' AND auth.role() = 'authenticated');
 
 -- dokumentasi-prestasi: publik read, authenticated write
+DROP POLICY IF EXISTS "Public read dokumentasi-prestasi" ON storage.objects;
 CREATE POLICY "Public read dokumentasi-prestasi"
   ON storage.objects FOR SELECT
   USING (bucket_id = 'dokumentasi-prestasi');
 
+DROP POLICY IF EXISTS "Authenticated upload dokumentasi-prestasi" ON storage.objects;
 CREATE POLICY "Authenticated upload dokumentasi-prestasi"
   ON storage.objects FOR INSERT
   WITH CHECK (bucket_id = 'dokumentasi-prestasi' AND auth.role() = 'authenticated');
 
+DROP POLICY IF EXISTS "Authenticated delete dokumentasi-prestasi" ON storage.objects;
 CREATE POLICY "Authenticated delete dokumentasi-prestasi"
   ON storage.objects FOR DELETE
   USING (bucket_id = 'dokumentasi-prestasi' AND auth.role() = 'authenticated');
@@ -221,6 +227,7 @@ CREATE POLICY "Authenticated delete dokumentasi-prestasi"
 -- dokumen-rapor: privat, dikelola via service role/admin workflow
 
 -- dokumen-pendukung: privat, authenticated hanya boleh upload baru
+DROP POLICY IF EXISTS "Authenticated upload dokumen-pendukung" ON storage.objects;
 CREATE POLICY "Authenticated upload dokumen-pendukung"
   ON storage.objects FOR INSERT
   WITH CHECK (bucket_id = 'dokumen-pendukung' AND auth.role() = 'authenticated');
