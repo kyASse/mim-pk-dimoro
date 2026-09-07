@@ -37,6 +37,17 @@ vi.mock("motion/react", () => ({
   useReducedMotion: () => false,
 }));
 
+vi.mock("@/lib/supabase/server", () => ({
+  createClient: vi.fn(async () => ({
+    from: vi.fn(() => ({
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      order: vi.fn().mockResolvedValue({ data: [], error: null }),
+      maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
+    })),
+  })),
+}));
+
 describe("Program Page & Components", () => {
   describe("ProgramDetails Component", () => {
     it("renders title, description, schedules, and learning features", () => {
@@ -123,8 +134,9 @@ describe("Program Page & Components", () => {
   });
 
   describe("Program Page (app/program/page.tsx)", () => {
-    it("renders Program page with Tahfidz Al-Qur'an full objective, 7 activities, and 4 graduate targets", () => {
-      render(<ProgramPage />);
+    it("renders Program page with Tahfidz Al-Qur'an full objective, 7 activities, and 4 graduate targets", async () => {
+      const page = await ProgramPage();
+      render(page);
 
       // Tahfidz section checks
       expect(screen.getAllByText(EXCELLENT_PROGRAMS.tahfidz.title).length).toBeGreaterThan(0);
@@ -143,8 +155,9 @@ describe("Program Page & Components", () => {
       });
     });
 
-    it("renders Klinik Belajar full objective, 3 target audience points, 8 activities, 5 learning approaches, and expectation statement", () => {
-      render(<ProgramPage />);
+    it("renders Klinik Belajar full objective, 3 target audience points, 8 activities, 5 learning approaches, and expectation statement", async () => {
+      const page = await ProgramPage();
+      render(page);
 
       // Klinik Belajar section checks
       expect(screen.getByText(EXCELLENT_PROGRAMS.klinikBelajar.title)).toBeDefined();

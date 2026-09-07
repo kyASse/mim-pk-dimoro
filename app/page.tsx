@@ -9,6 +9,12 @@ import ProgramSection from "@/components/home/ProgramSection";
 import GalleryPreview from "@/components/home/GalleryPreview";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import CTASection from "@/components/home/CTASection";
+import {
+  getHeroContent,
+  getMainStats,
+  getHeadmasterContent,
+  getBerandaKeunggulanContent,
+} from "@/lib/services/public-content";
 
 async function fetchSpotlightNews(): Promise<NewsSpotlightItem[]> {
   const supabase = await createClient();
@@ -28,23 +34,30 @@ async function fetchSpotlightNews(): Promise<NewsSpotlightItem[]> {
 }
 
 export default async function Home() {
-  const spotlightNews = await fetchSpotlightNews();
+  const [spotlightNews, heroContent, mainStats, headmasterContent, keunggulanContent] =
+    await Promise.all([
+      fetchSpotlightNews(),
+      getHeroContent(),
+      getMainStats(),
+      getHeadmasterContent(),
+      getBerandaKeunggulanContent(),
+    ]);
 
   return (
     <main className="min-h-screen">
       <NewsSpotlightModal news={spotlightNews} />
 
       {/* Hero Section */}
-      <HomeHero />
+      <HomeHero data={heroContent} />
 
       {/* Stats Section */}
-      <StatsSection />
+      <StatsSection data={mainStats} />
 
       {/* About Section */}
-      <AboutSection />
+      <AboutSection data={headmasterContent} />
 
       {/* Features Section */}
-      <FeaturesSection />
+      <FeaturesSection data={keunggulanContent} />
 
       {/* News Section */}
       <NewsSection />

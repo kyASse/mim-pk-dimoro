@@ -6,9 +6,22 @@ import { Button } from "@/components/ui/button";
 import { ChevronRight, UserPlus, GraduationCap, ShieldCheck } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { SCHOOL_NAME, SCHOOL_TAGLINE } from "@/lib/school-config";
+import { HeroContent } from "@/lib/types/content";
 
-export default function HomeHero() {
+interface HomeHeroProps {
+    data?: HeroContent;
+}
+
+export default function HomeHero({ data }: HomeHeroProps) {
     const shouldReduceMotion = useReducedMotion();
+
+    const eyebrow = data?.eyebrow || "Madrasah Ibtidaiyah Program Khusus";
+    const headline = data?.headline || SCHOOL_NAME;
+    const subheadline = data?.subheadline || SCHOOL_TAGLINE;
+    const heroImage = data?.hero_image_url || "/images/mim_hero_main.jpg";
+    const statNumber = data?.floating_stat_number || "59";
+    const statText = data?.floating_stat_text || "Berdiri Sejak 1967";
+    const badges = data?.trust_badges?.length ? data.trust_badges : ["Akreditasi Unggul", "Kurikulum Terpadu Islami"];
 
     const fadeInVariants = {
         hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
@@ -40,7 +53,7 @@ export default function HomeHero() {
                             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide w-max mb-6 border border-primary/20"
                         >
                             <GraduationCap className="w-3.5 h-3.5" />
-                            <span>Madrasah Ibtidaiyah Program Khusus</span>
+                            <span>{eyebrow}</span>
                         </motion.div>
 
                         {/* 2. Headline */}
@@ -51,7 +64,7 @@ export default function HomeHero() {
                             variants={fadeInVariants}
                             className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground mb-6 leading-[1.1]"
                         >
-                            {SCHOOL_NAME}
+                            {headline}
                         </motion.h1>
 
                         {/* 3. Subtext (Max 20 words) */}
@@ -62,7 +75,7 @@ export default function HomeHero() {
                             variants={fadeInVariants}
                             className="text-lg md:text-xl text-muted-foreground font-medium mb-8 max-w-[50ch] leading-relaxed"
                         >
-                            {SCHOOL_TAGLINE}
+                            {subheadline}
                         </motion.p>
 
                         {/* 4. Action CTAs */}
@@ -93,16 +106,18 @@ export default function HomeHero() {
                             initial="hidden"
                             animate="visible"
                             variants={fadeInVariants}
-                            className="mt-10 pt-6 border-t border-border/60 flex items-center gap-6 text-xs text-muted-foreground font-medium"
+                            className="mt-10 pt-6 border-t border-border/60 flex flex-wrap items-center gap-6 text-xs text-muted-foreground font-medium"
                         >
-                            <div className="flex items-center gap-2">
-                                <ShieldCheck className="w-4 h-4 text-primary" />
-                                <span>Akreditasi Unggul</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                                <span>Kurikulum Terpadu Islami</span>
-                            </div>
+                            {badges.map((badge, idx) => (
+                                <div key={idx} className="flex items-center gap-2">
+                                    {idx === 0 ? (
+                                        <ShieldCheck className="w-4 h-4 text-primary" />
+                                    ) : (
+                                        <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                    )}
+                                    <span>{badge}</span>
+                                </div>
+                            ))}
                         </motion.div>
                     </div>
 
@@ -116,8 +131,8 @@ export default function HomeHero() {
                         <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-border/50 bg-card">
                             <div className="relative aspect-[4/3] w-full overflow-hidden">
                                 <Image
-                                    src="/images/mim_hero_main.jpg"
-                                    alt={`Gedung dan kegiatan di ${SCHOOL_NAME}`}
+                                    src={heroImage}
+                                    alt={`Gedung dan kegiatan di ${headline}`}
                                     fill
                                     priority
                                     className="object-cover transition-transform duration-700 hover:scale-105"
@@ -129,19 +144,19 @@ export default function HomeHero() {
                                 <span className="px-3 py-1 bg-primary/90 text-primary-foreground text-xs font-semibold rounded-full mb-2 inline-block">
                                     Pendidikan Islam Modern
                                 </span>
-                                <h2 className="text-xl font-bold">MI Muhammadiyah Dimoro</h2>
-                                <p className="text-sm text-white/80 mt-1">Membentuk karakter Islami dan prestasi unggul.</p>
+                                <h2 className="text-xl font-bold">{headline}</h2>
+                                <p className="text-sm text-white/80 mt-1">{subheadline}</p>
                             </div>
                         </div>
 
                         {/* Floating Decorative Card */}
                         <div className="hidden sm:flex absolute -bottom-6 -left-6 bg-card border border-border/80 p-4 rounded-2xl shadow-xl items-center gap-3 max-w-xs z-10">
                             <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-lg">
-                                59
+                                {statNumber}
                             </div>
                             <div>
                                 <p className="text-xs text-muted-foreground font-medium">Pengalaman</p>
-                                <p className="text-sm font-bold text-foreground">Berdiri Sejak 1967</p>
+                                <p className="text-sm font-bold text-foreground">{statText}</p>
                             </div>
                         </div>
                     </motion.div>

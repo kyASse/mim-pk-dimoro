@@ -17,72 +17,7 @@ import {
     FileCheck2
 } from "lucide-react";
 import { SCHOOL_NAME } from "@/lib/school-config";
-
-const administrativeData = [
-    {
-        label: "Tanggal Berdiri",
-        value: "1 September 1967",
-        icon: Calendar,
-        color: "emerald",
-        badge: "Sejarah",
-    },
-    {
-        label: "Status Sekolah",
-        value: "Swasta",
-        icon: School,
-        color: "sky",
-        badge: "Status",
-    },
-    {
-        label: "Bentuk Pendidikan",
-        value: "Madrasah Ibtidaiyah",
-        icon: Building2,
-        color: "amber",
-        badge: "Jenjang",
-    },
-    {
-        label: "Akreditasi",
-        value: "A",
-        icon: Award,
-        color: "emerald",
-        badge: "BAN-S/M",
-    },
-    {
-        label: "Alamat",
-        value: "Sudimoro, RT.003/RW.X",
-        icon: MapPin,
-        color: "rose",
-        badge: "Lokasi",
-    },
-    {
-        label: "Desa/Kelurahan",
-        value: "Parangjoro",
-        icon: Navigation,
-        color: "sky",
-        badge: "Wilayah",
-    },
-    {
-        label: "Kecamatan",
-        value: "Grogol",
-        icon: Compass,
-        color: "amber",
-        badge: "Kecamatan",
-    },
-    {
-        label: "Kabupaten",
-        value: "Sukoharjo",
-        icon: Map,
-        color: "emerald",
-        badge: "Kabupaten",
-    },
-    {
-        label: "Provinsi",
-        value: "Jawa Tengah",
-        icon: Globe,
-        color: "purple",
-        badge: "Provinsi",
-    },
-];
+import { SchoolIdentityContent } from "@/lib/types/content";
 
 const colorVariantStyles = {
     emerald: {
@@ -107,8 +42,83 @@ const colorVariantStyles = {
     },
 };
 
-export default function SchoolIdentity() {
+interface SchoolIdentityProps {
+    data?: SchoolIdentityContent;
+}
+
+export default function SchoolIdentity({ data }: SchoolIdentityProps) {
     const shouldReduceMotion = useReducedMotion();
+
+    const npsn = data?.npsn || "60711720";
+    const nsm = data?.nsm || "111233110050";
+    const akreditasi = data?.akreditasi || "A";
+    const akreditasiLabel = data?.akreditasi_label || "Unggul";
+
+    const administrativeData = [
+        {
+            label: "Tanggal Berdiri",
+            value: data?.tanggal_berdiri || "1 September 1967",
+            icon: Calendar,
+            color: "emerald",
+            badge: "Sejarah",
+        },
+        {
+            label: "Status Sekolah",
+            value: data?.status_sekolah || "Swasta",
+            icon: School,
+            color: "sky",
+            badge: "Status",
+        },
+        {
+            label: "Bentuk Pendidikan",
+            value: data?.bentuk_pendidikan || "Madrasah Ibtidaiyah",
+            icon: Building2,
+            color: "amber",
+            badge: "Jenjang",
+        },
+        {
+            label: "Akreditasi",
+            value: akreditasi,
+            icon: Award,
+            color: "emerald",
+            badge: "BAN-S/M",
+        },
+        {
+            label: "Alamat",
+            value: data?.alamat_lengkap || "Sudimoro, RT.003/RW.X",
+            icon: MapPin,
+            color: "rose",
+            badge: "Lokasi",
+        },
+        {
+            label: "Desa/Kelurahan",
+            value: data?.desa_kelurahan || "Parangjoro",
+            icon: Navigation,
+            color: "sky",
+            badge: "Wilayah",
+        },
+        {
+            label: "Kecamatan",
+            value: data?.kecamatan || "Grogol",
+            icon: Compass,
+            color: "amber",
+            badge: "Kecamatan",
+        },
+        {
+            label: "Kabupaten",
+            value: data?.kabupaten || "Sukoharjo",
+            icon: Map,
+            color: "emerald",
+            badge: "Kabupaten",
+        },
+        {
+            label: "Provinsi",
+            value: data?.provinsi || "Jawa Tengah",
+            icon: Globe,
+            color: "purple",
+            badge: "Provinsi",
+        },
+    ];
 
     return (
         <section className="py-16 md:py-24 bg-muted/20 border-y border-border/40 overflow-hidden relative">
@@ -156,7 +166,7 @@ export default function SchoolIdentity() {
                                 <div className="flex items-baseline gap-2 mt-1">
                                     <span className="text-xs font-bold text-amber-600 dark:text-amber-400">NPSN:</span>
                                     <p className="text-2xl sm:text-3xl font-black tracking-tight text-foreground font-mono">
-                                        60711720
+                                        {npsn}
                                     </p>
                                 </div>
                             </div>
@@ -186,13 +196,13 @@ export default function SchoolIdentity() {
                                 <div className="flex items-baseline gap-2 mt-1">
                                     <span className="text-xs font-bold text-sky-600 dark:text-sky-400">NSM:</span>
                                     <p className="text-2xl sm:text-3xl font-black tracking-tight text-foreground font-mono">
-                                        111233110050
+                                        {nsm}
                                     </p>
                                 </div>
                             </div>
                         </motion.div>
 
-                        {/* Bento Card 3: Akreditasi A */}
+                        {/* Bento Card 3: Akreditasi */}
                         <motion.div
                             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 15 }}
                             whileInView={{ opacity: 1, y: 0 }}
@@ -215,9 +225,9 @@ export default function SchoolIdentity() {
                                 </p>
                                 <div className="flex items-baseline gap-2 mt-1">
                                     <p className="text-2xl sm:text-3xl font-black tracking-tight text-primary">
-                                        Akreditasi A
+                                        Akreditasi {akreditasi}
                                     </p>
-                                    <span className="text-xs font-semibold text-muted-foreground">(Unggul)</span>
+                                    <span className="text-xs font-semibold text-muted-foreground">({akreditasiLabel})</span>
                                 </div>
                             </div>
                         </motion.div>

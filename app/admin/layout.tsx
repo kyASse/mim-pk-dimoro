@@ -24,7 +24,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             <ThemeSwitcher />
                         </div>
                     </header>
-                    <main className="flex-1 p-4 sm:p-6 pb-24 md:pb-6 bg-gray-50 dark:bg-gray-900">
+                    <main className="flex-1 p-4 sm:p-6 pb-24 md:pb-6 bg-background">
                         {children}
                     </main>
                     <AdminNavigationWrapper />

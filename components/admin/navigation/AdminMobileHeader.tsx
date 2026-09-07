@@ -57,7 +57,7 @@ export function AdminMobileHeader({ className }: AdminMobileHeaderProps) {
     <header
       className={cn(
         "sticky top-0 z-30 flex md:hidden items-center justify-between px-4 py-2.5",
-        "bg-background/85 dark:bg-gray-950/85 backdrop-blur-xl border-b border-border/50",
+        "bg-background/90 backdrop-blur-xl border-b border-border/80",
         className
       )}
     >
