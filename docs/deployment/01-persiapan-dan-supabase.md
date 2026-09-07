@@ -1,86 +1,79 @@
-# Modul 01: Persiapan Kredensial & Konfigurasi Supabase Cloud
+# Modul 01: Persiapan Kredensial dan Konfigurasi Supabase Cloud
 
-> **Bagian dari Alur Deployment MIM PK Dimoro**  
-> ⬅️ Kembali ke [Index Panduan Deployment](./README.md) | ➡️ Lanjut ke [Modul 02: Deployment Vercel](./02-deployment-vercel.md)
-
----
-
-## 🎯 Tujuan Modul
-Modul ini memandu Anda dalam menyiapkan dan mengamankan instance **Supabase Cloud** untuk kebutuhan produksi. Supabase bertindak sebagai backend utama sistem MIM PK Dimoro, menangani:
-- **Authentication**: Sesi login administrator dan proteksi rute `/admin`.
-- **Database (PostgreSQL)**: Penyimpanan data sekolah, berita, data PPDB, galeri, dan pesan masuk.
-- **Storage**: Media penyimpanan gambar berita, banner, dokumentasi fasilitas, dan berkas pendaftaran.
+[Kembali ke Index Panduan Deployment](./README.md) | [Lanjut ke Modul 02: Deployment Vercel](./02-deployment-vercel.md)
 
 ---
 
-## 🔑 Langkah 1: Ekstraksi Kunci API & Environment Variables
+## Tujuan Modul
 
-Aplikasi Next.js 15 memerlukan 3 variabel lingkungan utama untuk berkomunikasi dengan Supabase.
+Menyiapkan instance Supabase Cloud untuk kebutuhan lingkungan produksi. Supabase menangani otentikasi admin, basis data PostgreSQL, dan penyimpanan media publik (berita, galeri, formulir PPDB).
 
-1. Buka browser dan login ke [Supabase Dashboard](https://supabase.com/dashboard).
-2. Pilih proyek produksi **MIM PK Dimoro** Anda.
-3. Pada bilah navigasi sebelah kiri (sidebar bawah), klik ikon gerigi **Project Settings** $\rightarrow$ pilih menu **API** (atau akses URL: `https://supabase.com/project/<your-project-id>/settings/api`).
-4. Catat dan amankan 3 variabel berikut:
+---
 
-| Nama Variabel | Lokasi di Supabase | Tipe Kunci | Deskripsi |
+## Langkah 1: Ekstraksi Kunci API dan Environment Variables
+
+Aplikasi Next.js 15 membutuhkan tiga variabel lingkungan dari Supabase:
+
+1. Masuk ke [Supabase Dashboard](https://supabase.com/dashboard).
+2. Pilih proyek produksi MIM PK Dimoro.
+3. Buka menu **Project Settings** (ikon gerigi di bilah navigasi bawah) lalu pilih menu **API** (`https://supabase.com/project/<project-ref>/settings/api`).
+4. Salin tiga nilai berikut:
+
+| Nama Variabel | Lokasi di Supabase | Sifat Akses | Deskripsi |
 | :--- | :--- | :--- | :--- |
-| `NEXT_PUBLIC_SUPABASE_URL` | **Project URL** | Publik | URL REST API proyek (contoh: `https://xyzprojectref.supabase.co`). |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | **Project API Keys** $\rightarrow$ `anon` / `public` | Publik | Kunci client aman-browser untuk request yang dibatasi oleh RLS. |
-| `SUPABASE_SERVICE_ROLE_KEY` | **Project API Keys** $\rightarrow$ `service_role` / `secret` | **Rahasia (Secret)** | Kunci server level bypass RLS. **Dilarang keras** disebarkan atau dipublikasikan ke klien! |
+| `NEXT_PUBLIC_SUPABASE_URL` | Project URL | Publik | Endpoint REST API Supabase (contoh: `https://<project-ref>.supabase.co`). |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Project API Keys -> `anon public` | Publik | Kunci client yang dibatasi oleh aturan RLS (Row Level Security). |
+| `SUPABASE_SERVICE_ROLE_KEY` | Project API Keys -> `service_role secret` | Rahasia | Kunci server level dengan hak bypass RLS. Tidak boleh dipublikasikan ke browser. |
 
 > [!WARNING]
-> **PENTING**: Kunci `SUPABASE_SERVICE_ROLE_KEY` memiliki hak akses penuh ke seluruh database tanpa filter RLS. Pastikan hanya dimasukkan pada environment Vercel dan **tidak pernah** memiliki prefix `NEXT_PUBLIC_`.
+> Nilai `SUPABASE_SERVICE_ROLE_KEY` memiliki hak akses penuh ke seluruh tabel database. Kunci ini hanya boleh dimasukkan pada dashboard Vercel sebagai environment variable server-only dan tidak boleh diberi prefix `NEXT_PUBLIC_`.
 
 ---
 
-## 🔐 Langkah 2: Konfigurasi Supabase Authentication
+## Langkah 2: Konfigurasi Supabase Authentication
 
-Supabase Auth membutuhkan konfigurasi URL yang tepat agar proses login admin dan pengalihan (*redirect callback*) tidak diblokir oleh browser.
+Supabase Auth memerlukan pengaturan URL agar proses redirect callback setelah login admin tidak ditolak oleh sistem keamanan browser.
 
-1. Pada sidebar kiri Supabase, buka menu **Authentication** $\rightarrow$ pilih submenu **URL Configuration**.
+1. Buka menu **Authentication** lalu pilih **URL Configuration**.
 2. **Ubah Site URL**:
-   - Ganti `http://localhost:3000` menjadi domain produksi utama Anda (gunakan protokol `https://`).
+   - Ganti `http://localhost:3000` dengan URL domain resmi menggunakan protokol HTTPS.
    - Contoh: `https://mimpkdimoro.sch.id`
-   - *Tujuan*: Menjadi URL rujukan utama ketika Supabase mengirimkan tautan konfirmasi atau reset kata sandi.
-3. **Tambahkan Redirect URLs (Whitelist Callback)**:
-   Klik tombol **Add URL** pada bagian *Redirect URLs* dan daftarkan endpoint callback berikut:
+3. **Daftarkan Redirect URLs**:
+   Pada bagian *Redirect URLs*, klik **Add URL** dan masukkan endpoint callback berikut:
    - `https://mimpkdimoro.sch.id/auth/callback`
    - `https://www.mimpkdimoro.sch.id/auth/callback`
-   - `https://*-<team-or-username>.vercel.app/auth/callback` *(Opsional: untuk mendukung Preview Deployment Vercel)*
-   - `http://localhost:3000/auth/callback` *(Tetap simpan untuk pengujian di komputer lokal)*
+   - `https://*-<team-slug>.vercel.app/auth/callback` (untuk preview deployment Vercel)
+   - `http://localhost:3000/auth/callback` (untuk pengembangan lokal)
 4. Klik **Save changes**.
 
 > [!IMPORTANT]
-> Jika URL callback ini tidak didaftarkan, login admin akan mengalami error:  
-> `error: redirect_uri_mismatch` atau tertahan pada halaman kosong setelah menekan tombol login.
+> Jika URL callback ini tidak didaftarkan, login admin pada rute `/admin/login` akan menghasilkan galat `redirect_uri_mismatch`.
 
 ---
 
-## 🗄️ Langkah 3: Konfigurasi Supabase Storage & Policy
+## Langkah 3: Konfigurasi Supabase Storage dan Policies
 
-Sistem berita dan PPDB MIM PK Dimoro menyimpan gambar serta dokumen di Supabase Storage. Agar gambar dapat dioptimasi oleh Next.js (`next/image`), bucket harus memiliki hak baca publik.
+Sistem berita dan PPDB menyimpan berkas dan gambar di Supabase Storage. Agar gambar dapat dioptimasi oleh Next.js Image Optimization (`next/image`), bucket harus dapat dibaca secara publik.
 
-### 1. Periksa Ketersediaan Bucket
-Buka menu **Storage** $\rightarrow$ **Buckets** di dashboard Supabase. Pastikan bucket berikut telah dibuat:
-- `news` (untuk gambar sampul dan konten berita)
-- `gallery` (untuk dokumentasi kegiatan sekolah)
-- `facilities` (untuk foto sarana prasarana sekolah)
-- `ppdb` (untuk lampiran berkas pendaftaran calon siswa)
+### 1. Verifikasi Keberadaan Bucket
+Buka menu **Storage** -> **Buckets**. Pastikan bucket berikut tersedia:
+- `news` (konten gambar berita)
+- `gallery` (dokumentasi kegiatan)
+- `facilities` (foto sarana prasarana)
+- `ppdb` (berkas lampiran formulir pendaftaran)
 
-### 2. Pengaturan Public Access pada Bucket
-1. Klik tanda titik tiga (`...`) pada masing-masing bucket publik (`news`, `gallery`, `facilities`).
-2. Pilih **Edit bucket** $\rightarrow$ Pastikan toggle **Public bucket** dalam kondisi **ON / Aktif**.
+### 2. Pengaturan Akses Publik
+1. Klik menu titik tiga pada bucket `news`, `gallery`, dan `facilities`.
+2. Pilih **Edit bucket** lalu pastikan opsi **Public bucket** aktif.
 3. Simpan perubahan.
 
-### 3. Kebijakan RLS Storage (Storage Policies)
-Pastikan aturan berikut aktif pada storage policies:
-- **SELECT (Read)**: Diizinkan untuk umum (`anon` & `authenticated`) agar foto berita dapat tampil pada pengunjung situs.
-- **INSERT/UPDATE/DELETE**: Hanya diizinkan untuk pengguna dengan sesi login terotentikasi (`authenticated` admin).
+### 3. Kebijakan Akses (Storage Policies)
+- Operasi `SELECT`: Terbuka untuk umum (`anon` dan `authenticated`) agar aset gambar dapat ditampilkan ke publik.
+- Operasi `INSERT`, `UPDATE`, `DELETE`: Dibatasi hanya untuk akun terotentikasi (`authenticated` admin).
 
-### 4. Integrasi dengan Next.js Image Optimization
-Proyek MIM PK Dimoro telah diprogram di file [`next.config.ts`](../../next.config.ts) untuk mendeteksi `NEXT_PUBLIC_SUPABASE_URL` secara otomatis:
+### 4. Integrasi dengan Next.js Image
+Proyek ini mengonfigurasi `next.config.ts` untuk memetakan domain storage secara otomatis saat `NEXT_PUBLIC_SUPABASE_URL` diisi:
 ```typescript
-// next.config.ts
 remotePatterns: [
   ...(supabaseUrlConfig
     ? [
@@ -92,37 +85,34 @@ remotePatterns: [
         },
       ]
     : []),
-  // ...
 ]
 ```
-Dengan konfigurasi ini, ketika variabel `NEXT_PUBLIC_SUPABASE_URL` dimasukkan ke Vercel, Next.js akan secara otomatis mengizinkan dan mengompresi gambar dari Supabase Storage Anda.
 
 ---
 
-## 📊 Langkah 4: Verifikasi Skema Database & RLS
+## Langkah 4: Verifikasi Skema Database dan RLS
 
-Pastikan seluruh tabel database produksi telah sinkron sebelum aplikasi Next.js online.
+Pastikan tabel dan kebijakan keamanan telah diterapkan sebelum aplikasi menerima lalu lintas publik:
 
 1. Buka menu **Table Editor** di Supabase.
-2. Periksa keberadaan tabel utama:
-   - `profiles` (data administrator / user)
-   - `articles` / `news` (data postingan berita)
-   - `registrations` / `ppdb_registrations` (data formulir pendaftaran siswa baru)
-   - `school_profile` (profil identitas sekolah)
-   - `messages` / `contact_messages` (pesan dari form kontak)
-3. Pastikan indikator **RLS Enabled** berwarna hijau pada seluruh tabel sensitif untuk menjamin integritas data.
+2. Pastikan tabel berikut telah dibuat:
+   - `profiles` (data administrator)
+   - `articles` / `news` (konten artikel dan berita)
+   - `registrations` / `ppdb_registrations` (data formulir pendaftaran)
+   - `school_profile` (identitas dan profil madrasah)
+   - `messages` / `contact_messages` (pesan formulir kontak)
+3. Pastikan indikator **RLS Enabled** aktif pada tabel-tabel tersebut.
 
 ---
 
-## ✅ Checklist Selesai Modul 01
+## Checklist Modul 01
 
-Sebelum melanjutkan ke Modul 02, pastikan Anda telah mencentang:
-- [ ] Menyalin 3 kunci API (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`).
-- [ ] Mengubah *Site URL* ke domain `https://<domain-resmi>`.
-- [ ] Menambahkan daftar *Redirect URLs* termasuk endpoint `/auth/callback`.
-- [ ] Memverifikasi bucket storage publik berstatus *Public* dengan kebijakan SELECT terbuka.
-- [ ] Memastikan database produksi memiliki skema tabel yang lengkap dan RLS aktif.
+- [ ] Nilai `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, dan `SUPABASE_SERVICE_ROLE_KEY` sudah dicatat.
+- [ ] Kolom *Site URL* pada Supabase Auth telah disesuaikan ke domain produksi.
+- [ ] Alamat callback `/auth/callback` untuk domain resmi telah terdaftar di *Redirect URLs*.
+- [ ] Bucket media berstatus *Public* dengan aturan baca terbuka.
+- [ ] Seluruh tabel database produksi memiliki skema lengkap dengan RLS aktif.
 
 ---
 
-➡️ **Langkah Selanjutnya:** Lanjut ke [**Modul 02: Setup Repository & Deployment Vercel**](./02-deployment-vercel.md) untuk menghubungkan kode sumber dan mendeploy aplikasi.
+[Lanjut ke Modul 02: Setup Repository dan Deployment Vercel](./02-deployment-vercel.md)

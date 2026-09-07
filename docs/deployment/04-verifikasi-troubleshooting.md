@@ -1,176 +1,155 @@
-# Modul 04: Verifikasi Pasca-Deploy & Troubleshooting
+# Modul 04: Verifikasi Pasca-Deploy dan Troubleshooting
 
-> **Bagian dari Alur Deployment MIM PK Dimoro**  
-> ⬅️ Sebelumnya ke [Modul 03: Konfigurasi DNS Hostinger](./03-konfigurasi-dns-hostinger.md) | 🏠 [Index Panduan](./README.md)
-
----
-
-## 🎯 Tujuan Modul
-Modul ini adalah tahapan penutup dalam alur deployment. Di sini Anda akan menjalankan audit fungsional menyeluruh pada sistem produksi **MIM PK Dimoro** untuk memastikan seluruh fitur berjalan dengan sempurna, serta menyediakan pedoman penanganan cepat (*troubleshooting guide*) jika terjadi kendala teknis.
+[Sebelumnya: Modul 03 - Konfigurasi DNS Hostinger](./03-konfigurasi-dns-hostinger.md) | [Index Panduan](./README.md)
 
 ---
 
-## 🔍 Bagian 1: Checklist Audit Fungsional Pasca-Deploy
+## Tujuan Modul
 
-Setelah status domain di Vercel berubah menjadi hijau (**Valid Configuration**) dan sertifikat SSL aktif, lakukan serangkaian pengujian operasional berikut:
-
-### 1. Uji Keamanan & Routing Domain
-- [ ] Buka domain menggunakan protokol HTTP biasa: `http://mimpkdimoro.sch.id`. Pastikan browser otomatis mengalihkan (*redirect*) ke **`https://mimpkdimoro.sch.id`**.
-- [ ] Buka domain dengan awalan WWW: `https://www.mimpkdimoro.sch.id`. Pastikan otomatis diarahkan ke domain kanonikal pilihan Anda tanpa peringatan sertifikat.
-- [ ] Periksa ikon gembok aman di bilah alamat browser (*Connection is secure - Valid Certificate*).
-
-### 2. Uji Halaman Publik
-- [ ] **Beranda**: Seluruh banner hero, statistik sekolah, program unggulan, dan testimoni termuat dengan rapi.
-- [ ] **Tentang Kami / Profil**: Informasi sejarah, visi misi, struktur guru, dan fasilitas sekolah dapat dibaca dengan jelas.
-- [ ] **Berita & Artikel**: Daftar artikel berita termuat dari database Supabase, dan halaman detail berita (`/berita/[slug]`) dapat dibuka.
-- [ ] **Galeri & Ekstrakurikuler**: Foto-foto kegiatan termuat tanpa gambar rusak (*broken image*).
-
-### 3. Uji Otentikasi Admin Dashboard (`/admin`)
-- [ ] Buka halaman login admin di `https://mimpkdimoro.sch.id/admin/login`.
-- [ ] Masukkan email dan password akun administrator sekolah.
-- [ ] Klik **Masuk** dan pastikan sistem berhasil mengarahkan ke dashboard utama `/admin` tanpa mengalami *infinite loading* atau mental kembali ke login.
-- [ ] Periksa bahwa cookie otentikasi Supabase (`sb-...-auth-token`) tersimpan aman di browser.
-- [ ] Uji tombol **Keluar (Logout)** dan pastikan sesi terhapus serta rute `/admin` tidak dapat diakses kembali tanpa login.
-
-### 4. Uji Pengunggahan Media (Storage & Editor Tiptap)
-- [ ] Masuk ke menu admin pembuatan berita baru.
-- [ ] Unggah gambar sampul (*featured image*) dan sisipkan gambar di dalam editor konten Tiptap.
-- [ ] Simpan berita dan publikasikan.
-- [ ] Buka berita tersebut di tab incognito publik untuk memastikan gambar dapat dimuat oleh pengunjung luar melalui CDN Supabase.
-
-### 5. Uji Formulir Pendaftaran PPDB Online
-- [ ] Buka menu formulir pendaftaran siswa baru di web publik (`/pendaftaran` atau `/ppdb`).
-- [ ] Isi data formulir percobaan lengkap dengan upload berkas/foto yang diminta.
-- [ ] Klik tombol submit dan pastikan muncul notifikasi keberhasilan serta bukti nomor pendaftaran.
-- [ ] Buka menu **Admin PPDB** di dashboard admin untuk memastikan data pendaftar baru muncul di tabel dan dapat diunduh (ekspor Excel) atau diverifikasi statusnya.
-
-### 6. Uji Responsivitas Perangkat Mobile
-- [ ] Buka situs menggunakan ponsel Android / iPhone.
-- [ ] Pastikan navigasi bilah bawah (*dock*), floating action button WhatsApp, dan hamburger menu bekerja dengan nyaman sesuai standar mobile-first.
+Melakukan audit fungsional menyeluruh pada sistem produksi MIM PK Dimoro setelah domain terhubung, serta memberikan referensi teknis pemecahan masalah jika terjadi kendala operasional.
 
 ---
 
-## 🛠️ Bagian 2: Panduan Pemecahan Masalah (Troubleshooting)
+## Bagian 1: Checklist Audit Fungsional Pasca-Deploy
 
-Berikut adalah daftar masalah yang paling sering ditemui saat proses deployment Next.js + Supabase + Vercel + Hostinger beserta solusinya:
+Jalankan pengujian operasional berikut setelah status domain di Vercel berstatus *Valid Configuration* dan sertifikat SSL aktif:
+
+### 1. Keamanan dan Routing Domain
+- [ ] Buka `http://mimpkdimoro.sch.id`. Pastikan browser mengalihkan secara otomatis ke `https://mimpkdimoro.sch.id`.
+- [ ] Buka `https://www.mimpkdimoro.sch.id`. Pastikan diarahkan ke domain kanonikal tanpa peringatan sertifikat SSL.
+- [ ] Periksa status gembok keamanan pada bilah alamat browser untuk memastikan sertifikat SSL valid.
+
+### 2. Halaman Publik
+- [ ] Beranda: Banner hero, profil sekolah, dan program unggulan termuat dengan benar.
+- [ ] Profil Sekolah: Halaman tentang kami, visi misi, data guru, dan fasilitas sekolah dapat diakses.
+- [ ] Berita: Daftar artikel dari Supabase termuat dan halaman detail `/berita/[slug]` dapat dibaca.
+- [ ] Galeri: Foto dokumentasi kegiatan termuat tanpa gambar rusak.
+
+### 3. Otentikasi Admin Dashboard (`/admin`)
+- [ ] Buka halaman login admin di `/admin/login`.
+- [ ] Masukkan kredensial akun administrator.
+- [ ] Pastikan sistem berhasil masuk ke dashboard `/admin` tanpa redirect loop.
+- [ ] Pastikan cookie sesi Supabase (`sb-...-auth-token`) terdaftar pada browser.
+- [ ] Uji tombol Logout dan pastikan rute terproteksi tidak dapat dibuka kembali tanpa login.
+
+### 4. Pengunggahan Media dan Storage
+- [ ] Masuk ke form pembuatan berita di dashboard admin.
+- [ ] Unggah gambar sampul dan tambahkan gambar pada editor Tiptap.
+- [ ] Simpan dan publikasikan artikel.
+- [ ] Buka artikel tersebut pada tab incognito untuk memvalidasi akses publik gambar via CDN Supabase.
+
+### 5. Formulir Pendaftaran PPDB Online
+- [ ] Buka halaman pendaftaran siswa baru pada web publik.
+- [ ] Isi data pengujian dan unggah dokumen persyaratan.
+- [ ] Kirim formulir dan pastikan sistem memberikan nomor pendaftaran.
+- [ ] Periksa data pendaftar baru pada dashboard Admin PPDB dan uji ekspor data Excel.
+
+### 6. Pengujian Tampilan Mobile
+- [ ] Buka situs menggunakan perangkat smartphone.
+- [ ] Pastikan navigasi, tombol kontak WhatsApp, dan menu navigasi responsif dan tidak terpotong.
 
 ---
 
-### Masalah 1: Status DNS di Vercel "Invalid Configuration" atau SSL "Pending"
+## Bagian 2: Panduan Pemecahan Masalah (Troubleshooting)
 
-#### 📌 Gejala:
-Situs tidak dapat diakses dengan pesan browser `DNS_PROBE_FINISHED_NXDOMAIN` atau peringatan sertifikat `ERR_SSL_VERSION_OR_CIPHER_MISMATCH`. Di dashboard Vercel, domain berstatus peringatan kuning atau merah.
+### Kasus 1: Status DNS di Vercel Menunjukkan "Invalid Configuration" atau SSL "Pending"
 
-#### 🔍 Penyebab:
-1. Catatan DNS di Hostinger belum selesai menyebar (propagasi masih berjalan).
-2. Masih ada record `A` lama di Hostinger hPanel yang mengarah ke server hosting lama sehingga Vercel mendeteksi IP ganda (*conflicting A records*).
-3. Penulisan nama host salah (misal menuliskan nama domain lengkap alih-alih `@`).
+#### Gejala
+Domain tidak dapat diakses, peramban menampilkan pesan `DNS_PROBE_FINISHED_NXDOMAIN` atau `ERR_SSL_VERSION_OR_CIPHER_MISMATCH`. Di Vercel, status domain tetap berwarna kuning atau merah.
 
-#### 💡 Solusi Langkah-demi-Langkah:
-1. Buka [Hostinger hPanel](https://hpanel.hostinger.com) $\rightarrow$ **Domains** $\rightarrow$ **DNS / Nameservers**.
-2. Periksa tabel DNS Records:
-   - Pastikan **hanya ada 1 record A** untuk Name `@` yang bernilai `76.76.21.21`. Hapus record A lain yang bernilai selain IP tersebut.
-   - Pastikan **hanya ada 1 record CNAME** untuk Name `www` yang bernilai `cname.vercel-dns.com`.
-3. Buka [WhatsMyDNS.net](https://www.whatsmydns.net) dan cari domain Anda untuk tipe **A**. Pastikan IP `76.76.21.21` sudah mulai menyebar.
-4. Buka Vercel Dashboard $\rightarrow$ **Settings** $\rightarrow$ **Domains** $\rightarrow$ klik tombol **Refresh**.
-5. Bersihkan cache DNS lokal komputer Anda (di Windows Command Prompt: ketik `ipconfig /flushdns`).
+#### Penyebab
+1. Propagasi DNS di server Hostinger masih berjalan.
+2. Terdapat record `A` lama di Hostinger hPanel yang masih mengarah ke IP hosting lama.
+3. Nilai Host pada record tidak sesuai (menggunakan nama domain lengkap alih-alih `@`).
+
+#### Solusi
+1. Buka Hostinger hPanel -> **Domains** -> **DNS / Nameservers** -> **DNS Records**.
+2. Pastikan hanya terdapat satu record `A` untuk nama `@` dengan nilai `76.76.21.21`. Hapus record `A` lama yang bernilai lain.
+3. Pastikan record `CNAME` untuk nama `www` bernilai `cname.vercel-dns.com`.
+4. Periksa penyebaran IP global melalui [whatsmydns.net](https://www.whatsmydns.net).
+5. Pada Vercel Dashboard -> **Settings** -> **Domains**, klik tombol **Refresh**.
+6. Bersihkan DNS cache lokal komputer menggunakan perintah `ipconfig /flushdns`.
 
 ---
 
-### Masalah 2: Login Admin Mental / Redirect Loop / Error 400 `redirect_uri_mismatch`
+### Kasus 2: Login Admin Mental / Redirect Loop / Galat `redirect_uri_mismatch`
 
-#### 📌 Gejala:
-Ketika login di `/admin/login`, setelah submit halaman kembali lagi ke login, atau browser menampilkan error halaman Supabase bertuliskan:  
-`error: redirect_uri_mismatch` atau `URL not allowed`.
+#### Gejala
+Setelah mengirimkan formulir login di `/admin/login`, halaman terus berputar (*loading loop*), kembali ke form login, atau menampilkan galat Supabase `error: redirect_uri_mismatch`.
 
-#### 🔍 Penyebab:
-Fitur keamanan Supabase Auth menolak proses redirect karena domain produksi Anda belum terdaftar di whitelist Supabase Dashboard (masih bernilai `localhost:3000`).
+#### Penyebab
+Pengaturan URL pada Supabase Auth masih mengarah ke `http://localhost:3000` dan belum mendaftarkan URL callback domain produksi.
 
-#### 💡 Solusi Langkah-demi-Langkah:
-1. Buka [Supabase Dashboard](https://supabase.com/dashboard) $\rightarrow$ pilih proyek Anda.
-2. Buka menu **Authentication** $\rightarrow$ **URL Configuration**.
-3. Pastikan kolom **Site URL** diisi dengan domain resmi lengkap dengan protokol `https://`:
+#### Solusi
+1. Buka [Supabase Dashboard](https://supabase.com/dashboard) lalu pilih proyek terkait.
+2. Buka menu **Authentication** -> **URL Configuration**.
+3. Pastikan kolom **Site URL** menggunakan domain resmi:
    ```text
    https://mimpkdimoro.sch.id
    ```
-4. Pada bagian **Redirect URLs**, klik **Add URL** dan daftarkan:
+4. Pada bagian **Redirect URLs**, tambahkan endpoint berikut:
    ```text
    https://mimpkdimoro.sch.id/auth/callback
    https://www.mimpkdimoro.sch.id/auth/callback
    ```
-5. Klik **Save changes** di bagian bawah.
-6. Coba login kembali di browser (gunakan mode *Private/Incognito* untuk membersihkan cache sesi lama).
+5. Simpan perubahan (*Save changes*) dan coba login kembali menggunakan jendela peramban penyamaran (*Incognito*).
 
 ---
 
-### Masalah 3: Gambar Pecah / Error `hostname is not configured under images in your next.config.ts`
+### Kasus 3: Gambar Pecah / Galat `hostname is not configured under images in next.config.ts`
 
-#### 📌 Gejala:
-Gambar berita atau banner tidak muncul dan console browser menampilkan error:
+#### Gejala
+Gambar dari Supabase Storage tidak muncul dan konsol browser mencatat galat:
 ```text
 Error: Invalid src prop on `next/image`, hostname "xyz.supabase.co" is not configured under images in your `next.config.ts`
 ```
 
-#### 🔍 Penyebab:
-Variabel `NEXT_PUBLIC_SUPABASE_URL` belum diisi di Vercel atau proses build berjalan sebelum variabel tersebut ditambahkan, sehingga Next.js tidak dapat mendaftarkan hostname Supabase Storage ke whitelist optimasi gambar secara dinamis.
+#### Penyebab
+Variabel `NEXT_PUBLIC_SUPABASE_URL` belum terdaftar saat proses build dijalankan di Vercel, sehingga konfigurasi dinamis `remotePatterns` pada `next.config.ts` tidak membaca domain storage Supabase.
 
-#### 💡 Solusi Langkah-demi-Langkah:
-1. Buka [Vercel Dashboard](https://vercel.com) $\rightarrow$ Proyek `mim-pk-dimoro` $\rightarrow$ **Settings** $\rightarrow$ **Environment Variables**.
-2. Pastikan variabel `NEXT_PUBLIC_SUPABASE_URL` terdaftar dengan nilai yang benar (misal: `https://xyzprojectref.supabase.co`).
+#### Solusi
+1. Buka Vercel Dashboard -> **Settings** -> **Environment Variables**.
+2. Pastikan variabel `NEXT_PUBLIC_SUPABASE_URL` terdaftar dengan nilai valid (contoh: `https://xyz.supabase.co`).
 3. Buka tab **Deployments** di Vercel.
-4. Klik tanda titik tiga (`...`) pada deployment produksi paling atas $\rightarrow$ pilih **Redeploy**.
-5. *PENTING*: Pastikan opsi **Use existing Build Cache** tidak dicentang agar Vercel membaca ulang environment variable saat proses kompilasi.
-6. Tunggu hingga redeploy selesai dan buka kembali halaman web.
+4. Klik tombol titik tiga pada deployment terbaru lalu pilih **Redeploy**.
+5. Pastikan opsi **Use existing Build Cache** tidak dicentang agar Vercel membaca ulang environment variables saat kompilasi.
 
 ---
 
-### Masalah 4: Deployment Gagal di Vercel (*Build Failed / Exit Code 1*)
+### Kasus 4: Deployment Gagal di Vercel (Build Failed / Exit Code 1)
 
-#### 📌 Gejala:
-Proses deployment di Vercel terhenti dengan status merah bertuliskan **Error** atau **Failed**.
+#### Gejala
+Deployment Vercel menghasilkan status *Failed* atau *Error*.
 
-#### 🔍 Penyebab:
-1. Adanya kesalahan tipe data TypeScript atau aturan linter yang tidak lolos pengecekan otomatis Next.js.
-2. Variabel environment penting kosong saat kompilasi static page.
+#### Penyebab
+1. Terdapat galat TypeScript atau aturan linting yang tidak terpenuhi.
+2. Dependensi hilang atau gagal diinstal.
 
-#### 💡 Solusi Langkah-demi-Langkah:
-1. Di Vercel Dashboard, buka deployment yang gagal dan klik menu tab **Building Logs**.
-2. Gulir ke baris paling bawah untuk melihat pesan error spesifik dari compiler Next.js.
-3. Buka terminal lokal Anda dan jalankan:
+#### Solusi
+1. Buka log deployment pada tab **Building Logs** di Vercel untuk membaca pesan error kompilator.
+2. Jalankan perintah verifikasi secara lokal:
    ```bash
    npm run build
+   npm run lint
    ```
-4. Perbaiki baris kode atau tipe data yang dilaporkan error oleh terminal lokal.
-5. Lakukan commit dan push perbaikan ke branch GitHub:
-   ```bash
-   git add .
-   git commit -m "fix: resolve build error for deployment"
-   git push origin <nama-branch>
-   ```
-6. Vercel akan secara otomatis mendeteksi commit baru dan memulai ulang build.
+3. Perbaiki baris kode yang menyebabkan galat.
+4. Lakukan commit dan push perubahan kode ke branch repositori remote.
 
 ---
 
-## 🔒 Bagian 3: Panduan Pemeliharaan Rutin
+## Bagian 3: Pemeliharaan Sistem
 
-Untuk menjaga performa dan keandalan sistem sekolah dalam jangka panjang:
-1. **Backup Database Supabase**: Lakukan pencadangan database PostgreSQL secara berkala melalui menu *Database > Backups* di Supabase Dashboard (atau unduh dump via CLI).
-2. **Monitoring Kuota Vercel**: Pantau penggunaan bandwidth dan serverless execution di tab *Usage* Vercel untuk memastikan pemakaian tetap berada dalam batas wajar.
-3. **Pembaruan Dependensi**: Periksa pembaruan paket keamanan secara periodik dengan menjalankan `npm audit` di komputer pengembang.
-
----
-
-## ✅ Checklist Selesai Modul 04
-
-Sebelum menyerahkan sistem ke pihak sekolah, pastikan Anda telah mencentang:
-- [ ] Akses HTTPS berfungsi dengan sertifikat SSL valid di browser.
-- [ ] Redirect otomatis HTTP $\rightarrow$ HTTPS dan WWW $\rightarrow$ non-WWW berhasil.
-- [ ] Login Admin, proteksi dashboard `/admin`, dan fungsi Logout teruji normal.
-- [ ] Upload gambar dan penampilan artikel berita berfungsi tanpa error.
-- [ ] Formulir PPDB berhasil menyimpan pendaftaran ke database.
-- [ ] Tampilan mobile responsif dan ramah sentuhan.
-- [ ] Tim pengelola telah dibekali akses login dan nomor kontak bantuan darurat jika ada kendala.
+1. **Pencadangan Basis Data**: Lakukan backup database berkala melalui menu *Database > Backups* di Supabase Dashboard.
+2. **Monitoring Penggunaan Vercel**: Tinjau penggunaan bandwidth, invocation, dan build minutes pada tab *Usage* di Vercel.
+3. **Pembaruan Dependensi**: Jalankan `npm audit` secara berkala untuk memantau keamanan pustaka pendukung aplikasi.
 
 ---
 
-🎉 **Selamat!** Seluruh rangkaian deployment sistem informasi sekolah **MIM PK Dimoro** telah rampung dan siap melayani masyarakat.
+## Checklist Modul 04
+
+- [ ] Pengalihan protokol HTTPS dan subdomain WWW berjalan normal.
+- [ ] Navigasi halaman publik dapat diakses tanpa hambatan.
+- [ ] Login administrator, proteksi rute `/admin`, dan sesi logout berfungsi baik.
+- [ ] Pengunggahan dan penampilan media berita/galeri berjalan normal.
+- [ ] Alur pendaftaran PPDB online dan pencatatan database terverifikasi.
+- [ ] Tampilan responsif pada perangkat seluler teruji.
