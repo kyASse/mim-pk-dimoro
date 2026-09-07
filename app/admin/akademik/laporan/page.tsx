@@ -1,74 +1,56 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { deleteLaporanAction } from "./actions";
-import CreateLaporanForm from "./CreateLaporanForm";
+import { AdminUnderDevelopment } from "@/components/admin/AdminUnderDevelopment";
 
-export default async function KelolaLaporanPage({ searchParams }: { searchParams?: Promise<Record<string, string>> }) {
+export default async function KelolaLaporanPage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return redirect('/auth/login');
 
-  const { data: siswa } = await supabase
-    .from('siswa')
-    .select('id, nama_lengkap')
-    .order('nama_lengkap');
-
-  const { data: laporan } = await supabase
-    .from('laporan_perkembangan')
-    .select('id, siswa_id, semester, tahun_ajaran, catatan_guru, dokumen_rapor_url')
-    .order('tahun_ajaran', { ascending: false });
-
-  const params = (await searchParams) || ({} as Record<string, string>);
-  const status = params.status;
-  const msg = params.msg ? decodeURIComponent(params.msg) : '';
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return redirect("/auth/login");
 
   return (
-    <div className="p-6 space-y-6 max-w-6xl mx-auto">
-      <h1 className="text-2xl font-bold">Kelola Laporan Perkembangan</h1>
-
-      {status === 'ok' && (
-        <div className="p-3 rounded bg-green-50 border border-green-200 text-green-700 text-sm">Laporan berhasil disimpan.</div>
-      )}
-      {status === 'error' && (
-        <div className="p-3 rounded bg-red-50 border border-red-200 text-red-700 text-sm">{msg || 'Terjadi kesalahan.'}</div>
-      )}
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Tambah Laporan</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <CreateLaporanForm siswa={(siswa as any[]) || []} />
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Daftar Laporan</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {laporan?.length ? (
-            laporan.map((l: any) => (
-              <div key={l.id} className="grid grid-cols-1 md:grid-cols-6 gap-3 items-center border-b pb-3">
-                <div className="md:col-span-2">
-                  <div className="font-medium">{l.semester} {l.tahun_ajaran}</div>
-                  <div className="text-xs text-muted-foreground">Siswa ID: {l.siswa_id}</div>
-                </div>
-                <div className="md:col-span-3 text-sm">
-                  {l.catatan_guru || '-'}
-                </div>
-                <form action={deleteLaporanAction.bind(null, l.id)} className="justify-self-end">
-                  <Button type="submit" variant="destructive" size="sm">Hapus</Button>
-                </form>
-              </div>
-            ))
-          ) : (
-            <div className="text-muted-foreground">Belum ada laporan.</div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+    <AdminUnderDevelopment
+      title="Laporan Perkembangan Siswa & Tahfidz"
+      description="Pusat rekapitulasi evaluasi komprehensif: perkembangan karakter Islami, capaian hafalan Al-Qur'an (Tahfidz/Tahsin), dan catatan ekstrakurikuler."
+      category="Akademik & E-Rapor"
+      status="in_development"
+      progress={50}
+      estimatedRelease="Q3 2026"
+      icon="book-open"
+      backUrl="/admin"
+      plannedFeatures={[
+        {
+          title: "Buku Mutaba'ah & Tracking Tahfidz",
+          description: "Pencatatan ziyadah dan muraja'ah hafalan surat & juz santri harian oleh ustadz/ustadzah.",
+          status: "in_progress",
+          tags: ["Tahfidz", "Mutaba'ah"],
+        },
+        {
+          title: "Evaluasi Karakter & Pembiasaan Ibadah",
+          description: "Monitoring shalat dhuha, shalat berjamaah, dan adab santri di lingkungan madrasah.",
+          status: "completed",
+          tags: ["Karakter", "Ibadah"],
+        },
+        {
+          title: "Catatan Naratif Wali Kelas",
+          description: "Form masukan personal dari wali kelas untuk evaluasi perkembangan sosial-emosional siswa.",
+          status: "planned",
+          tags: ["Wali Kelas", "Evaluasi"],
+        },
+        {
+          title: "Portal Laporan Digital untuk Wali Murid",
+          description: "Akses langsung bagi orang tua untuk memantau grafik hafalan dan riwayat capaian putra/putri.",
+          status: "planned",
+          tags: ["Portal Wali", "Realtime"],
+        },
+      ]}
+      technicalNotes={[
+        "Integrasi dengan portal akun orang tua (tabel profiles & portal_sessions)",
+        "Visualisasi grafik progres hafalan per semester menggunakan charting modular",
+        "Ekspor ringkasan perkembangan format PDF siap kirim via WhatsApp ke nomor wali santri",
+      ]}
+    />
   );
 }

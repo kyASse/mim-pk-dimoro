@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulir Pendaftaran MIM PK Dimoro</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 8mm 12mm 6mm 12mm;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 10pt;
+      line-height: 1.25;
+      color: #000;
+      background: #fff;
+    }
+    .header {
+      position: relative;
+      text-align: center;
+      padding-bottom: 3px;
+      margin-bottom: 5px;
+    }
+    .logo-container {
+      position: absolute;
+      left: 15px;
+      top: -2px;
+      width: 70px;
+      height: 70px;
+    }
+    .logo {
+      width: 65px;
+      height: auto;
+      object-fit: contain;
+    }
+    .header-text {
+      padding-left: 55px;
+      padding-right: 20px;
+    }
+    .header-text h3 {
+      font-size: 12.5pt;
+      font-weight: bold;
+      letter-spacing: 0.3px;
+      margin: 0;
+      line-height: 1.15;
+    }
+    .header-text h2 {
+      font-size: 13pt;
+      font-weight: bold;
+      margin: 0;
+      line-height: 1.2;
+    }
+    .header-text p.accreditation {
+      font-size: 11.5pt;
+      font-weight: bold;
+      margin: 0;
+      line-height: 1.15;
+    }
+    .header-text p.address {
+      font-size: 9pt;
+      margin-top: 2px;
+      line-height: 1.15;
+    }
+    .double-line {
+      margin-top: 4px;
+      border-top: 2px solid #000;
+      border-bottom: 1px solid #000;
+      height: 3px;
+    }
+    .title-section {
+      text-align: center;
+      margin: 6px 0 8px 0;
+    }
+    .title-section h1 {
+      font-size: 12pt;
+      font-weight: bold;
+      margin-bottom: 1px;
+    }
+    .title-section p {
+      font-size: 11pt;
+      font-weight: bold;
+    }
+    .section-title {
+      font-size: 10.5pt;
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+    .form-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5pt;
+    }
+    .form-table td {
+      padding: 0.7px 0;
+      vertical-align: bottom;
+    }
+    .col-num {
+      width: 22px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .col-label {
+      width: 225px;
+      white-space: nowrap;
+    }
+    .col-colon {
+      width: 12px;
+      text-align: center;
+    }
+    .col-dots {
+      border-bottom: 1px dotted #000;
+      height: 13px;
+      width: 100%;
+    }
+    .sub-item {
+      padding-left: 14px;
+    }
+    .signatures {
+      margin-top: 10px;
+      width: 100%;
+    }
+    .signatures-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      font-size: 10pt;
+    }
+    .signatures-table td {
+      width: 50%;
+      vertical-align: top;
+    }
+    .sig-date {
+      text-align: right;
+      padding-right: 35px;
+      margin-bottom: 4px;
+      font-size: 9.5pt;
+    }
+    .sig-space {
+      height: 40px;
+    }
+    .sig-name {
+      font-weight: normal;
+      line-height: 1.25;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- KOP SURAT -->
+  <div class="header">
+    <div class="logo-container">
+      <img src="data:image/png;base64,LOGO_BASE64_PLACEHOLDER" class="logo" alt="Logo Aisyiyah" />
+    </div>
+    <div class="header-text">
+      <h3>MAJELIS PENDIDIKAN DASAR DAN MENENGAH</h3>
+      <h3>PIMPINAN DAERAH MUHAMMADIYAH SUKOHARJO</h3>
+      <h2>MADRASAH IBTIDAIYAH MUHAMMADIYAH ( MIM ) DIMORO</h2>
+      <p class="accreditation">STATUS TERAKREDITASI A</p>
+      <p class="address">Alamat : Dimoro Rt. 03 / Rw. X Parangjoro, Grogol Sukoharjo Kode Pos 57552</p>
+    </div>
+    <div class="double-line"></div>
+  </div>
+
+  <!-- TITLE -->
+  <div class="title-section">
+    <h1>PENDAFTARAN SISWA BARU</h1>
+    <p>Tahun Pelajaran 20...../20.....</p>
+  </div>
+
+  <!-- SECTION A -->
+  <div class="section-title">A. KETERANGAN ANAK :</div>
+
+  <table class="form-table">
+    <tr>
+      <td class="col-num">1.</td>
+      <td class="col-label">Nama Peserta Didik (Lengkap)</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">2.</td>
+      <td class="col-label">Nomor Induk Peserta Didik Madrasah</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">3.</td>
+      <td class="col-label">Tempat, Tanggal Lahir</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">4.</td>
+      <td class="col-label">Jenis Kelamin</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">5.</td>
+      <td class="col-label">Agama</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">6.</td>
+      <td class="col-label">Status dalam Keluarga</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">7.</td>
+      <td class="col-label">Anak ke</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">8.</td>
+      <td class="col-label">Jumlah Saudara</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">9.</td>
+      <td class="col-label">Alamat Peserta Didik</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="col-label sub-item">Telepon/Hp</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">10.</td>
+      <td class="col-label">RA/TK Asal</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">11.</td>
+      <td class="col-label">Diterima di Madrasah ini di kelas</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">12.</td>
+      <td class="col-label">Diterima di Madrasah ini pada tanggal</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">13.</td>
+      <td class="col-label" colspan="3">Nama Orang Tua</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="col-label sub-item">a. Ayah</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="col-label sub-item">b. Ibu</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">14.</td>
+      <td class="col-label">Alamat Orang Tua</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">15.</td>
+      <td class="col-label" colspan="3">Pekerjaan Orang Tua</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="col-label sub-item">a. Ayah</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="col-label sub-item">b. Ibu</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">16.</td>
+      <td class="col-label">Nama Wali</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">17.</td>
+      <td class="col-label">Alamat Wali</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="col-label sub-item">Telepon/Hp</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">18.</td>
+      <td class="col-label">Pekerjaan Wali</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">19.</td>
+      <td class="col-label">Cita-cita</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">20.</td>
+      <td class="col-label">Hobi</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">21.</td>
+      <td class="col-label">Jarak Ke Sekolah</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">22.</td>
+      <td class="col-label">Transportasi ke Sekolah</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">23.</td>
+      <td class="col-label" colspan="3">Pendidikan</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="col-label sub-item">a. Ayah</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="col-label sub-item">b. Ibu</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">24.</td>
+      <td class="col-label">Gaji Orang Tua</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">25.</td>
+      <td class="col-label">Berat Badan</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">26.</td>
+      <td class="col-label">Tinggi Badan</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+    <tr>
+      <td class="col-num">27.</td>
+      <td class="col-label">Golongan Darah</td>
+      <td class="col-colon">:</td>
+      <td><div class="col-dots"></div></td>
+    </tr>
+  </table>
+
+  <!-- SIGNATURES -->
+  <div class="signatures">
+    <div class="sig-date">........................, ....................</div>
+    <table class="signatures-table">
+      <tr>
+        <td>Kepala Sekolah</td>
+        <td>Orang Tua / Wali</td>
+      </tr>
+      <tr>
+        <td class="sig-space"></td>
+        <td class="sig-space"></td>
+      </tr>
+      <tr>
+        <td class="sig-name">
+          (............................................)<br>
+          NIP. .....................................
+        </td>
+        <td class="sig-name">
+          (............................................)
+        </td>
+      </tr>
+    </table>
+  </div>
+
+</body>
+</html>

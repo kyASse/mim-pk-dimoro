@@ -4,165 +4,122 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import {
-    Menu,
-    X,
-    School,
-    BookOpen,
-    Image as ImageIcon,
-    Phone,
-    UserPlus,
-    LogIn
-} from "lucide-react";
+import { Menu, X, LogIn } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "motion/react";
-import { ThemeSwitcher } from "../theme-switcher";
-import { Button } from "../ui/button";
+import { motion } from "motion/react";
+import { ThemeSwitcher } from "@/components/theme-switcher";
+import { Button } from "@/components/ui/button";
 import { SCHOOL_NAME, SCHOOL_LOGO_PATH, SCHOOL_LOGO_ALT } from "@/lib/school-config";
-
-const navLinks = [
-    { name: 'Beranda', href: '/', icon: <School className="w-5 h-5" /> },
-    { name: 'Tentang Kami', href: '/tentang-kami', icon: <BookOpen className="w-5 h-5" /> },
-    { name: 'Program & Kurikulum', href: '/program', icon: <BookOpen className="w-5 h-5" /> },
-    { name: 'Galeri', href: '/galeri', icon: <ImageIcon className="w-5 h-5" /> },
-    { name: 'Pendaftaran', href: '/pendaftaran', icon: <UserPlus className="w-5 h-5" /> },
-    { name: 'Kontak', href: '/kontak', icon: <Phone className="w-5 h-5" /> },
-    // { name: 'Masuk', href: '/auth/login', icon: <LogIn className="w-5 h-5" /> }
-];
+import MobileMenuOverlay, { publicNavLinks } from "./MobileMenuOverlay";
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
-    const [scrolled, setScrolled] = useState(false);
     const pathname = usePathname();
 
-    useEffect(() => {
-        const handleScroll = () => {
-            if (window.scrollY > 20) {
-                setScrolled(true);
-            } else {
-                setScrolled(false);
-            }
-        };
-
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
-    // close mobile menu when route changes
+    // Close mobile menu when route changes
     useEffect(() => {
         setIsOpen(false);
     }, [pathname]);
 
     return (
-        <header className={cn(
-            "sticky top-0 z-50 w-full transition-all duration-300",
-            scrolled
-                ? "bg-white/95 dark:bg-gray-900/45 backdrop-blur-md shadow-md py-2"
-                : "bg-transparent py-4"
-        )}>
-            <div className="container mx-auto px-4 flex items-center justify-between">
-                {/* Logo */}
-                <Link href="/" className="flex items-center space-x-2">
-                    <motion.div
-                        className="bg-white p-2 rounded-full overflow-hidden shadow-lg"
-                        whileHover={{rotate: 5}}
-                        whileTap={{ scale: 0.95 }}
-                    >
-                        <Image
-                            src={SCHOOL_LOGO_PATH}
-                            alt={SCHOOL_LOGO_ALT}
-                            width={32}
-                            height={32}
-                            className="object-contain"
-                        />
-                    </motion.div>
-                    <div>
-                        <h1 className="text-xl font-bold text-foreground">{SCHOOL_NAME}</h1>
-                    </div>
-                </Link>
-
-                {/* Desktop Navigation */}
-                <nav className="hidden md:flex items-center space-x-1">
-                    {navLinks.map((link) => (
-                        <Link
-                            key={link.href}
-                            href={link.href}
-                            className={cn(
-                                "flex items-center space-x-2 px-3 py-2 transition-colors",
-                                "text-foreground hover:text-primary",
-                                pathname === link.href && "active text-primary font-bold"
-                            )}
+        <>
+            <header className="sticky top-3 z-50 mx-auto w-[calc(100%-1.5rem)] max-w-7xl rounded-full backdrop-blur-2xl bg-background/85 dark:bg-gray-950/85 border border-border/50 shadow-lg px-4 sm:px-6 py-2 transition-all duration-300">
+                <div className="flex items-center justify-between gap-2">
+                    {/* School Logo & Brand Name */}
+                    <Link href="/" className="flex items-center space-x-2.5 shrink-0 group">
+                        <motion.div
+                            className="bg-white dark:bg-gray-900 p-1.5 rounded-full overflow-hidden shadow-sm border border-border/40"
+                            whileHover={{ rotate: 5, scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                         >
-                            {link.name}
-                        </Link>
-                    ))}
-
-                    <ThemeSwitcher/>
-
-                    <Link
-                        href="/auth/login"
-                        className={cn(
-                            pathname === "/auth/login" && "active text-primary font-semibold"
-                        )}
-                    >
-                        <Button className="ml-2 flex items-center space-x-1 rounded-full">
-                            <LogIn className="w-4 h-4" />
-                            <span>Masuk</span>
-                        </Button>
+                            <Image
+                                src={SCHOOL_LOGO_PATH}
+                                alt={SCHOOL_LOGO_ALT}
+                                width={28}
+                                height={28}
+                                className="object-contain size-7"
+                                unoptimized
+                                priority
+                            />
+                        </motion.div>
+                        <div className="flex flex-col">
+                            <span className="text-sm sm:text-base font-bold text-foreground tracking-tight leading-none group-hover:text-primary transition-colors">
+                                {SCHOOL_NAME}
+                            </span>
+                        </div>
                     </Link>
-                </nav>
 
-                {/* Mobile Menu Button */}
-                <button
-                    onClick={() => setIsOpen(!isOpen)}
-                    className="md:hidden p-2 rounded-md"
-                    aria-label="Toggle Menu"
-                >
-                    {isOpen ?
-                        <X className="w-6 h-6 text-foreground" /> :
-                        <Menu className="w-6 h-6 text-foreground" />
-                    }
-                </button>
-            </div>
+                    {/* Desktop Navigation Links */}
+                    <nav className="hidden md:flex items-center space-x-0.5 lg:space-x-1">
+                        {publicNavLinks.map((link) => {
+                            const isActive =
+                                pathname === link.href ||
+                                (link.href !== "/" && pathname?.startsWith(link.href));
 
-            {/* Mobile Navigation */}
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="md:hidden bg-white dark:bg-gray-900 shadow-md rounded-lg mt-2"
-                    >
-                        <div className="container mx-auto px-4 py-4 flex-col space-y-3">
-                            {navLinks.map((link) => (
+                            return (
                                 <Link
                                     key={link.href}
                                     href={link.href}
                                     className={cn(
-                                        "flex items-center space-x-2 p-2 rounded-lg transition-colors",
-                                        pathname === link.href
-                                            ? "bg-primary/20 text-primary font-semibold"
-                                            : "hover:bg-muted text-foreground"
+                                        "px-2.5 lg:px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
+                                        isActive
+                                            ? "bg-primary/10 text-primary font-semibold dark:bg-primary/20"
+                                            : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                                     )}
                                 >
-                                    {link.icon}
-                                    <span>{link.name}</span>
+                                    {link.name}
                                 </Link>
-                            ))}
+                            );
+                        })}
+                    </nav>
 
-                            <Link
-                                href="/auth/login"
-                                className="flex items-center space-x-2 p-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90"
+                    {/* Desktop Action Buttons */}
+                    <div className="hidden md:flex items-center space-x-2 shrink-0">
+                        <ThemeSwitcher />
+
+                        <Link href="/auth/login">
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="rounded-full text-xs font-semibold gap-1.5 px-3 h-8"
                             >
-                                <LogIn className="w-5 h-5" />
-                                <span>Masuk Orang Tua</span>
-                            </Link>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </header>
+                                <LogIn className="w-3.5 h-3.5" />
+                                <span>Masuk</span>
+                            </Button>
+                        </Link>
+
+                        <Link href="/pendaftaran">
+                            <Button
+                                size="sm"
+                                className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-4 h-8 shadow-sm shadow-emerald-600/30 transition-all hover:shadow-md hover:scale-[1.02] active:scale-[0.98]"
+                            >
+                                <span>Daftar PPDB</span>
+                            </Button>
+                        </Link>
+                    </div>
+
+                    {/* Mobile Header Controls */}
+                    <div className="flex items-center gap-1.5 md:hidden">
+                        <ThemeSwitcher />
+                        <button
+                            type="button"
+                            onClick={() => setIsOpen(!isOpen)}
+                            className="p-2 rounded-full hover:bg-muted text-foreground transition-colors"
+                            aria-label="Toggle Menu"
+                            aria-expanded={isOpen}
+                        >
+                            {isOpen ? (
+                                <X className="w-5 h-5" />
+                            ) : (
+                                <Menu className="w-5 h-5" />
+                            )}
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            {/* Mobile Menu Overlay */}
+            <MobileMenuOverlay isOpen={isOpen} onClose={() => setIsOpen(false)} />
+        </>
     );
 }

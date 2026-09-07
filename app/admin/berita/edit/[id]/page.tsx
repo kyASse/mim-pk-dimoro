@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import EditForm from "../EditForm";
 
@@ -34,17 +33,22 @@ export default async function EditBeritaPage({ params }: PageProps) {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-4">
-        <Link href="/admin/berita">
-          <Button variant="outline" size="sm">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Kembali
-          </Button>
+      {/* Header with Breadcrumb Back Navigation */}
+      <div className="space-y-1.5 sm:space-y-2">
+        <Link
+          href="/admin/berita"
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-primary transition-colors group w-fit -ml-1 px-2 py-1 rounded-md hover:bg-muted/60"
+        >
+          <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-0.5" />
+          <span>Kembali ke Kelola Berita</span>
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Edit Berita</h1>
-          <p className="text-gray-600">Perbarui informasi berita: {berita.judul}</p>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+            Edit Berita
+          </h1>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            Perbarui informasi berita: {berita.judul}
+          </p>
         </div>
       </div>
 

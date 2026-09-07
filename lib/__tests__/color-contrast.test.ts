@@ -15,7 +15,7 @@ import fc from "fast-check";
 import { calculateContrastRatio, relativeLuminance, type HSLColor } from "../color-utils";
 
 // CSS custom property values from app/globals.css
-const PRIMARY_HSL: HSLColor = { h: 142, s: 70, l: 40 };
+const PRIMARY_HSL: HSLColor = { h: 142, s: 70, l: 36 };
 const PRIMARY_FOREGROUND_HSL: HSLColor = { h: 0, s: 0, l: 0 };
 
 // WCAG AA minimum contrast ratio for normal text

@@ -11,6 +11,8 @@ type PendaftarData = {
     id: string;
     nama_lengkap: string | null;
     email: string | null;
+    diterima_di_kelas?: string | null;
+    diterima_pada_tanggal?: string | null;
 };
 export async function updateStatusPendaftaran(id: string, status: string) {
     const supabase = await createClient();
@@ -19,18 +21,45 @@ export async function updateStatusPendaftaran(id: string, status: string) {
         .update({ status_pendaftaran: status })
         .eq('id', id);
 
-    if (!error) revalidatePath('/admin/pendaftar');
+    if (!error) {
+        revalidatePath('/admin/pendaftar');
+        revalidatePath(`/admin/pendaftar/detail/${id}`);
+    }
     return { success: !error, message: error?.message };
 }
 
-export async function updatePendaftarData(id: string, data: any) {
+export async function bulkUpdateStatusPendaftaran(ids: string[], status: string) {
+    if (!ids || ids.length === 0) {
+        return { success: false, message: "Tidak ada pendaftar yang dipilih." };
+    }
+
+    const supabase = await createClient();
+    const { error } = await supabase
+        .from('pendaftar')
+        .update({ status_pendaftaran: status })
+        .in('id', ids);
+
+    if (!error) {
+        revalidatePath('/admin/pendaftar');
+    }
+
+    return { 
+        success: !error, 
+        message: error ? error.message : `${ids.length} pendaftar berhasil diubah statusnya menjadi ${status}.` 
+    };
+}
+
+export async function updatePendaftarData(id: string, data: Record<string, unknown>) {
     const supabase = await createClient();
     const { error } = await supabase
         .from('pendaftar')
         .update(data)
         .eq('id', id);
 
-    if (!error) revalidatePath('/admin/pendaftar');
+    if (!error) {
+        revalidatePath('/admin/pendaftar');
+        revalidatePath(`/admin/pendaftar/detail/${id}`);
+    }
     return { success: !error, message: error?.message };
 }
 
@@ -45,7 +74,14 @@ export async function acceptAndCreatePortalAccountAction(pendaftar: PendaftarDat
     let newUser: User | null = null;
 
     try {
-        await supabase.from('pendaftar').update({ status_pendaftaran: 'Diterima' }).eq('id', pendaftar.id).throwOnError();
+        const today = new Date().toISOString().split('T')[0];
+        const acceptPayload = {
+            status_pendaftaran: 'Diterima',
+            diterima_di_kelas: pendaftar.diterima_di_kelas || 'Kelas 1',
+            diterima_pada_tanggal: pendaftar.diterima_pada_tanggal || today,
+        };
+
+        await supabase.from('pendaftar').update(acceptPayload).eq('id', pendaftar.id).throwOnError();
 
         const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
         if (listError) throw listError;
@@ -62,13 +98,19 @@ export async function acceptAndCreatePortalAccountAction(pendaftar: PendaftarDat
         if (createError || !data.user) throw createError || new Error("Gagal membuat user baru di Auth.");
         newUser = data.user;
 
+        await supabaseAdmin.from('profiles').upsert({
+            id: newUser.id,
+            role: 'orang_tua',
+            nama_lengkap: pendaftar.nama_lengkap,
+        }, { onConflict: 'id' }).throwOnError();
+
         await supabase.from('siswa').insert({
             profile_orang_tua_id: newUser.id,
             nama_lengkap: pendaftar.nama_lengkap,
             pendaftar_asli_id: pendaftar.id,
         }).throwOnError();
 
-    await sendCustomRecoveryEmail(pendaftar.email);
+        await sendCustomRecoveryEmail(pendaftar.email);
         
         await supabase.from('pendaftar').update({ status_pendaftaran: 'Akun Dibuat' }).eq('id', pendaftar.id).throwOnError();
         
@@ -77,7 +119,7 @@ export async function acceptAndCreatePortalAccountAction(pendaftar: PendaftarDat
 
         return { success: true, message: `Pendaftar diterima dan akun portal untuk ${pendaftar.email} berhasil dibuat.` };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Terjadi error di acceptAndCreatePortalAccountAction:", error);
 
         if (newUser) {
@@ -87,6 +129,6 @@ export async function acceptAndCreatePortalAccountAction(pendaftar: PendaftarDat
         
         await supabase.from('pendaftar').update({ status_pendaftaran: 'Menunggu Konfirmasi' }).eq('id', pendaftar.id);
         revalidatePath(`/admin/pendaftar/detail/${pendaftar.id}`);
-        return { success: false, message: error.message || "Terjadi kesalahan yang tidak diketahui." };
+        return { success: false, message: (error as Error).message || "Terjadi kesalahan yang tidak diketahui." };
     }
 }

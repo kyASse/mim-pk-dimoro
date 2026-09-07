@@ -16,8 +16,6 @@ const supabaseUrlConfig = (() => {
 })();
 
 const nextConfig: NextConfig = {
-  // Properti lain yang mungkin sudah Anda miliki bisa tetap ada di sini
-  // Enforce ESLint during builds
   eslint: {},
 
   async headers() {
@@ -36,7 +34,8 @@ const nextConfig: NextConfig = {
               "img-src 'self' data: blob: https:",
               "style-src 'self' 'unsafe-inline' https:",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https:",
-              "connect-src 'self' https:",
+              "connect-src 'self' https: http://127.0.0.1:54321 ws://127.0.0.1:54321 http://localhost:54321 ws://localhost:54321",
+              "worker-src 'self' blob:",
               "font-src 'self' https: data:",
               "frame-ancestors 'self'",
               "object-src 'none'",
@@ -50,9 +49,7 @@ const nextConfig: NextConfig = {
 
   images: {
     dangerouslyAllowSVG: true,
-    contentDispositionType: 'attachment',
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    domains: ["images.pexels.com", "placehold.co"],
+    contentDispositionType: 'inline',
     remotePatterns: [
       ...(supabaseUrlConfig
         ? [
@@ -62,8 +59,55 @@ const nextConfig: NextConfig = {
               port: supabaseUrlConfig.port,
               pathname: '/storage/v1/object/public/**',
             },
+            {
+              protocol: supabaseUrlConfig.protocol,
+              hostname: supabaseUrlConfig.hostname,
+              port: supabaseUrlConfig.port,
+              pathname: '/storage/v1/render/image/public/**',
+            },
           ]
-        : []),
+        : [
+            {
+              protocol: 'https' as const,
+              hostname: '*.supabase.co',
+              pathname: '/storage/v1/object/public/**',
+            },
+            {
+              protocol: 'https' as const,
+              hostname: '*.supabase.co',
+              pathname: '/storage/v1/render/image/public/**',
+            },
+          ]),
+      {
+        protocol: 'http' as const,
+        hostname: '127.0.0.1',
+        port: '54321',
+        pathname: '/storage/v1/object/public/**',
+      },
+      {
+        protocol: 'http' as const,
+        hostname: 'localhost',
+        port: '54321',
+        pathname: '/storage/v1/object/public/**',
+      },
+      {
+        protocol: 'https' as const,
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https' as const,
+        hostname: 'plus.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https' as const,
+        hostname: 'images.pexels.com',
+        port: '',
+        pathname: '/**',
+      },
       {
         protocol: 'https' as const,
         hostname: 'placehold.co',

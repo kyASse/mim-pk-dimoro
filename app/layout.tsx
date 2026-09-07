@@ -29,7 +29,7 @@ export default function RootLayout({
         {process.env.NODE_ENV !== 'production' && (
           <Script
             crossOrigin="anonymous"
-            src="//unpkg.com/react-scan/dist/auto.global.js"
+            src="https://unpkg.com/react-scan/dist/auto.global.js"
           />
         )}
       </head>

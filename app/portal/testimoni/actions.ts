@@ -3,7 +3,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 
-export async function createPortalTestimoniAction(formData: FormData) {
+export async function createPortalTestimoniAction(formData: FormData): Promise<{ success: boolean; message?: string }> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { success: false, message: 'Unauthorized' };
@@ -21,7 +21,7 @@ export async function createPortalTestimoniAction(formData: FormData) {
   if (!isi_testimoni) return { success: false, message: 'Isi testimoni wajib diisi' };
 
   const payload = {
-    nama_orang_tua: profile?.nama_lengkap ?? null,
+    nama_orang_tua: profile?.nama_lengkap || 'Orang Tua Siswa',
     status_orang_tua,
     isi_testimoni,
     is_featured: false,
@@ -36,3 +36,4 @@ export async function createPortalTestimoniAction(formData: FormData) {
   revalidatePath('/admin/testimoni');
   return { success: true, message: 'Terima kasih, testimoni Anda telah dikirim.' };
 }
+
