@@ -16,8 +16,6 @@ const supabaseUrlConfig = (() => {
 })();
 
 const nextConfig: NextConfig = {
-  // Properti lain yang mungkin sudah Anda miliki bisa tetap ada di sini
-  // Enforce ESLint during builds
   eslint: {},
 
   async headers() {
@@ -52,7 +50,6 @@ const nextConfig: NextConfig = {
   images: {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'inline',
-    domains: ["images.unsplash.com", "plus.unsplash.com", "images.pexels.com", "placehold.co"],
     remotePatterns: [
       ...(supabaseUrlConfig
         ? [
@@ -62,8 +59,37 @@ const nextConfig: NextConfig = {
               port: supabaseUrlConfig.port,
               pathname: '/storage/v1/object/public/**',
             },
+            {
+              protocol: supabaseUrlConfig.protocol,
+              hostname: supabaseUrlConfig.hostname,
+              port: supabaseUrlConfig.port,
+              pathname: '/storage/v1/render/image/public/**',
+            },
           ]
-        : []),
+        : [
+            {
+              protocol: 'https' as const,
+              hostname: '*.supabase.co',
+              pathname: '/storage/v1/object/public/**',
+            },
+            {
+              protocol: 'https' as const,
+              hostname: '*.supabase.co',
+              pathname: '/storage/v1/render/image/public/**',
+            },
+          ]),
+      {
+        protocol: 'http' as const,
+        hostname: '127.0.0.1',
+        port: '54321',
+        pathname: '/storage/v1/object/public/**',
+      },
+      {
+        protocol: 'http' as const,
+        hostname: 'localhost',
+        port: '54321',
+        pathname: '/storage/v1/object/public/**',
+      },
       {
         protocol: 'https' as const,
         hostname: 'images.unsplash.com',
