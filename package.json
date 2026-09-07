@@ -9,7 +9,10 @@
     "test:watch": "vitest",
     "audit:unused": "knip --include files,dependencies,unlisted,unresolved",
     "audit:unimported": "unimported -r",
-    "audit:exports": "ts-prune -p tsconfig.json"
+    "audit:exports": "ts-prune -p tsconfig.json",
+    "env:local": "node scripts/switch-env.mjs local",
+    "env:remote": "node scripts/switch-env.mjs remote",
+    "env:status": "node scripts/switch-env.mjs status"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
