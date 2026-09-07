@@ -1,4 +1,6 @@
+import { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
+import { getPPDBFlowContent } from "@/lib/services/public-content";
 import PendaftaranForm from "@/components/Pendaftaran/PendaftaranForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SCHOOL_NAME } from "@/lib/school-config";
@@ -37,6 +39,13 @@ import {
 } from "lucide-react";
 import PageHeader from "@/components/shared/PageHeader";
 
+export const metadata: Metadata = {
+    title: `Pendaftaran Siswa Baru (PPDB) | ${SCHOOL_NAME}`,
+    description: `Informasi persyaratan, biaya, alur pendaftaran, dan formulir online penerimaan peserta didik baru ${SCHOOL_NAME}.`,
+};
+
+export const dynamic = "force-dynamic";
+
 type BiayaItem = {
     komponen_biaya: string | null;
     biaya_putra: number | null;
@@ -68,8 +77,15 @@ export default async function PendaftaranPage() {
         { data: persyaratanData }, 
         { data: biaya }, 
         { data: catatanSppData },
-        { data: jadwalData }
-    ] = await Promise.all([persyaratanPromise, biayaPromise, sppPromise, jadwalPromise]);
+        { data: jadwalData },
+        ppdbFlow
+    ] = await Promise.all([
+        persyaratanPromise, 
+        biayaPromise, 
+        sppPromise, 
+        jadwalPromise,
+        getPPDBFlowContent()
+    ]);
 
     
     const persyaratan = persyaratanData?.isi as PersyaratanIsi | null;
@@ -233,13 +249,7 @@ export default async function PendaftaranPage() {
                                             <CardContent className="pt-8 relative">
                                                 <Separator orientation="vertical" className="absolute left-10 top-8 bottom-8 w-[2px] bg-blue-100 dark:bg-blue-900/30 z-0" />
                                                 <div className="space-y-8 relative z-10">
-                                                    {[
-                                                        { title: "Siapkan Dokumen", desc: "Siapkan semua dokumen yang diperlukan sesuai dengan persyaratan", icon: <FileText className="h-4 w-4" /> },
-                                                        { title: "Isi Formulir Online", desc: "Lengkapi formulir pendaftaran dengan data yang benar dan lengkap", icon: <ClipboardCheck className="h-4 w-4" /> },
-                                                        { title: "Upload Dokumen", desc: "Upload scan atau foto dokumen dengan kualitas yang jelas", icon: <Upload className="h-4 w-4" /> },
-                                                        { title: "Submit Pendaftaran", desc: "Periksa kembali data lalu klik tombol \"Daftar Sekarang\"", icon: <CheckCircle2 className="h-4 w-4" /> },
-                                                        { title: "Konfirmasi & Bayar", desc: "Tunggu konfirmasi dan lakukan pembayaran sesuai instruksi", icon: <CreditCard className="h-4 w-4" /> }
-                                                    ].map((step, idx) => (
+                                                    {ppdbFlow.alur_online.map((step, idx) => (
                                                         <div key={idx} className="flex items-start">
                                                             <div className="relative z-20 flex-shrink-0">
                                                                 <Badge className="w-10 h-10 rounded-full bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center font-bold border-4 border-card shadow-sm text-lg p-0">
@@ -274,66 +284,38 @@ export default async function PendaftaranPage() {
                                             <CardContent className="pt-8 relative">
                                                 <Separator orientation="vertical" className="absolute left-10 top-8 bottom-8 w-[2px] bg-green-100 dark:bg-green-900/30 z-0" />
                                                 <div className="space-y-8 relative z-10">
-                                                    <div className="flex items-start">
-                                                        <div className="relative z-20 flex-shrink-0">
-                                                            <Badge className="w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 text-white flex items-center justify-center font-bold border-4 border-card shadow-sm text-lg p-0">1</Badge>
+                                                    {ppdbFlow.alur_offline.map((step, idx) => (
+                                                        <div key={idx} className="flex items-start">
+                                                            <div className="relative z-20 flex-shrink-0">
+                                                                <Badge className="w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 text-white flex items-center justify-center font-bold border-4 border-card shadow-sm text-lg p-0">
+                                                                    {idx + 1}
+                                                                </Badge>
+                                                            </div>
+                                                            <div className="ml-4">
+                                                                <h4 className="font-bold text-foreground flex items-center">
+                                                                    {step.title}
+                                                                    {idx === 1 && (
+                                                                        <Download className="ml-2 h-4 w-4 text-green-500" />
+                                                                    )}
+                                                                </h4>
+                                                                <p className={`text-sm text-muted-foreground mt-1 ${idx === 1 ? 'mb-3' : ''}`}>
+                                                                    {step.desc}
+                                                                </p>
+                                                                {idx === 1 && (
+                                                                    <a 
+                                                                        href={ppdbFlow.formulir_pdf_url || "/Formulir Pendaftaran MIM PK Dimoro.pdf"} 
+                                                                        download={`Formulir Pendaftaran ${SCHOOL_NAME}.pdf`}
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        className="inline-flex items-center px-4 py-1.5 text-xs font-semibold text-green-700 bg-green-100 hover:bg-green-200 rounded-full transition-all"
+                                                                    >
+                                                                        <Download className="mr-1.5 h-3.5 w-3.5" />
+                                                                        Download PDF
+                                                                    </a>
+                                                                )}
+                                                            </div>
                                                         </div>
-                                                        <div className="ml-4">
-                                                            <h4 className="font-bold text-foreground">Siapkan Dokumen Asli</h4>
-                                                            <p className="text-sm text-muted-foreground mt-1">Bawa semua dokumen asli dan fotokopi sesuai persyaratan</p>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="flex items-start">
-                                                        <div className="relative z-20 flex-shrink-0">
-                                                            <Badge className="w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 text-white flex items-center justify-center font-bold border-4 border-card shadow-sm text-lg p-0">2</Badge>
-                                                        </div>
-                                                        <div className="ml-4">
-                                                            <h4 className="font-bold text-foreground flex items-center">
-                                                                Download Formulir
-                                                                <Download className="ml-2 h-4 w-4 text-green-500" />
-                                                            </h4>
-                                                            <p className="text-sm text-muted-foreground mt-1 mb-3">Isi formulir dari rumah untuk mempercepat proses</p>
-                                                            <a 
-                                                                href="/Formulir Pendaftaran MIM PK Dimoro.pdf" 
-                                                                download={`Formulir Pendaftaran ${SCHOOL_NAME}.pdf`}
-                                                                className="inline-flex items-center px-4 py-1.5 text-xs font-semibold text-green-700 bg-green-100 hover:bg-green-200 rounded-full transition-all"
-                                                            >
-                                                                <Download className="mr-1.5 h-3.5 w-3.5" />
-                                                                Download PDF
-                                                            </a>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="flex items-start">
-                                                        <div className="relative z-20 flex-shrink-0">
-                                                            <Badge className="w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 text-white flex items-center justify-center font-bold border-4 border-card shadow-sm text-lg p-0">3</Badge>
-                                                        </div>
-                                                        <div className="ml-4">
-                                                            <h4 className="font-bold text-foreground">Kunjungi Sekolah</h4>
-                                                            <p className="text-sm text-muted-foreground mt-1">Datang ke {SCHOOL_NAME} pada jam kerja (07:30 - 11:30 WIB)</p>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="flex items-start">
-                                                        <div className="relative z-20 flex-shrink-0">
-                                                            <Badge className="w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 text-white flex items-center justify-center font-bold border-4 border-card shadow-sm text-lg p-0">4</Badge>
-                                                        </div>
-                                                        <div className="ml-4">
-                                                            <h4 className="font-bold text-foreground">Serahkan Dokumen</h4>
-                                                            <p className="text-sm text-muted-foreground mt-1">Berikan berkas lengkap kepada petugas pendaftaran</p>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="flex items-start">
-                                                        <div className="relative z-20 flex-shrink-0">
-                                                            <Badge className="w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 text-white flex items-center justify-center font-bold border-4 border-card shadow-sm text-lg p-0">5</Badge>
-                                                        </div>
-                                                        <div className="ml-4">
-                                                            <h4 className="font-bold text-foreground">Pembayaran</h4>
-                                                            <p className="text-sm text-muted-foreground mt-1">Lakukan pembayaran biaya pendaftaran di loket sekolah</p>
-                                                        </div>
-                                                    </div>
+                                                    ))}
                                                 </div>
                                             </CardContent>
                                         </Card>

@@ -3,9 +3,38 @@
 import { motion, useReducedMotion } from "motion/react";
 import { BookOpen, BookMarked, Brain, Activity, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import { BerandaKeunggulanContent } from "@/lib/types/content";
 
-export default function FeaturesSection() {
+interface FeaturesSectionProps {
+    data?: BerandaKeunggulanContent;
+}
+
+export default function FeaturesSection({ data }: FeaturesSectionProps) {
     const shouldReduceMotion = useReducedMotion();
+
+    const judul = data?.judul || "Keunggulan Pendidikan MIM Dimoro";
+    const subjudul = data?.subjudul || "Pendekatan holistik yang mengintegrasikan kecerdasan intelektual, emosional, dan spiritual anak.";
+    const items = data?.items || [];
+    const item1 = items[0] || {
+        badge: "Fondasi Utama",
+        title: "Kurikulum Terpadu Islami",
+        description: "Menggabungkan secara harmonis Kurikulum Merdeka Nasional dengan Kurikulum Al-Islam dan Kemuhammadiyahan untuk membentuk pemikiran kritis berwawasan Islami.",
+    };
+    const item2 = items[1] || {
+        badge: "Target Hafalan",
+        title: "Program Tahfidz Al-Qur'an",
+        description: "Pembiasaan bimbingan hafalan Juz Amma dan surah pilihan dengan metode talaqqi yang ramah anak.",
+    };
+    const item3 = items[2] || {
+        badge: "Karakter Islami",
+        title: "Pembinaan Pembentukan Karakter",
+        description: "Pembiasaan shalat dhuha, dzikir harian, dan pembentukan karakter disiplin, jujur, serta mandiri.",
+    };
+    const item4 = items[3] || {
+        badge: "Talent & Minat",
+        title: "Ekstrakurikuler Variatif",
+        description: "Pengembangan minat bakat melalui kegiatan Tapak Suci, Hizbul Wathan (HW), Seni Al-Qur'an, Pramuka, Olahraga, dan Seni Kaligrafi.",
+    };
 
     return (
         <section className="py-20 bg-muted/30">
@@ -14,10 +43,10 @@ export default function FeaturesSection() {
                 {/* Section Header */}
                 <div className="max-w-3xl mx-auto text-center mb-14">
                     <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-4">
-                        Keunggulan Pendidikan MIM Dimoro
+                        {judul}
                     </h2>
                     <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
-                        Pendekatan holistik yang mengintegrasikan kecerdasan intelektual, emosional, dan spiritual anak.
+                        {subjudul}
                     </p>
                 </div>
 
@@ -39,13 +68,13 @@ export default function FeaturesSection() {
                                 <BookOpen className="w-6 h-6" />
                             </div>
                             <span className="text-xs font-semibold uppercase tracking-wider text-primary mb-2 inline-block px-2.5 py-0.5 rounded-full bg-primary/10">
-                                Fondasi Utama
+                                {item1.badge}
                             </span>
                             <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-                                Kurikulum Terpadu Islami
+                                {item1.title}
                             </h3>
                             <p className="text-muted-foreground text-base leading-relaxed max-w-xl">
-                                Menggabungkan secara harmonis Kurikulum Merdeka Nasional dengan Kurikulum Al-Islam dan Kemuhammadiyahan untuk membentuk pemikiran kritis berwawasan Islami.
+                                {item1.description}
                             </p>
                         </div>
 
@@ -71,13 +100,13 @@ export default function FeaturesSection() {
                                 <BookMarked className="w-6 h-6" />
                             </div>
                             <span className="text-xs font-semibold uppercase tracking-wider text-amber-800 dark:text-amber-200 mb-2 inline-block px-2.5 py-0.5 rounded-full bg-amber-gold/20">
-                                Target Hafalan
+                                {item2.badge}
                             </span>
                             <h3 className="text-xl font-bold text-foreground mb-3">
-                                Program Tahfidz Al-Qur'an
+                                {item2.title}
                             </h3>
                             <p className="text-muted-foreground text-sm leading-relaxed">
-                                Pembiasaan bimbingan hafalan Juz Amma dan surah pilihan dengan metode talaqqi yang ramah anak.
+                                {item2.description}
                             </p>
                         </div>
 
@@ -100,13 +129,13 @@ export default function FeaturesSection() {
                                 <Brain className="w-6 h-6" />
                             </div>
                             <span className="text-xs font-semibold uppercase tracking-wider text-secondary-foreground mb-2 inline-block px-2.5 py-0.5 rounded-full bg-secondary/30">
-                                Karakter Islami
+                                {item3.badge}
                             </span>
                             <h3 className="text-xl font-bold text-foreground mb-3">
-                                Pembinaan Pembentukan Karakter
+                                {item3.title}
                             </h3>
                             <p className="text-muted-foreground text-sm leading-relaxed">
-                                Pembiasaan shalat dhuha, dzikir harian, dan pembentukan karakter disiplin, jujur, serta mandiri.
+                                {item3.description}
                             </p>
                         </div>
 
@@ -129,13 +158,13 @@ export default function FeaturesSection() {
                                 <Activity className="w-6 h-6" />
                             </div>
                             <span className="text-xs font-semibold uppercase tracking-wider text-sky-700 dark:text-sky-300 mb-2 inline-block px-2.5 py-0.5 rounded-full bg-sky-500/15">
-                                Talent & Minat
+                                {item4.badge}
                             </span>
                             <h3 className="text-xl font-bold text-foreground mb-3">
-                                Ekstrakurikuler Variatif
+                                {item4.title}
                             </h3>
                             <p className="text-muted-foreground text-sm leading-relaxed">
-                                Pengembangan minat bakat melalui kegiatan Tapak Suci, Hizbul Wathan (HW), Seni Al-Qur'an, Pramuka, Olahraga, dan Seni Kaligrafi.
+                                {item4.description}
                             </p>
                         </div>
 

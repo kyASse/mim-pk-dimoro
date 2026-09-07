@@ -27,6 +27,17 @@ vi.mock("@/lib/supabase/client", () => ({
   })),
 }));
 
+vi.mock("@/lib/supabase/server", () => ({
+  createClient: vi.fn(async () => ({
+    from: vi.fn(() => ({
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      order: vi.fn().mockResolvedValue({ data: [], error: null }),
+      maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
+    })),
+  })),
+}));
+
 // Mock framer-motion & motion/react to avoid IntersectionObserver errors in test environment
 vi.mock("framer-motion", () => ({
   motion: {
@@ -77,7 +88,8 @@ describe("Tentang Kami Sections", () => {
   });
 
   it("renders AboutUs page with Headmaster Welcome, Graduate Profiles, and child sections", async () => {
-    render(<AboutUs />);
+    const page = await AboutUs();
+    render(page);
 
     // Headmaster Welcome
     expect(screen.getByText(HEADMASTER_WELCOME.name)).toBeDefined();

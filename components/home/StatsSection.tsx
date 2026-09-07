@@ -1,48 +1,56 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import { Users, GraduationCap, Award, Palette } from "lucide-react";
+import { Users, GraduationCap, Award, Palette, CheckCircle } from "lucide-react";
+import { MainStatItem } from "@/lib/types/content";
 
-// Official stats from school records
-const stats = [
-    {
-        title: "Siswa Aktif",
-        value: "201",
-        icon: <Users className="h-5 w-5 text-primary" />,
-        description: "104 Laki-laki dan 97 Perempuan aktif.",
-        badge: "Terverifikasi"
-    },
-    {
-        title: "Guru & Staff",
-        value: "18",
-        icon: <GraduationCap className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />,
-        description: "Tenaga pendidik profesional dan berdedikasi.",
-        badge: "Pengajar"
-    },
-    {
-        title: "Pengalaman",
-        value: "59 Tahun",
-        icon: <Award className="h-5 w-5 text-sky-600 dark:text-sky-400" />,
-        description: "Berdedikasi melayani sejak 1 September 1967.",
-        badge: "Sejak 1967"
-    },
-    {
-        title: "Ekstrakurikuler",
-        value: "10+",
-        icon: <Palette className="h-5 w-5 text-amber-600 dark:text-amber-400" />,
-        description: "Wadah pengembangan bakat dan minat.",
-        badge: "Pengembangan"
-    }
-];
+interface StatsSectionProps {
+    data?: MainStatItem[];
+}
 
-export default function StatsSection() {
+export default function StatsSection({ data }: StatsSectionProps) {
     const shouldReduceMotion = useReducedMotion();
+
+    const getStatVal = (kunci: string, fallback: string) => {
+        return data?.find((s) => s.kunci === kunci)?.nilai || fallback;
+    };
+
+    const statsList = [
+        {
+            title: "Siswa Aktif",
+            value: getStatVal("siswa_aktif", "201"),
+            icon: <Users className="h-5 w-5 text-primary" />,
+            description: "Siswa aktif belajar terdaftar di madrasah.",
+            badge: "Terverifikasi",
+        },
+        {
+            title: "Guru & Staff",
+            value: getStatVal("guru_staf", "18"),
+            icon: <GraduationCap className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />,
+            description: "Tenaga pendidik profesional dan berdedikasi.",
+            badge: "Pengajar",
+        },
+        {
+            title: "Tingkat Kelulusan",
+            value: getStatVal("kelulusan", "100%"),
+            icon: <Award className="h-5 w-5 text-sky-600 dark:text-sky-400" />,
+            description: "Pencapaian kelulusan akademik optimal.",
+            badge: "Kelulusan",
+        },
+        {
+            title: "Akreditasi Unggul",
+            value: getStatVal("akreditasi", "A"),
+            icon: <CheckCircle className="h-5 w-5 text-amber-600 dark:text-amber-400" />,
+            description: "Predikat predikat unggul standar madrasah.",
+            badge: "BAN-S/M",
+        },
+    ];
 
     return (
         <section className="py-16 bg-muted/40 border-y border-border/40">
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {stats.map((stat, index) => (
+                    {statsList.map((stat, index) => (
                         <motion.div
                             key={stat.title}
                             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}

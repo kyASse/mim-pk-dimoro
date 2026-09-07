@@ -1,6 +1,7 @@
 "use client";
 
 import { VISION_MISSION } from "@/lib/school-data";
+import { VisionMissionContent } from "@/lib/types/content";
 import {
   Compass,
   Target,
@@ -124,8 +125,17 @@ const MISSION_CONFIGS = [
   },
 ];
 
-export default function VisionMission() {
+interface VisionMissionProps {
+  data?: VisionMissionContent;
+}
+
+export default function VisionMission({ data }: VisionMissionProps) {
   const shouldReduceMotion = useReducedMotion();
+
+  const motto = data?.motto || VISION_MISSION.motto;
+  const vision = data?.visi || VISION_MISSION.vision;
+  const indicators = data?.indikator_visi?.length ? data.indikator_visi : VISION_MISSION.visionIndicators;
+  const missions = data?.misi?.length ? data.misi : VISION_MISSION.missions;
 
   return (
     <section className="py-16 md:py-24 bg-muted/30 border-y border-border/40 overflow-hidden">
@@ -148,7 +158,7 @@ export default function VisionMission() {
           <div className="relative bg-card/80 backdrop-blur-sm p-4 sm:p-5 rounded-2xl border border-primary/20 shadow-sm max-w-2xl mx-auto">
             <Quote className="w-5 h-5 text-primary/40 absolute top-3 left-3 -scale-x-100 hidden sm:block" />
             <p className="text-muted-foreground italic text-sm sm:text-base md:text-lg font-medium leading-relaxed px-2 sm:px-6">
-              "{VISION_MISSION.motto}"
+              "{motto}"
             </p>
           </div>
         </motion.div>
@@ -178,7 +188,7 @@ export default function VisionMission() {
                 <h3 className="text-xl sm:text-2xl font-bold text-foreground">Visi Utama</h3>
               </div>
               <p className="text-base sm:text-lg md:text-xl font-semibold text-foreground/90 leading-relaxed">
-                {VISION_MISSION.vision}
+                {vision}
               </p>
             </div>
           </div>
@@ -200,18 +210,18 @@ export default function VisionMission() {
                   <CheckCircle2 className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-foreground">7 Indikator Visi</h3>
+                  <h3 className="text-xl font-bold text-foreground">{indicators.length} Indikator Visi</h3>
                   <p className="text-xs text-muted-foreground">Tolok ukur keberhasilan visi madrasah</p>
                 </div>
               </div>
               <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
-                7 Indikator
+                {indicators.length} Indikator
               </span>
             </div>
 
             {/* Micro-feature cards */}
             <div className="grid grid-cols-1 gap-3 sm:gap-3.5">
-              {VISION_MISSION.visionIndicators.map((indicator, index) => {
+              {indicators.map((indicator, index) => {
                 const config = INDICATOR_CONFIGS[index] || INDICATOR_CONFIGS[0];
                 const IconComponent = config.icon;
 
@@ -261,18 +271,18 @@ export default function VisionMission() {
                   <HeartHandshake className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-foreground">8 Misi Utama</h3>
+                  <h3 className="text-xl font-bold text-foreground">{missions.length} Misi Utama</h3>
                   <p className="text-xs text-muted-foreground">Langkah strategis perwujudan cita-cita madrasah</p>
                 </div>
               </div>
               <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
-                8 Misi
+                {missions.length} Misi
               </span>
             </div>
 
             {/* Micro-feature cards */}
             <div className="grid grid-cols-1 gap-3 sm:gap-3.5">
-              {VISION_MISSION.missions.map((mission, index) => {
+              {missions.map((mission, index) => {
                 const config = MISSION_CONFIGS[index] || MISSION_CONFIGS[0];
                 const IconComponent = config.icon;
 

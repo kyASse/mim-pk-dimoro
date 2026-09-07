@@ -6,9 +6,23 @@ import { Award, Heart, Users, ChevronRight, Quote } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { SCHOOL_NAME } from "@/lib/school-config";
 import { HEADMASTER_WELCOME } from "@/lib/school-data";
+import { HeadmasterContent } from "@/lib/types/content";
 
-export default function AboutSection() {
+interface AboutSectionProps {
+    data?: HeadmasterContent;
+}
+
+export default function AboutSection({ data }: AboutSectionProps) {
     const shouldReduceMotion = useReducedMotion();
+
+    const kepsekName = data
+        ? data.gelar && !data.nama.includes(data.gelar)
+            ? `${data.nama}, ${data.gelar}`
+            : data.nama
+        : HEADMASTER_WELCOME.name;
+    const kepsekTitle = data?.jabatan || HEADMASTER_WELCOME.title;
+    const kepsekSummary = data?.summary || HEADMASTER_WELCOME.summary;
+    const kepsekPhoto = data?.foto_url || "/images/mim_tahfidz_learning.jpg";
 
     return (
         <section className="py-20 bg-background overflow-hidden">
@@ -33,7 +47,7 @@ export default function AboutSection() {
                         </h2>
                         
                         <p className="text-base text-muted-foreground leading-relaxed mb-6 font-medium italic border-l-4 border-primary pl-4 py-1">
-                            {HEADMASTER_WELCOME.summary}
+                            {kepsekSummary}
                         </p>
 
                         <div className="space-y-4 mb-8">
@@ -102,8 +116,8 @@ export default function AboutSection() {
                         <div className="relative rounded-3xl overflow-hidden shadow-xl border border-border/50 bg-card">
                             <div className="relative aspect-[4/3] w-full overflow-hidden">
                                 <Image
-                                    src="/images/mim_tahfidz_learning.jpg"
-                                    alt={`Kegiatan pembelajaran siswa di ${SCHOOL_NAME}`}
+                                    src={kepsekPhoto}
+                                    alt={`Foto Kepala Madrasah ${kepsekName}`}
                                     fill
                                     className="object-cover"
                                     sizes="(max-width: 768px) 100vw, 50vw"
@@ -111,8 +125,8 @@ export default function AboutSection() {
                             </div>
                             <div className="p-4 bg-card text-card-foreground border-t border-border/40 flex items-center justify-between">
                                 <div>
-                                    <h3 className="font-bold text-sm text-foreground">{HEADMASTER_WELCOME.name}</h3>
-                                    <p className="text-xs text-muted-foreground">{HEADMASTER_WELCOME.title}</p>
+                                    <h3 className="font-bold text-sm text-foreground">{kepsekName}</h3>
+                                    <p className="text-xs text-muted-foreground">{kepsekTitle}</p>
                                 </div>
                                 <span className="text-[11px] font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20">
                                     Kepala Madrasah

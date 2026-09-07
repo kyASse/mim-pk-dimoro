@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +20,7 @@ import ContactForm from "@/components/kontak/ContactForm";
 import ContactFAQ, { getWhatsAppUrl } from "@/components/kontak/ContactFAQ";
 import CopyAddressButton from "@/components/kontak/CopyAddressButton";
 import { createClient } from "@/lib/supabase/server";
+import { getPublicFAQ } from "@/lib/services/public-content";
 import {
   SCHOOL_NAME,
   SCHOOL_FULL_NAME,
@@ -26,6 +28,13 @@ import {
   SCHOOL_CONTACT_PERSON,
   SCHOOL_EMAIL,
 } from "@/lib/school-config";
+
+export const metadata: Metadata = {
+  title: `Kontak & Layanan Informasi | ${SCHOOL_NAME}`,
+  description: `Hubungi tim layanan informasi ${SCHOOL_NAME} untuk konsultasi PPDB, kemitraan, dan kunjungan madrasah.`,
+};
+
+export const dynamic = "force-dynamic";
 
 // Function to validate trusted domains for Google Maps embed
 function isTrustedDomain(url: string | null | undefined): boolean {
@@ -47,13 +56,16 @@ function isTrustedDomain(url: string | null | undefined): boolean {
 export default async function ContactPage() {
   const supabase = await createClient();
 
-  // Fetch kontak sekolah data from Supabase
-  const { data: kontakData, error } = await supabase
-    .from("kontak_sekolah")
-    .select(
-      "alamat, whatsapp, email_utama, email_admin, jam_operasional, maps_embed_url"
-    )
-    .maybeSingle();
+  // Fetch kontak sekolah data & FAQ in parallel
+  const [{ data: kontakData, error }, faqItems] = await Promise.all([
+    supabase
+      .from("kontak_sekolah")
+      .select(
+        "alamat, whatsapp, email_utama, email_admin, jam_operasional, maps_embed_url"
+      )
+      .maybeSingle(),
+    getPublicFAQ(),
+  ]);
 
   if (error && error.code !== "PGRST116") {
     console.error("Error fetching kontak sekolah:", error);
@@ -497,7 +509,7 @@ export default async function ContactPage() {
       </section>
 
       {/* 5. Integrasi FAQ Section */}
-      <ContactFAQ className="border-t border-border/40" />
+      <ContactFAQ items={faqItems} className="border-t border-border/40" />
     </div>
   );
 }
