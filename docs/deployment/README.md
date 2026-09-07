@@ -69,7 +69,8 @@ docs/deployment/
 ├── 01-persiapan-dan-supabase.md   # Modul 1: Kredensial dan konfigurasi Supabase
 ├── 02-deployment-vercel.md        # Modul 2: Setup repository, environment variables, dan build Vercel
 ├── 03-konfigurasi-dns-hostinger.md # Modul 3: Konfigurasi DNS Hostinger dan aktivasi SSL
-└── 04-verifikasi-troubleshooting.md # Modul 4: Validasi fungsional dan penanganan kendala
+├── 04-verifikasi-troubleshooting.md # Modul 4: Validasi fungsional dan penanganan kendala
+└── 05-switching-local-remote.md   # Modul 5: Alur kerja switching Supabase lokal dan cloud
 ```
 
 1. [Modul 01: Persiapan Kredensial dan Supabase Cloud](./01-persiapan-dan-supabase.md)  
@@ -80,6 +81,8 @@ docs/deployment/
    Pemetaan A Record dan CNAME di DNS Zone Hostinger, pembersihan record lama yang bentrok, dan verifikasi domain di Vercel.
 4. [Modul 04: Verifikasi Pasca-Deploy dan Troubleshooting](./04-verifikasi-troubleshooting.md)  
    Daftar uji fungsional fitur utama dan solusi teknis untuk kesalahan umum.
+5. [Modul 05: Switching Supabase Lokal dan Remote Cloud](./05-switching-local-remote.md)  
+   Alur kerja pengembang untuk beralih antara database lokal (Docker) dan remote cloud, serta sinkronisasi skema migrasi.
 
 ---
 
