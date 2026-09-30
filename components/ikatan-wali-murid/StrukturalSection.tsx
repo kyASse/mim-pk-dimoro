@@ -137,9 +137,9 @@ export default function StrukturalSection({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {pengurusHarian.map((pengurus) => (
+              {pengurusHarian.map((pengurus, idx) => (
                 <div
-                  key={pengurus.id}
+                  key={pengurus.id || idx}
                   className="bg-card border border-border/50 rounded-2xl p-6 text-center shadow-sm hover:border-primary/40 transition-colors flex flex-col items-center"
                 >
                   <div className="relative size-16 rounded-full overflow-hidden shrink-0 border border-border/60 bg-muted/40 shadow-sm mb-4">
@@ -183,9 +183,9 @@ export default function StrukturalSection({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {bidang.map((b) => (
+              {bidang.map((b, idx) => (
                 <div
-                  key={b.id}
+                  key={b.id || idx}
                   className="bg-card border border-border/60 rounded-2xl p-6 shadow-sm flex flex-col justify-between hover:border-primary/40 transition-colors"
                 >
                   <div>
