@@ -27,12 +27,14 @@ import {
   ChevronLeft,
   ChevronRight,
   Check,
+  Users2,
 } from "lucide-react";
 import { TabBeranda } from "./TabBeranda";
 import { TabProfil } from "./TabProfil";
 import { TabProgram } from "./TabProgram";
 import { TabPPDB } from "./TabPPDB";
 import { TabKontakFAQ } from "./TabKontakFAQ";
+import { TabIKWM } from "./TabIKWM";
 import {
   HeroContent,
   BerandaKeunggulanContent,
@@ -44,6 +46,7 @@ import {
   FAQItem,
   MainStatItem,
   EkstrakurikulerItem,
+  IKWMContent,
 } from "@/lib/types/content";
 
 export const CONTENT_TABS = [
@@ -87,6 +90,14 @@ export const CONTENT_TABS = [
     icon: PhoneCall,
     description: "Kontak kantor, jam operasional, maps, & daftar tanya-jawab",
   },
+  {
+    id: "ikwm",
+    number: "6",
+    shortLabel: "Wali Murid",
+    fullLabel: "6. Ikatan Wali Murid",
+    icon: Users2,
+    description: "Kata pengantar, susunan pengurus, kegiatan, & video paguyuban",
+  },
 ] as const;
 
 interface AdminKontenHubProps {
@@ -104,6 +115,7 @@ interface AdminKontenHubProps {
   sppText: string;
   kontak: any;
   faqList: FAQItem[];
+  ikwmContent: IKWMContent;
 }
 
 export function AdminKontenHub({
@@ -121,6 +133,7 @@ export function AdminKontenHub({
   sppText,
   kontak,
   faqList,
+  ikwmContent,
 }: AdminKontenHubProps) {
   const [activeTab, setActiveTab] = useState("beranda");
   const [isMobileSheetOpen, setIsMobileSheetOpen] = useState(false);
@@ -344,6 +357,11 @@ export function AdminKontenHub({
             initialKontak={kontak}
             initialFAQ={faqList}
           />
+        </TabsContent>
+
+        {/* Tab 6: Ikatan Wali Murid (IKWM) */}
+        <TabsContent value="ikwm" className="space-y-6 focus-visible:outline-none">
+          <TabIKWM initialData={ikwmContent} />
         </TabsContent>
       </Tabs>
 
