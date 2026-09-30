@@ -63,6 +63,7 @@ describe('Redesigned Footer Component', () => {
       expect(screen.getByRole('link', { name: /beranda/i }).getAttribute('href')).toBe('/');
       expect(screen.getByRole('link', { name: /tentang kami/i }).getAttribute('href')).toBe('/tentang-kami');
       expect(screen.getByRole('link', { name: /program & kurikulum/i }).getAttribute('href')).toBe('/program');
+      expect(screen.getByRole('link', { name: /ikatan wali murid/i }).getAttribute('href')).toBe('/ikatan-wali-murid');
       expect(screen.getByRole('link', { name: /galeri/i }).getAttribute('href')).toBe('/galeri');
       expect(screen.getByRole('link', { name: /berita/i }).getAttribute('href')).toBe('/berita');
 

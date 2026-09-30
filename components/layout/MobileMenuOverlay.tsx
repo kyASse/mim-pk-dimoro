@@ -15,6 +15,7 @@ import {
   ArrowRight,
   MessageCircle,
   LogIn,
+  Users2,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { SCHOOL_WHATSAPP, SCHOOL_NAME } from "@/lib/school-config"
@@ -28,6 +29,7 @@ export const publicNavLinks = [
   { name: "Beranda", href: "/", icon: School },
   { name: "Tentang Kami", href: "/tentang-kami", icon: BookOpen },
   { name: "Program & Kurikulum", href: "/program", icon: GraduationCap },
+  { name: "Wali Murid", href: "/ikatan-wali-murid", icon: Users2 },
   { name: "Berita & Artikel", href: "/berita", icon: Newspaper },
   { name: "Kalender Akademik", href: "/kalender-akademik", icon: Calendar },
   { name: "Galeri Foto", href: "/galeri", icon: ImageIcon },

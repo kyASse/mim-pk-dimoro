@@ -36,6 +36,7 @@ vi.mock('../MobileMenuOverlay', () => ({
     { name: "Beranda", href: "/" },
     { name: "Tentang Kami", href: "/tentang-kami" },
     { name: "Program & Kurikulum", href: "/program" },
+    { name: "Wali Murid", href: "/ikatan-wali-murid" },
     { name: "Berita & Artikel", href: "/berita" },
     { name: "Kalender Akademik", href: "/kalender-akademik" },
     { name: "Galeri Foto", href: "/galeri" },
@@ -64,6 +65,7 @@ describe('Navbar Component', () => {
     expect(screen.getByRole('link', { name: /^beranda$/i })).toHaveAttribute('href', '/')
     expect(screen.getByRole('link', { name: /^tentang kami$/i })).toHaveAttribute('href', '/tentang-kami')
     expect(screen.getByRole('link', { name: /^program & kurikulum$/i })).toHaveAttribute('href', '/program')
+    expect(screen.getByRole('link', { name: /^wali murid$/i })).toHaveAttribute('href', '/ikatan-wali-murid')
     expect(screen.getByRole('link', { name: /^berita & artikel$/i })).toHaveAttribute('href', '/berita')
     expect(screen.getByRole('link', { name: /^kalender akademik$/i })).toHaveAttribute('href', '/kalender-akademik')
     expect(screen.getByRole('link', { name: /^galeri foto$/i })).toHaveAttribute('href', '/galeri')

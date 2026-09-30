@@ -61,7 +61,7 @@ export default function Navbar() {
                                     key={link.href}
                                     href={link.href}
                                     className={cn(
-                                        "px-2.5 lg:px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
+                                        "px-2 lg:px-2.5 xl:px-3 py-1.5 rounded-full text-xs font-medium transition-colors whitespace-nowrap",
                                         isActive
                                             ? "bg-primary/10 text-primary font-semibold dark:bg-primary/20"
                                             : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
