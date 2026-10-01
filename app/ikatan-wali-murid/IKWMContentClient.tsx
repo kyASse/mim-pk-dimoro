@@ -20,10 +20,10 @@ export interface IKWMContentClientProps {
 export default function IKWMContentClient({ content }: IKWMContentClientProps) {
   return (
     <main className="min-h-screen bg-background text-foreground pb-20">
-      <div className="container mx-auto px-4 sm:px-6 max-w-7xl py-12 space-y-24">
-        {/* Section 1: Hero Banner */}
-        <IKWMHero hero={content.hero} />
+      {/* Section 1: Standardized Page Header dengan Breadcrumb & Periode */}
+      <IKWMHero hero={content.hero} />
 
+      <div className="container mx-auto px-4 sm:px-6 max-w-7xl py-6 space-y-24">
         {/* Section 2: Sambutan Ketua IKWM */}
         <KataPengantarSection kataPengantar={content.kata_pengantar} />
 

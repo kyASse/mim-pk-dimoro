@@ -10,7 +10,7 @@ describe("IKWM Core Public Components", () => {
   describe("IKWMHero", () => {
     it("harus merender IKWMHero dengan judul dan periode", () => {
       render(<IKWMHero hero={DEFAULT_IKWM_CONTENT.hero} />);
-      expect(screen.getByText(DEFAULT_IKWM_CONTENT.hero.judul)).toBeDefined();
+      expect(screen.getByRole("heading", { level: 1, name: DEFAULT_IKWM_CONTENT.hero.judul })).toBeDefined();
       expect(screen.getByText(DEFAULT_IKWM_CONTENT.hero.periode)).toBeDefined();
       expect(screen.getByText(DEFAULT_IKWM_CONTENT.hero.badge)).toBeDefined();
       expect(screen.getByText(DEFAULT_IKWM_CONTENT.hero.subjudul)).toBeDefined();

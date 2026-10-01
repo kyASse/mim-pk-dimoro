@@ -85,7 +85,7 @@ describe("Public IKWM Page (app/ikatan-wali-murid/page.tsx)", () => {
     render(Component);
 
     // Hero verification
-    expect(screen.getByText("Ikatan Wali Murid (IKWM) MIM PK Dimoro")).toBeDefined();
+    expect(screen.getByRole("heading", { level: 1, name: "Ikatan Wali Murid (IKWM) MIM PK Dimoro" })).toBeDefined();
     expect(screen.getByText("Sinergi Madrasah & Keluarga")).toBeDefined();
     expect(screen.getByText("Masa Bakti 2025 - 2027")).toBeDefined();
 
