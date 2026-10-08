@@ -32,11 +32,11 @@ export default function KataPengantarSection({
           <div className="bg-card rounded-[calc(2rem-0.75rem)] p-6 sm:p-10 md:p-12 shadow-sm border border-border/40">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
               
-              {/* Left Column: Portrait Container with Floating Quote Card */}
-              <div className="lg:col-span-5 relative">
-                <div className="relative mx-auto max-w-sm lg:max-w-none">
+              {/* Left Column: Portrait Card & Stacked Quote Card */}
+              <div className="lg:col-span-5 flex flex-col gap-4 sm:gap-5">
+                <div className="mx-auto w-full max-w-sm lg:max-w-none">
                   {/* Portrait Card with Squircle Border */}
-                  <div className="relative rounded-3xl overflow-hidden shadow-xl border border-border/60 bg-muted/30">
+                  <div className="rounded-3xl overflow-hidden shadow-md border border-border/60 bg-muted/30">
                     <div className="relative aspect-[4/5] w-full overflow-hidden bg-muted/40">
                       <Image
                         src={photoUrl}
@@ -48,11 +48,11 @@ export default function KataPengantarSection({
                     </div>
 
                     {/* Identity Tag Below Portrait */}
-                    <div className="p-4 bg-card text-card-foreground border-t border-border/40 flex flex-col gap-1">
-                      <h3 className="font-bold text-base text-foreground leading-snug">
+                    <div className="p-4 sm:p-5 bg-card text-card-foreground border-t border-border/40 flex flex-col gap-1.5">
+                      <h3 className="font-bold text-base sm:text-lg text-foreground leading-snug">
                         {kataPengantar.nama_ketua}
                       </h3>
-                      <div className="flex items-center justify-between gap-2 mt-0.5">
+                      <div className="flex items-center justify-between gap-2">
                         <span className="text-xs text-muted-foreground line-clamp-1">
                           {kataPengantar.jabatan}
                         </span>
@@ -63,16 +63,22 @@ export default function KataPengantarSection({
                     </div>
                   </div>
 
-                  {/* Floating Quote Card */}
+                  {/* Stacked Quote Card Below Portrait (High-End Aesthetic) */}
                   {kataPengantar.kutipan_kunci && (
-                    <div className="mt-4 sm:mt-0 sm:absolute sm:-bottom-6 sm:-right-4 sm:max-w-xs z-10 p-4 sm:p-5 bg-card/95 backdrop-blur-md border border-border/80 rounded-2xl shadow-xl">
+                    <div className="mt-4 sm:mt-5 p-4 sm:p-5 bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-2xl shadow-sm relative overflow-hidden">
+                      {/* Decorative quote watermark in background */}
+                      <Quote
+                        aria-hidden="true"
+                        className="absolute -bottom-2 -right-2 size-14 text-primary/10 pointer-events-none"
+                      />
+
                       <div className="flex items-center gap-2 text-primary mb-2">
                         <Quote className="size-4 shrink-0" />
                         <span className="text-[11px] font-bold uppercase tracking-wider">
                           Kutipan Kunci
                         </span>
                       </div>
-                      <blockquote className="text-xs sm:text-sm font-medium text-foreground italic leading-relaxed">
+                      <blockquote className="text-xs sm:text-sm font-medium text-foreground italic leading-relaxed relative z-10">
                         &ldquo;{kataPengantar.kutipan_kunci}&rdquo;
                       </blockquote>
                     </div>
