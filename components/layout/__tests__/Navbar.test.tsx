@@ -25,14 +25,8 @@ vi.mock('@/components/theme-switcher', () => ({
 }))
 
 // Mock MobileMenuOverlay
-vi.mock('../MobileMenuOverlay', () => ({
-  default: ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => (
-    <div data-testid="mobile-menu-overlay" data-open={isOpen ? 'true' : 'false'}>
-      {isOpen && <span>Mobile Menu Open</span>}
-      <button onClick={onClose} data-testid="mock-close-menu">Close Mock</button>
-    </div>
-  ),
-  publicNavLinks: [
+vi.mock('../MobileMenuOverlay', () => {
+  const publicNavLinks = [
     { name: "Beranda", href: "/" },
     { name: "Tentang Kami", href: "/tentang-kami" },
     { name: "Program & Kurikulum", href: "/program" },
@@ -41,8 +35,19 @@ vi.mock('../MobileMenuOverlay', () => ({
     { name: "Kalender Akademik", href: "/kalender-akademik" },
     { name: "Galeri Foto", href: "/galeri" },
     { name: "Kontak & Lokasi", href: "/kontak" },
-  ],
-}))
+  ]
+  return {
+    default: ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => (
+      <div data-testid="mobile-menu-overlay" data-open={isOpen ? 'true' : 'false'}>
+        {isOpen && <span>Mobile Menu Open</span>}
+        <button onClick={onClose} data-testid="mock-close-menu">Close Mock</button>
+      </div>
+    ),
+    publicNavLinks,
+    primaryNavLinks: publicNavLinks.slice(0, 5),
+    secondaryNavLinks: publicNavLinks.slice(5),
+  }
+})
 
 describe('Navbar Component', () => {
   beforeEach(() => {
@@ -59,17 +64,15 @@ describe('Navbar Component', () => {
     expect(logo).toBeInTheDocument()
   })
 
-  it('renders all desktop navigation links with correct hrefs', () => {
+  it('renders primary desktop navigation links and "Lainnya" dropdown trigger', () => {
     render(<Navbar />)
 
     expect(screen.getByRole('link', { name: /^beranda$/i })).toHaveAttribute('href', '/')
     expect(screen.getByRole('link', { name: /^tentang kami$/i })).toHaveAttribute('href', '/tentang-kami')
-    expect(screen.getByRole('link', { name: /^program & kurikulum$/i })).toHaveAttribute('href', '/program')
+    expect(screen.getByRole('link', { name: /^program/i })).toHaveAttribute('href', '/program')
     expect(screen.getByRole('link', { name: /^wali murid$/i })).toHaveAttribute('href', '/ikatan-wali-murid')
-    expect(screen.getByRole('link', { name: /^berita & artikel$/i })).toHaveAttribute('href', '/berita')
-    expect(screen.getByRole('link', { name: /^kalender akademik$/i })).toHaveAttribute('href', '/kalender-akademik')
-    expect(screen.getByRole('link', { name: /^galeri foto$/i })).toHaveAttribute('href', '/galeri')
-    expect(screen.getByRole('link', { name: /^kontak & lokasi$/i })).toHaveAttribute('href', '/kontak')
+    expect(screen.getByRole('link', { name: /^berita/i })).toHaveAttribute('href', '/berita')
+    expect(screen.getByRole('button', { name: /menu lainnya|lainnya/i })).toBeInTheDocument()
   })
 
   it('renders ThemeSwitcher and action buttons (Masuk and Daftar PPDB)', () => {
@@ -87,7 +90,7 @@ describe('Navbar Component', () => {
   it('toggles mobile menu button and updates MobileMenuOverlay state', () => {
     render(<Navbar />)
 
-    const toggleButton = screen.getByRole('button', { name: /toggle menu|menu/i })
+    const toggleButton = screen.getByRole('button', { name: /^toggle menu$/i })
     expect(toggleButton).toBeInTheDocument()
 
     const overlay = screen.getByTestId('mobile-menu-overlay')

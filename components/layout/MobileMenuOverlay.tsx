@@ -36,6 +36,9 @@ export const publicNavLinks = [
   { name: "Kontak & Lokasi", href: "/kontak", icon: Phone },
 ]
 
+export const primaryNavLinks = publicNavLinks.slice(0, 5)
+export const secondaryNavLinks = publicNavLinks.slice(5)
+
 export default function MobileMenuOverlay({ isOpen, onClose }: MobileMenuOverlayProps) {
   const pathname = usePathname()
   const cleanPhone = SCHOOL_WHATSAPP.replace(/[^0-9]/g, "")
@@ -51,7 +54,7 @@ export default function MobileMenuOverlay({ isOpen, onClose }: MobileMenuOverlay
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.25, ease: [0.32, 0.72, 0, 1] }}
-          className="fixed inset-x-0 top-[68px] bottom-0 z-40 md:hidden bg-background/95 dark:bg-gray-950/95 backdrop-blur-3xl overflow-y-auto px-4 py-4 flex flex-col justify-between"
+          className="fixed inset-x-0 top-[68px] bottom-0 z-40 lg:hidden bg-background/95 dark:bg-gray-950/95 backdrop-blur-3xl overflow-y-auto px-4 py-4 flex flex-col justify-between"
         >
           <div className="space-y-4">
             {/* Primary Nav Links */}
