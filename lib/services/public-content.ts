@@ -15,6 +15,7 @@ import {
   parseProgramKurikulumContent,
   parseFAQContent,
   parsePPDBFlowContent,
+  parseIKWMContent,
 } from "@/lib/utils/content-parsers";
 import {
   HeroContent,
@@ -27,6 +28,7 @@ import {
   PPDBFlowContent,
   MainStatItem,
   EkstrakurikulerItem,
+  IKWMContent,
 } from "@/lib/types/content";
 import { EXCELLENT_PROGRAMS } from "@/lib/school-data";
 
@@ -271,3 +273,26 @@ export async function getExtracurriculars(): Promise<EkstrakurikulerItem[]> {
     return DEFAULT_EXTRACURRICULARS;
   }
 }
+
+/**
+ * Mengambil konten Ikatan Wali Murid (IKWM)
+ */
+export async function getIKWMContent(): Promise<IKWMContent> {
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("konten_halaman")
+      .select("isi")
+      .eq("slug", "ikatan-wali-murid")
+      .maybeSingle();
+
+    if (error || !data) {
+      return parseIKWMContent(null);
+    }
+    return parseIKWMContent(data.isi);
+  } catch (err) {
+    console.error("[public-content] Error fetching IKWM content:", err);
+    return parseIKWMContent(null);
+  }
+}
+

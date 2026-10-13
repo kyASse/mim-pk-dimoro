@@ -24,6 +24,7 @@ import {
   FAQListContent,
   PPDBFlowContent,
   BerandaKeunggulanContent,
+  IKWMContent,
 } from "@/lib/types/content";
 
 // 1. Parser Hero Beranda
@@ -247,3 +248,252 @@ export function parsePPDBFlowContent(data: unknown): PPDBFlowContent {
     alur_offline: Array.isArray(obj.alur_offline) && obj.alur_offline.length > 0 ? obj.alur_offline : defaultOffline,
   };
 }
+
+/**
+ * Helper untuk mengekstrak 11 karakter ID video YouTube dari berbagai format URL:
+ * - https://www.youtube.com/watch?v=dQw4w9WgXcQ
+ * - https://youtu.be/dQw4w9WgXcQ
+ * - https://www.youtube.com/embed/dQw4w9WgXcQ
+ * - https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ
+ */
+export function extractYouTubeVideoId(url: string | null | undefined): string | null {
+  if (!url || typeof url !== "string") return null;
+  const cleanUrl = url.trim();
+  if (!cleanUrl) return null;
+
+  const regExp = /(?:youtube(?:-nocookie)?\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+  const match = cleanUrl.match(regExp);
+  return match ? match[1] : null;
+}
+
+// Fallback default untuk Ikatan Wali Murid (IKWM / IOM)
+export const DEFAULT_IKWM_CONTENT: IKWMContent = {
+  hero: {
+    badge: "Sinergi Madrasah & Keluarga",
+    judul: "Ikatan Orang Tua Murid (IOM) MIM Dimoro",
+    subjudul:
+      "Wadah silaturahmi, kolaborasi, dan kemitraan strategis antara orang tua dan madrasah demi melahirkan generasi Qur'ani yang unggul, berprestasi, dan berakhlak mulia.",
+    periode: "Periode 2026-2027",
+  },
+  kata_pengantar: {
+    judul: "Sambutan Ketua IOM MIM Dimoro",
+    nama_ketua: "Kardiyanto",
+    jabatan: "Ketua IOM MIM Dimoro",
+    foto_url: "/avatar-man-placeholder.png",
+    sambutan: [
+      "Assalamu’alaikum Warahmatullahi Wabarakatuh. Puji syukur kita panjatkan ke hadirat Allah SWT atas segala limpahan rahmat, taufik, dan hidayah-Nya kepada kita semua.",
+      "Ikatan Orang Tua Murid (IOM) MIM Dimoro hadir sebagai jembatan kemitraan yang kokoh antara orang tua dan pihak madrasah. Pendidikan terbaik bagi putra-putri kita hanya dapat terwujud melalui keselarasan visi, keterbukaan komunikasi, dan gotong royong yang tulus.",
+      "Kami mengajak seluruh bapak dan ibu wali murid untuk bersama-sama aktif berkontribusi, memberikan masukan konstruktif, serta menyukseskan setiap program madrasah demi melahirkan generasi yang sholeh, cerdas, dan mandiri.",
+      "Wassalamu’alaikum Warahmatullahi Wabarakatuh.",
+    ],
+    kutipan_kunci:
+      "Pendidikan terbaik anak lahir dari keharmonisan kolaborasi antara rumah dan madrasah.",
+  },
+  video: {
+    display_mode: "placeholder",
+    youtube_url: "",
+    judul: "Profil & Kilas Balik Kegiatan IOM",
+    deskripsi:
+      "Dokumentasi kebersamaan dan sinergi orang tua siswa bersama madrasah dalam mendukung proses pendidikan anak.",
+    placeholder_title: "Dokumentasi Profil Sedang Diproduksi",
+    placeholder_desc:
+      "Nantikan liputan kegiatan kami segera. Video dokumentasi kegiatan dan profil paguyuban IOM MIM Dimoro sedang dipersiapkan.",
+  },
+  struktural: {
+    pembina: [
+      {
+        nama: "Kepala Madrasah MIM PK Dimoro",
+        jabatan: "Penasihat & Pembina Utama",
+        foto_url: "/avatar-man-placeholder.png",
+      },
+      {
+        nama: "Ketua Komite Madrasah",
+        jabatan: "Pembina Paguyuban",
+        foto_url: "/avatar-man-placeholder.png",
+      },
+    ],
+    pengurus_inti: [
+      {
+        id: "ketua-1",
+        nama: "Kardiyanto",
+        jabatan: "Ketua",
+        divisi: "Pengurus Harian",
+        foto_url: "/avatar-man-placeholder.png",
+      },
+      {
+        id: "wakil-1",
+        nama: "Pradnya Paramita",
+        jabatan: "Wakil Ketua",
+        divisi: "Pengurus Harian",
+        foto_url: "/avatar-women-placeholder.png",
+      },
+      {
+        id: "sekretaris-1",
+        nama: "Retno Elandari",
+        jabatan: "Sekretaris",
+        divisi: "Pengurus Harian",
+        foto_url: "/avatar-women-placeholder.png",
+      },
+      {
+        id: "bendahara-1",
+        nama: "Aprilia Hidayati",
+        jabatan: "Bendahara",
+        divisi: "Pengurus Harian",
+        foto_url: "/avatar-women-placeholder.png",
+      },
+    ],
+    bidang: [
+      {
+        id: "bidang-pendidikan",
+        nama_bidang: "Bidang Pendidikan dan Pengembangan Karakter",
+        koordinator: "Bibit Lestari, S.Pd.",
+        anggota: ["Yunita Dwi Astuti", "Tinuk", "Ajeng Riski Safitri"],
+      },
+      {
+        id: "bidang-sosial",
+        nama_bidang: "Bidang Sosial dan Keagamaan",
+        koordinator: "Millatusori",
+        anggota: ["Fitri Hastutik", "Bella Novita Putri", "Ima Pompi Oktaviano"],
+      },
+      {
+        id: "bidang-dana-sarpras",
+        nama_bidang: "Bidang Dana Usaha dan Sarana Lingkungan",
+        koordinator: "Sri Untari",
+        anggota: ["Siti Isnaniah", "Yati", "Leny"],
+      },
+      {
+        id: "bidang-humas",
+        nama_bidang: "Humas",
+        koordinator: "Safitri",
+        anggota: ["Fitri Wulandari", "Dyah Rahmayanti", "Puji Lestari"],
+      },
+    ],
+  },
+  kegiatan: [
+    {
+      id: "kegiatan-parenting-bulanan",
+      kategori: "parenting",
+      badge_label: "Program Bulanan",
+      judul: "Kajian Parenting & Dialog Pendidikan Anak",
+      deskripsi:
+        "Seminar parenting rutin bersama pakar psikologi dan pendidikan Islam untuk menyelaraskan pola asuh di rumah dan madrasah.",
+      jadwal: "Ahad Pekan ke-2 Setiap Bulan",
+      foto_url: "/images/mim_hero_main.jpg",
+      highlight_tag: "Rutin",
+    },
+    {
+      id: "kegiatan-sosial-peduli",
+      kategori: "sosial",
+      badge_label: "Agenda Peduli",
+      judul: "Bakti Sosial & Santunan Berkah",
+      deskripsi:
+        "Penyaluran bantuan sembako dan santunan pendidikan bagi masyarakat sekitar dan siswa yang membutuhkan.",
+      jadwal: "Menjelang Ramadhan & Muharram",
+      foto_url: "/images/mim_tahfidz_learning.jpg",
+      highlight_tag: "Kolaborasi",
+    },
+    {
+      id: "kegiatan-sarpras-gotong-royong",
+      kategori: "sarpras",
+      badge_label: "Aksi Lingkungan",
+      judul: "Gotong Royong & Penghijauan Lingkungan Madrasah",
+      deskripsi:
+        "Kerja bakti bersama orang tua siswa untuk merawat taman madrasah, sarana kebersihan, dan kenyamanan lingkungan belajar.",
+      jadwal: "Tiap Ahad Awal Semester",
+      foto_url: "/images/mim_hero_main.jpg",
+    },
+    {
+      id: "kegiatan-kemitraan-market-day",
+      kategori: "kemitraan",
+      badge_label: "Kemitraan",
+      judul: "Pendampingan Market Day Siswa",
+      deskripsi:
+        "Kolaborasi orang tua dalam mendampingi praktek kewirausahaan mandiri siswa dan bazar produk kreasi keluarga madrasah.",
+      jadwal: "Agenda Semesteran",
+      foto_url: "/images/mim_tahfidz_learning.jpg",
+    },
+  ],
+};
+
+// 9. Parser Ikatan Wali Murid (IKWM / IOM)
+export function parseIKWMContent(data: unknown): IKWMContent {
+  let parsed = data;
+  if (typeof data === "string") {
+    try {
+      parsed = JSON.parse(data);
+    } catch {
+      parsed = null;
+    }
+  }
+  const obj = (parsed && typeof parsed === "object" ? parsed : {}) as Partial<IKWMContent>;
+
+  const hero = {
+    badge: obj.hero?.badge || DEFAULT_IKWM_CONTENT.hero.badge,
+    judul: obj.hero?.judul || DEFAULT_IKWM_CONTENT.hero.judul,
+    subjudul: obj.hero?.subjudul || DEFAULT_IKWM_CONTENT.hero.subjudul,
+    periode: obj.hero?.periode || DEFAULT_IKWM_CONTENT.hero.periode,
+  };
+
+  const kata_pengantar = {
+    judul: obj.kata_pengantar?.judul || DEFAULT_IKWM_CONTENT.kata_pengantar.judul,
+    nama_ketua: obj.kata_pengantar?.nama_ketua || DEFAULT_IKWM_CONTENT.kata_pengantar.nama_ketua,
+    jabatan: obj.kata_pengantar?.jabatan || DEFAULT_IKWM_CONTENT.kata_pengantar.jabatan,
+    foto_url: obj.kata_pengantar?.foto_url || DEFAULT_IKWM_CONTENT.kata_pengantar.foto_url,
+    sambutan:
+      Array.isArray(obj.kata_pengantar?.sambutan) && obj.kata_pengantar.sambutan.length > 0
+        ? obj.kata_pengantar.sambutan
+        : DEFAULT_IKWM_CONTENT.kata_pengantar.sambutan,
+    kutipan_kunci:
+      obj.kata_pengantar?.kutipan_kunci || DEFAULT_IKWM_CONTENT.kata_pengantar.kutipan_kunci,
+  };
+
+  const validDisplayModes = ["active", "placeholder", "hidden"] as const;
+  const rawDisplayMode = obj.video?.display_mode;
+  const display_mode: "active" | "placeholder" | "hidden" =
+    rawDisplayMode && validDisplayModes.includes(rawDisplayMode as any)
+      ? (rawDisplayMode as "active" | "placeholder" | "hidden")
+      : DEFAULT_IKWM_CONTENT.video.display_mode;
+
+  const video = {
+    display_mode,
+    youtube_url:
+      typeof obj.video?.youtube_url === "string"
+        ? obj.video.youtube_url
+        : DEFAULT_IKWM_CONTENT.video.youtube_url,
+    judul: obj.video?.judul || DEFAULT_IKWM_CONTENT.video.judul,
+    deskripsi: obj.video?.deskripsi || DEFAULT_IKWM_CONTENT.video.deskripsi,
+    placeholder_title:
+      obj.video?.placeholder_title || DEFAULT_IKWM_CONTENT.video.placeholder_title,
+    placeholder_desc:
+      obj.video?.placeholder_desc || DEFAULT_IKWM_CONTENT.video.placeholder_desc,
+  };
+
+  const struktural = {
+    pembina:
+      Array.isArray(obj.struktural?.pembina) && obj.struktural.pembina.length > 0
+        ? obj.struktural.pembina
+        : DEFAULT_IKWM_CONTENT.struktural.pembina,
+    pengurus_inti:
+      Array.isArray(obj.struktural?.pengurus_inti) && obj.struktural.pengurus_inti.length > 0
+        ? obj.struktural.pengurus_inti
+        : DEFAULT_IKWM_CONTENT.struktural.pengurus_inti,
+    bidang:
+      Array.isArray(obj.struktural?.bidang) && obj.struktural.bidang.length > 0
+        ? obj.struktural.bidang
+        : DEFAULT_IKWM_CONTENT.struktural.bidang,
+  };
+
+  const kegiatan =
+    Array.isArray(obj.kegiatan) && obj.kegiatan.length > 0
+      ? obj.kegiatan
+      : DEFAULT_IKWM_CONTENT.kegiatan;
+
+  return {
+    hero,
+    kata_pengantar,
+    video,
+    struktural,
+    kegiatan,
+  };
+}
+

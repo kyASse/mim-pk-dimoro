@@ -11,6 +11,7 @@ import {
   getExtracurriculars,
   getPPDBFlowContent,
   getPublicFAQ,
+  getIKWMContent,
 } from "@/lib/services/public-content";
 import { AdminKontenHub } from "@/components/admin/konten/AdminKontenHub";
 
@@ -42,6 +43,7 @@ export default async function AdminKontenPage() {
     eskul,
     ppdbFlow,
     faqList,
+    ikwm,
     syaratRes,
     jadwalRes,
     sppRes,
@@ -57,6 +59,7 @@ export default async function AdminKontenPage() {
     getExtracurriculars(),
     getPPDBFlowContent(),
     getPublicFAQ(),
+    getIKWMContent(),
     supabase.from("konten_halaman").select("isi").eq("slug", "persyaratan-pendaftaran").maybeSingle(),
     supabase.from("konten_halaman").select("isi").eq("slug", "jadwal-pendaftaran").maybeSingle(),
     supabase.from("konten_halaman").select("isi").eq("slug", "catatan-spp").maybeSingle(),
@@ -116,6 +119,7 @@ export default async function AdminKontenPage() {
         sppText={sppText}
         kontak={kontak}
         faqList={faqList}
+        ikwmContent={ikwm}
       />
     </div>
   );

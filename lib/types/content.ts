@@ -148,3 +148,68 @@ export interface KontenHalamanRow {
   created_at?: string;
   updated_at?: string;
 }
+
+// 12. Ikatan Wali Murid (IKWM)
+export interface IKWMPembina {
+  nama: string;
+  jabatan: string;
+  foto_url?: string;
+}
+
+export interface IKWMPengurusInti {
+  id: string;
+  nama: string;
+  jabatan: string;
+  divisi: string;
+  foto_url?: string;
+}
+
+export interface IKWMBidang {
+  id: string;
+  nama_bidang: string;
+  koordinator: string;
+  anggota: string[];
+}
+
+export interface IKWMKegiatanItem {
+  id: string;
+  kategori: "parenting" | "sosial" | "sarpras" | "kemitraan";
+  badge_label: string;
+  judul: string;
+  deskripsi: string;
+  jadwal: string;
+  foto_url: string;
+  highlight_tag?: string;
+}
+
+export interface IKWMContent {
+  hero: {
+    badge: string;
+    judul: string;
+    subjudul: string;
+    periode: string;
+  };
+  kata_pengantar: {
+    judul: string;
+    nama_ketua: string;
+    jabatan: string;
+    foto_url: string;
+    sambutan: string[];
+    kutipan_kunci: string;
+  };
+  video: {
+    display_mode: "active" | "placeholder" | "hidden";
+    youtube_url: string;
+    judul: string;
+    deskripsi: string;
+    placeholder_title: string;
+    placeholder_desc: string;
+  };
+  struktural: {
+    pembina: IKWMPembina[];
+    pengurus_inti: IKWMPengurusInti[];
+    bidang: IKWMBidang[];
+  };
+  kegiatan: IKWMKegiatanItem[];
+}
+

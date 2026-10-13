@@ -23,6 +23,7 @@ describe('MobileMenuOverlay', () => {
     expect(screen.getByRole('link', { name: /beranda/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /tentang kami/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /program & kurikulum/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /^wali murid$/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /berita & artikel/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /kalender akademik/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /galeri foto/i })).toBeInTheDocument()

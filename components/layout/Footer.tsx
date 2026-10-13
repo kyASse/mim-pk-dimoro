@@ -79,6 +79,7 @@ export default function Footer() {
     { label: "Beranda", href: "/" },
     { label: "Tentang Kami", href: "/tentang-kami" },
     { label: "Program & Kurikulum", href: "/program" },
+    { label: "Ikatan Wali Murid", href: "/ikatan-wali-murid" },
     { label: "Galeri Kegiatan", href: "/galeri" },
     { label: "Berita & Aktivitas", href: "/berita" },
   ];
