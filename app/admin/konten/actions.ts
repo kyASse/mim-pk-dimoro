@@ -16,6 +16,7 @@ import {
   PPDBFlowContent,
   EkstrakurikulerItem,
   MainStatItem,
+  IKWMContent,
 } from "@/lib/types/content";
 
 const ALLOWED_CONTENT_ROLES: UserRole[] = ["super_admin", "admin", "admin_tu", "kepala_madrasah"];
@@ -41,7 +42,6 @@ async function upsertPageContent(
           slug,
           judul,
           isi,
-          updated_at: new Date().toISOString(),
         },
         { onConflict: "slug" }
       );
@@ -367,4 +367,18 @@ export async function saveKontakSekolahAction(
     console.error("[actions] Unexpected error saving kontak:", err);
     return { success: false, message: `Terjadi kesalahan: ${err?.message}` };
   }
+}
+
+/**
+ * 13. Simpan Konten Ikatan Wali Murid (IKWM)
+ */
+export async function saveIKWMContentAction(
+  data: IKWMContent
+): Promise<{ success: boolean; message: string }> {
+  return upsertPageContent(
+    "ikatan-wali-murid",
+    "Ikatan Wali Murid (IKWM)",
+    data as unknown as Record<string, unknown>,
+    ["/ikatan-wali-murid", "/admin/konten"]
+  );
 }
