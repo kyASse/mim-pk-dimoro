@@ -266,23 +266,23 @@ export function extractYouTubeVideoId(url: string | null | undefined): string | 
   return match ? match[1] : null;
 }
 
-// Fallback default untuk Ikatan Wali Murid (IKWM)
+// Fallback default untuk Ikatan Wali Murid (IKWM / IOM)
 export const DEFAULT_IKWM_CONTENT: IKWMContent = {
   hero: {
     badge: "Sinergi Madrasah & Keluarga",
-    judul: "Ikatan Wali Murid (IKWM) MIM PK Dimoro",
+    judul: "Ikatan Orang Tua Murid (IOM) MIM Dimoro",
     subjudul:
       "Wadah silaturahmi, kolaborasi, dan kemitraan strategis antara orang tua dan madrasah demi melahirkan generasi Qur'ani yang unggul, berprestasi, dan berakhlak mulia.",
-    periode: "Masa Bakti 2025 - 2027",
+    periode: "Periode 2026-2027",
   },
   kata_pengantar: {
-    judul: "Sambutan Ketua IKWM MIM PK Dimoro",
-    nama_ketua: "Hj. Siti Rahmawati, S.Pd.",
-    jabatan: "Ketua IKWM MIM PK Dimoro",
-    foto_url: "/avatar-women-placeholder.png",
+    judul: "Sambutan Ketua IOM MIM Dimoro",
+    nama_ketua: "Kardiyanto",
+    jabatan: "Ketua IOM MIM Dimoro",
+    foto_url: "/avatar-man-placeholder.png",
     sambutan: [
       "Assalamu’alaikum Warahmatullahi Wabarakatuh. Puji syukur kita panjatkan ke hadirat Allah SWT atas segala limpahan rahmat, taufik, dan hidayah-Nya kepada kita semua.",
-      "Ikatan Wali Murid (IKWM) MIM PK Dimoro hadir sebagai jembatan kemitraan yang kokoh antara orang tua dan pihak madrasah. Pendidikan terbaik bagi putra-putri kita hanya dapat terwujud melalui keselarasan visi, keterbukaan komunikasi, dan gotong royong yang tulus.",
+      "Ikatan Orang Tua Murid (IOM) MIM Dimoro hadir sebagai jembatan kemitraan yang kokoh antara orang tua dan pihak madrasah. Pendidikan terbaik bagi putra-putri kita hanya dapat terwujud melalui keselarasan visi, keterbukaan komunikasi, dan gotong royong yang tulus.",
       "Kami mengajak seluruh bapak dan ibu wali murid untuk bersama-sama aktif berkontribusi, memberikan masukan konstruktif, serta menyukseskan setiap program madrasah demi melahirkan generasi yang sholeh, cerdas, dan mandiri.",
       "Wassalamu’alaikum Warahmatullahi Wabarakatuh.",
     ],
@@ -292,12 +292,12 @@ export const DEFAULT_IKWM_CONTENT: IKWMContent = {
   video: {
     display_mode: "placeholder",
     youtube_url: "",
-    judul: "Profil & Kilas Balik Kegiatan IKWM",
+    judul: "Profil & Kilas Balik Kegiatan IOM",
     deskripsi:
       "Dokumentasi kebersamaan dan sinergi orang tua siswa bersama madrasah dalam mendukung proses pendidikan anak.",
     placeholder_title: "Dokumentasi Profil Sedang Diproduksi",
     placeholder_desc:
-      "Nantikan liputan kegiatan kami segera. Video dokumentasi kegiatan dan profil paguyuban IKWM MIM PK Dimoro sedang dipersiapkan.",
+      "Nantikan liputan kegiatan kami segera. Video dokumentasi kegiatan dan profil paguyuban IOM MIM Dimoro sedang dipersiapkan.",
   },
   struktural: {
     pembina: [
@@ -315,51 +315,57 @@ export const DEFAULT_IKWM_CONTENT: IKWMContent = {
     pengurus_inti: [
       {
         id: "ketua-1",
-        nama: "Hj. Siti Rahmawati, S.Pd.",
-        jabatan: "Ketua Umum",
-        divisi: "Pimpinan Harian",
-        foto_url: "/avatar-women-placeholder.png",
-      },
-      {
-        id: "wakil-1",
-        nama: "Drs. Budi Santoso",
-        jabatan: "Wakil Ketua",
-        divisi: "Pimpinan Harian",
+        nama: "Kardiyanto",
+        jabatan: "Ketua",
+        divisi: "Pengurus Harian",
         foto_url: "/avatar-man-placeholder.png",
       },
       {
+        id: "wakil-1",
+        nama: "Pradnya Paramita",
+        jabatan: "Wakil Ketua",
+        divisi: "Pengurus Harian",
+        foto_url: "/avatar-women-placeholder.png",
+      },
+      {
         id: "sekretaris-1",
-        nama: "Nurul Hidayah, S.Kom.",
+        nama: "Retno Elandari",
         jabatan: "Sekretaris",
-        divisi: "Pimpinan Harian",
+        divisi: "Pengurus Harian",
         foto_url: "/avatar-women-placeholder.png",
       },
       {
         id: "bendahara-1",
-        nama: "Dewi Lestari, S.E.",
+        nama: "Aprilia Hidayati",
         jabatan: "Bendahara",
-        divisi: "Pimpinan Harian",
+        divisi: "Pengurus Harian",
         foto_url: "/avatar-women-placeholder.png",
       },
     ],
     bidang: [
       {
-        id: "bidang-parenting",
-        nama_bidang: "Pendidikan & Parenting",
-        koordinator: "Ustadzah Fatimah, M.Pd.",
-        anggota: ["Ibu Anisa", "Ibu Rina", "Bapak Agus"],
+        id: "bidang-pendidikan",
+        nama_bidang: "Bidang Pendidikan dan Pengembangan Karakter",
+        koordinator: "Bibit Lestari, S.Pd.",
+        anggota: ["Yunita Dwi Astuti", "Tinuk", "Ajeng Riski Safitri"],
       },
       {
         id: "bidang-sosial",
-        nama_bidang: "Sosial & Dakwah",
-        koordinator: "Ahmad Fauzi, S.Ag.",
-        anggota: ["Bapak Hendra", "Ibu Wahyuni", "Ibu Maryam"],
+        nama_bidang: "Bidang Sosial dan Keagamaan",
+        koordinator: "Millatusori",
+        anggota: ["Fitri Hastutik", "Bella Novita Putri", "Ima Pompi Oktaviano"],
       },
       {
-        id: "bidang-sarpras",
-        nama_bidang: "Sarana & Prasarana",
-        koordinator: "Ir. Joko Prasetyo",
-        anggota: ["Bapak Triyono", "Bapak Rudianto", "Ibu Endang"],
+        id: "bidang-dana-sarpras",
+        nama_bidang: "Bidang Dana Usaha dan Sarana Lingkungan",
+        koordinator: "Sri Untari",
+        anggota: ["Siti Isnaniah", "Yati", "Leny"],
+      },
+      {
+        id: "bidang-humas",
+        nama_bidang: "Humas",
+        koordinator: "Safitri",
+        anggota: ["Fitri Wulandari", "Dyah Rahmayanti", "Puji Lestari"],
       },
     ],
   },
@@ -409,9 +415,17 @@ export const DEFAULT_IKWM_CONTENT: IKWMContent = {
   ],
 };
 
-// 9. Parser Ikatan Wali Murid (IKWM)
+// 9. Parser Ikatan Wali Murid (IKWM / IOM)
 export function parseIKWMContent(data: unknown): IKWMContent {
-  const obj = (data && typeof data === "object" ? data : {}) as Partial<IKWMContent>;
+  let parsed = data;
+  if (typeof data === "string") {
+    try {
+      parsed = JSON.parse(data);
+    } catch {
+      parsed = null;
+    }
+  }
+  const obj = (parsed && typeof parsed === "object" ? parsed : {}) as Partial<IKWMContent>;
 
   const hero = {
     badge: obj.hero?.badge || DEFAULT_IKWM_CONTENT.hero.badge,

@@ -74,7 +74,7 @@ describe("IKWM Core Public Components", () => {
       render(<StrukturalSection struktural={DEFAULT_IKWM_CONTENT.struktural} />);
       DEFAULT_IKWM_CONTENT.struktural.bidang.forEach((b) => {
         expect(screen.getByText(b.nama_bidang)).toBeDefined();
-        expect(screen.getByText(new RegExp(b.koordinator, "i"))).toBeDefined();
+        expect(screen.getByText(b.koordinator)).toBeDefined();
         b.anggota.forEach((anggota) => {
           expect(screen.getByText(anggota)).toBeDefined();
         });

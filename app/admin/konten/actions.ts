@@ -42,7 +42,6 @@ async function upsertPageContent(
           slug,
           judul,
           isi,
-          updated_at: new Date().toISOString(),
         },
         { onConflict: "slug" }
       );

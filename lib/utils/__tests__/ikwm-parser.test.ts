@@ -16,8 +16,8 @@ describe("IKWM Content Parser & YouTube Helper", () => {
 
   it("harus mengembalikan data default lengkap saat payload bernilai null atau undefined", () => {
     const fromNull = parseIKWMContent(null);
-    expect(fromNull.hero.judul).toContain("Ikatan Wali Murid");
-    expect(fromNull.kata_pengantar.nama_ketua).toBeDefined();
+    expect(fromNull.hero.judul).toBe(DEFAULT_IKWM_CONTENT.hero.judul);
+    expect(fromNull.kata_pengantar.nama_ketua).toBe("Kardiyanto");
     expect(fromNull.kata_pengantar.sambutan.length).toBeGreaterThan(0);
     expect(fromNull.video.display_mode).toBe("placeholder");
     expect(fromNull.struktural.pengurus_inti.length).toBeGreaterThan(0);
@@ -26,6 +26,17 @@ describe("IKWM Content Parser & YouTube Helper", () => {
     const fromUndefined = parseIKWMContent(undefined);
     expect(fromUndefined.hero.judul).toBe(DEFAULT_IKWM_CONTENT.hero.judul);
     expect(fromUndefined.video.display_mode).toBe("placeholder");
+  });
+
+  it("harus dapat mem-parsing payload dalam bentuk JSON string dari database", () => {
+    const jsonString = JSON.stringify({
+      hero: { judul: "Judul dari JSON String" },
+      kata_pengantar: { nama_ketua: "Bapak Kardiyanto" },
+    });
+    const parsed = parseIKWMContent(jsonString);
+    expect(parsed.hero.judul).toBe("Judul dari JSON String");
+    expect(parsed.kata_pengantar.nama_ketua).toBe("Bapak Kardiyanto");
+    expect(parsed.video.display_mode).toBe("placeholder"); // Fallback preserved
   });
 
   it("harus mempertahankan data kustom dan melengkapi field yang hilang dengan fallback", () => {
