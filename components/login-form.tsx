@@ -14,6 +14,7 @@ import { LogIn, User, Lock, EyeOff, Eye } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { ADMIN_ROLES, type UserRole } from "@/lib/auth/types";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -35,13 +36,29 @@ export function LoginForm({
     setError(null);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       if (error) throw error;
-      // Update this route to redirect to an authenticated route. The user already has an active session.
-      router.push("/admin");
+
+      if (data?.user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", data.user.id)
+          .maybeSingle();
+
+        const role = profile?.role as UserRole | undefined;
+        if (role && ADMIN_ROLES.includes(role)) {
+          router.push("/admin");
+        } else {
+          router.push("/portal");
+        }
+      } else {
+        router.push("/admin");
+      }
+      router.refresh();
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
     } finally {
