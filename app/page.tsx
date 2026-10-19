@@ -9,12 +9,14 @@ import ProgramSection from "@/components/home/ProgramSection";
 import GalleryPreview from "@/components/home/GalleryPreview";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import CTASection from "@/components/home/CTASection";
+import RuangPerspektifSection from "@/components/home/RuangPerspektifSection";
 import {
   getHeroContent,
   getMainStats,
   getHeadmasterContent,
   getBerandaKeunggulanContent,
 } from "@/lib/services/public-content";
+import { getPublicOpinions } from "@/lib/services/ruang-perspektif";
 
 async function fetchSpotlightNews(): Promise<NewsSpotlightItem[]> {
   const supabase = await createClient();
@@ -34,13 +36,14 @@ async function fetchSpotlightNews(): Promise<NewsSpotlightItem[]> {
 }
 
 export default async function Home() {
-  const [spotlightNews, heroContent, mainStats, headmasterContent, keunggulanContent] =
+  const [spotlightNews, heroContent, mainStats, headmasterContent, keunggulanContent, opinions] =
     await Promise.all([
       fetchSpotlightNews(),
       getHeroContent(),
       getMainStats(),
       getHeadmasterContent(),
       getBerandaKeunggulanContent(),
+      getPublicOpinions(),
     ]);
 
   return (
@@ -66,6 +69,8 @@ export default async function Home() {
       <ProgramSection />
 
       <GalleryPreview />
+
+      <RuangPerspektifSection opinions={opinions} />
 
       <TestimonialsSection />
 
