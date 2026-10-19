@@ -30,7 +30,7 @@ export default async function AdminOpiniDetailPage({
     phone: opini.kontak_wa,
     namaPenulis: opini.nama_penulis,
     judul: opini.judul,
-    status: (opini.status as any) === "ditolak" ? "ditolak" : "terbit",
+    status: opini.status === "ditolak" ? "ditolak" : "terbit",
     urlArtikel: articleUrl,
     catatanRedaksi: opini.catatan_redaksi || "",
   });

@@ -1,8 +1,11 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { opiniSubmissionSchema } from "@/lib/validations/ruang-perspektif";
 import { generateOpiniSlug } from "@/lib/utils/ruang-perspektif";
+
+const ALLOWED_IMAGE_MIMES = ["image/jpeg", "image/png", "image/webp"];
 
 export async function submitOpiniAction(
   formData: FormData
@@ -40,7 +43,14 @@ export async function submitOpiniAction(
     let gambarSampulUrl: string | null = null;
 
     const fotoFile = formData.get("foto_penulis") as File | null;
-    if (fotoFile && fotoFile.size > 0 && fotoFile.size <= 2 * 1024 * 1024) {
+    if (fotoFile && fotoFile.size > 0) {
+      if (!ALLOWED_IMAGE_MIMES.includes(fotoFile.type)) {
+        return { success: false, error: "Format foto penulis harus JPG, PNG, atau WEBP" };
+      }
+      if (fotoFile.size > 2 * 1024 * 1024) {
+        return { success: false, error: "Ukuran foto penulis maksimal 2 MB" };
+      }
+
       const ext = fotoFile.name.split(".").pop();
       const fileName = `penulis/${slug}-${Date.now()}.${ext}`;
       const { data: uploadData, error: uploadErr } = await supabase.storage
@@ -54,7 +64,14 @@ export async function submitOpiniAction(
     }
 
     const sampulFile = formData.get("gambar_sampul") as File | null;
-    if (sampulFile && sampulFile.size > 0 && sampulFile.size <= 3 * 1024 * 1024) {
+    if (sampulFile && sampulFile.size > 0) {
+      if (!ALLOWED_IMAGE_MIMES.includes(sampulFile.type)) {
+        return { success: false, error: "Format gambar sampul harus JPG, PNG, atau WEBP" };
+      }
+      if (sampulFile.size > 3 * 1024 * 1024) {
+        return { success: false, error: "Ukuran gambar sampul maksimal 3 MB" };
+      }
+
       const ext = sampulFile.name.split(".").pop();
       const fileName = `sampul/${slug}-${Date.now()}.${ext}`;
       const { data: uploadData, error: uploadErr } = await supabase.storage
@@ -88,6 +105,8 @@ export async function submitOpiniAction(
       console.error("Error inserting opini:", insertError);
       return { success: false, error: "Gagal menyimpan naskah ke database. Silakan coba kembali." };
     }
+
+    revalidatePath("/admin/ruang-perspektif");
 
     return {
       success: true,

@@ -2,6 +2,10 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { submitOpiniAction } from "../actions";
 import { createClient } from "@/lib/supabase/server";
 
+vi.mock("next/cache", () => ({
+  revalidatePath: vi.fn(),
+}));
+
 vi.mock("@/lib/supabase/server", () => ({
   createClient: vi.fn(),
 }));
@@ -170,6 +174,44 @@ describe("submitOpiniAction", () => {
 
     expect(result.success).toBe(false);
     expect(result.error).toContain("Gagal menyimpan naskah ke database");
+  });
+
+  it("should fail if photo file has unsupported MIME type", async () => {
+    const formData = new FormData();
+    formData.append("nama_penulis", "Ahmad Fulan");
+    formData.append("peran_penulis", "umum");
+    formData.append("keterangan_peran", "Praktisi Pendidikan");
+    formData.append("kontak_wa", "081234567890");
+    formData.append("judul", "Tantangan Pendidikan Dasar di Era Kecerdasan Buatan");
+    formData.append("kategori", "Inovasi Pembelajaran");
+    formData.append("ringkasan", "Bagaimana sekolah dasar merespons perkembangan teknologi kecerdasan buatan secara bijak.");
+    formData.append("isi_lengkap", VALID_ARTICLE_CONTENT);
+
+    const badFile = new File(["dummy content"], "exploit.svg", { type: "image/svg+xml" });
+    formData.append("foto_penulis", badFile);
+
+    const result = await submitOpiniAction(formData);
+    expect(result.success).toBe(false);
+    expect(result.error).toContain("Format foto penulis harus JPG, PNG, atau WEBP");
+  });
+
+  it("should fail if cover file has unsupported MIME type", async () => {
+    const formData = new FormData();
+    formData.append("nama_penulis", "Ahmad Fulan");
+    formData.append("peran_penulis", "umum");
+    formData.append("keterangan_peran", "Praktisi Pendidikan");
+    formData.append("kontak_wa", "081234567890");
+    formData.append("judul", "Tantangan Pendidikan Dasar di Era Kecerdasan Buatan");
+    formData.append("kategori", "Inovasi Pembelajaran");
+    formData.append("ringkasan", "Bagaimana sekolah dasar merespons perkembangan teknologi kecerdasan buatan secara bijak.");
+    formData.append("isi_lengkap", VALID_ARTICLE_CONTENT);
+
+    const badCover = new File(["dummy content"], "exploit.exe", { type: "application/x-msdownload" });
+    formData.append("gambar_sampul", badCover);
+
+    const result = await submitOpiniAction(formData);
+    expect(result.success).toBe(false);
+    expect(result.error).toContain("Format gambar sampul harus JPG, PNG, atau WEBP");
   });
 
   it("should catch unexpected errors and return error message", async () => {

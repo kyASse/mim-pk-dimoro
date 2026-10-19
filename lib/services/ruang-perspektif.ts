@@ -87,7 +87,10 @@ export async function getFeaturedPublicOpinion(): Promise<OpiniPublicItem | null
   return featured || opinions[0] || null;
 }
 
-export async function getPublicOpinionBySlug(slug: string): Promise<OpiniPublicDetail | null> {
+export async function getPublicOpinionBySlug(
+  slug: string,
+  options: { incrementView?: boolean } = { incrementView: true }
+): Promise<OpiniPublicDetail | null> {
   try {
     const supabase = await createClient();
     const { data, error } = await supabase
@@ -103,12 +106,18 @@ export async function getPublicOpinionBySlug(slug: string): Promise<OpiniPublicD
 
     const row = data as unknown as RawPublicOpinionDetailRow;
 
-    // Increment read counter asynchronously in background
-    void supabase
-      .from("opini_perspektif")
-      .update({ dibaca_count: (row.dibaca_count || 0) + 1 })
-      .eq("id", row.id)
-      .then();
+    // Increment read counter asynchronously when requested
+    if (options.incrementView) {
+      if (typeof (supabase as unknown as { rpc?: unknown }).rpc === "function") {
+        void supabase.rpc("increment_opini_reads", { opini_slug: row.slug }).then();
+      } else {
+        void supabase
+          .from("opini_perspektif")
+          .update({ dibaca_count: (row.dibaca_count || 0) + 1 })
+          .eq("id", row.id)
+          .then();
+      }
+    }
 
     return {
       id: row.id,

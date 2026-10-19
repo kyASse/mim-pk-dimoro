@@ -58,3 +58,49 @@ DO $$ BEGIN
     USING (true);
   END IF;
 END $$;
+
+-- -----------------------------------------------
+-- FUNCTION: increment_opini_reads (SECURITY DEFINER)
+-- Allows public readers to increment view counter safely
+-- -----------------------------------------------
+CREATE OR REPLACE FUNCTION public.increment_opini_reads(opini_slug TEXT)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  UPDATE public.opini_perspektif
+  SET dibaca_count = dibaca_count + 1
+  WHERE slug = opini_slug AND status = 'terbit';
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION public.increment_opini_reads(TEXT) TO anon, authenticated;
+
+-- -----------------------------------------------
+-- STORAGE: opini bucket for cover & author pictures
+-- -----------------------------------------------
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+  'opini',
+  'opini',
+  true,
+  3145728, -- 3 MB
+  ARRAY['image/jpeg', 'image/png', 'image/webp']
+) ON CONFLICT (id) DO NOTHING;
+
+DROP POLICY IF EXISTS "Public read opini storage" ON storage.objects;
+CREATE POLICY "Public read opini storage"
+  ON storage.objects FOR SELECT
+  USING (bucket_id = 'opini');
+
+DROP POLICY IF EXISTS "Public upload opini storage" ON storage.objects;
+CREATE POLICY "Public upload opini storage"
+  ON storage.objects FOR INSERT
+  WITH CHECK (bucket_id = 'opini');
+
+DROP POLICY IF EXISTS "Authenticated manage opini storage" ON storage.objects;
+CREATE POLICY "Authenticated manage opini storage"
+  ON storage.objects FOR ALL
+  TO authenticated
+  USING (bucket_id = 'opini');

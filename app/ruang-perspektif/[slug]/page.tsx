@@ -9,7 +9,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const opinion = await getPublicOpinionBySlug(slug);
+  const opinion = await getPublicOpinionBySlug(slug, { incrementView: false });
   if (!opinion) return { title: "Naskah Tidak Ditemukan | MIM PK Dimoro" };
 
   return {
@@ -29,7 +29,7 @@ export default async function OpiniDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const opinion = await getPublicOpinionBySlug(slug);
+  const opinion = await getPublicOpinionBySlug(slug, { incrementView: true });
 
   if (!opinion) {
     notFound();
