@@ -38,11 +38,8 @@ export default function OpiniAdminEditor({ opini }: { opini: OpiniPerspektif }) 
 
   return (
     <div className="space-y-5 rounded-2xl border border-border/60 bg-card p-5">
-      <div className="flex items-center justify-between border-b pb-3">
+      <div className="border-b pb-3">
         <h3 className="font-bold text-sm text-foreground">Editor Naskah & Proofreading</h3>
-        <Button size="sm" onClick={handleSave} disabled={saving} className="h-8 text-xs">
-          {saving ? "Menyimpan..." : "Simpan Draf"}
-        </Button>
       </div>
 
       <div className="space-y-4">
@@ -89,6 +86,12 @@ export default function OpiniAdminEditor({ opini }: { opini: OpiniPerspektif }) 
             placeholder="Catatan untuk penulis jika ditolak atau perlu perbaikan..."
             className="text-sm sm:text-xs"
           />
+        </div>
+
+        <div className="flex justify-end pt-2 border-t border-border/40">
+          <Button onClick={handleSave} disabled={saving} className="h-10 text-sm sm:h-8 sm:text-xs">
+            {saving ? "Menyimpan..." : "Simpan Draf"}
+          </Button>
         </div>
       </div>
     </div>
