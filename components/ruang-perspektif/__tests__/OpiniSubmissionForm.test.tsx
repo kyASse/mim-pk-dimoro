@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, beforeAll } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import OpiniSubmissionForm from "../OpiniSubmissionForm";
 import { submitOpiniAction } from "@/app/ruang-perspektif/actions";
@@ -8,6 +8,35 @@ vi.mock("@/app/ruang-perspektif/actions", () => ({
 }));
 
 describe("OpiniSubmissionForm", () => {
+  beforeAll(() => {
+    if (typeof window !== "undefined") {
+      Range.prototype.getClientRects = vi.fn().mockReturnValue([]);
+      Range.prototype.getBoundingClientRect = vi.fn().mockReturnValue({
+        x: 0,
+        y: 0,
+        bottom: 0,
+        height: 0,
+        left: 0,
+        right: 0,
+        top: 0,
+        width: 0,
+        toJSON: () => "",
+      });
+      Element.prototype.getClientRects = vi.fn().mockReturnValue([]);
+      Element.prototype.getBoundingClientRect = vi.fn().mockReturnValue({
+        x: 0,
+        y: 0,
+        bottom: 0,
+        height: 0,
+        left: 0,
+        right: 0,
+        top: 0,
+        width: 0,
+        toJSON: () => "",
+      });
+    }
+  });
+
   beforeEach(() => {
     vi.clearAllMocks();
   });

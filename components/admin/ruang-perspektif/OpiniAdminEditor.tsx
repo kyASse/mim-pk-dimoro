@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { KATEGORI_OPINI_LIST } from "@/lib/validations/ruang-perspektif";
+import OpiniRichTextEditor from "@/components/ruang-perspektif/OpiniRichTextEditor";
 import { toast } from "sonner";
 
 export default function OpiniAdminEditor({ opini }: { opini: OpiniPerspektif }) {
@@ -69,8 +70,14 @@ export default function OpiniAdminEditor({ opini }: { opini: OpiniPerspektif }) 
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-foreground">Isi Lengkap</label>
-          <Textarea value={isiLengkap} onChange={(e) => setIsiLengkap(e.target.value)} rows={15} className="text-sm font-normal leading-relaxed" />
+          <label className="text-xs font-semibold text-foreground">Isi Lengkap Naskah</label>
+          <OpiniRichTextEditor
+            value={isiLengkap}
+            onChange={(html) => setIsiLengkap(html)}
+            placeholder="Edit dan rapikan naskah opini di sini..."
+            disabled={saving}
+            minHeight="min-h-[350px]"
+          />
         </div>
 
         <div className="space-y-1.5 pt-2 border-t">

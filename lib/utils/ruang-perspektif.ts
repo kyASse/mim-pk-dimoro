@@ -13,7 +13,8 @@ export function generateOpiniSlug(judul: string): string {
 
 export function estimateReadingTime(text: string): number {
   const wordsPerMinute = 200;
-  const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
+  const strippedText = text.replace(/<[^>]*>/g, " ");
+  const wordCount = strippedText.trim().split(/\s+/).filter(Boolean).length;
   const minutes = Math.ceil(wordCount / wordsPerMinute);
   return Math.max(1, minutes);
 }

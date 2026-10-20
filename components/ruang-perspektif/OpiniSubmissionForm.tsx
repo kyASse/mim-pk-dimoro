@@ -6,6 +6,7 @@ import { KATEGORI_OPINI_LIST } from "@/lib/validations/ruang-perspektif";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import OpiniRichTextEditor from "./OpiniRichTextEditor";
 import { CheckCircle2, AlertCircle, Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
@@ -13,9 +14,10 @@ export default function OpiniSubmissionForm() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [isiLengkap, setIsiLengkap] = useState("");
+  const [isiLengkapHtml, setIsiLengkapHtml] = useState("");
+  const [isiLengkapText, setIsiLengkapText] = useState("");
 
-  const wordCount = isiLengkap.trim().split(/\s+/).filter(Boolean).length;
+  const wordCount = isiLengkapText.trim().split(/\s+/).filter(Boolean).length;
   const isWordCountSufficient = wordCount >= 250;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -232,15 +234,28 @@ export default function OpiniSubmissionForm() {
               {wordCount} kata {isWordCountSufficient ? "(Memenuhi syarat min. 250 kata)" : "(Kurang dari 250 kata)"}
             </span>
           </div>
-          <Textarea
+          <OpiniRichTextEditor
+            value={isiLengkapHtml}
+            onChange={(html, text) => {
+              setIsiLengkapHtml(html);
+              setIsiLengkapText(text);
+            }}
+            placeholder="Tuliskan gagasan, pemikiran, atau opini Anda secara runtut dan rapi..."
+            disabled={loading}
+          />
+          <textarea
             id="isi_lengkap"
             name="isi_lengkap"
-            required
-            rows={12}
-            value={isiLengkap}
-            onChange={(e) => setIsiLengkap(e.target.value)}
-            placeholder="Tuliskan naskah lengkap opini Anda di sini..."
-            className="text-sm leading-relaxed"
+            value={isiLengkapHtml}
+            onChange={(e) => {
+              const val = e.target.value;
+              setIsiLengkapHtml(val);
+              const plain = val.replace(/<[^>]*>/g, " ");
+              setIsiLengkapText(plain);
+            }}
+            className="sr-only"
+            tabIndex={-1}
+            aria-hidden="true"
           />
         </div>
 

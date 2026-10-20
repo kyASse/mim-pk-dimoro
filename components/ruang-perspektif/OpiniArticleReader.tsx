@@ -75,9 +75,16 @@ export default function OpiniArticleReader({ item }: { item: OpiniPublicDetail }
           {item.ringkasan}
         </p>
 
-        <div className="whitespace-pre-line space-y-4">
-          {item.isi_lengkap}
-        </div>
+        {/<[a-z][\s\S]*>/i.test(item.isi_lengkap || "") ? (
+          <div
+            className="prose prose-base sm:prose-lg prose-emerald dark:prose-invert max-w-none text-foreground/90 leading-relaxed font-normal"
+            dangerouslySetInnerHTML={{ __html: item.isi_lengkap }}
+          />
+        ) : (
+          <div className="whitespace-pre-line space-y-4">
+            {item.isi_lengkap}
+          </div>
+        )}
       </div>
 
       <footer className="max-w-[65ch] mx-auto mt-12 pt-8 border-t border-border/40 space-y-6">

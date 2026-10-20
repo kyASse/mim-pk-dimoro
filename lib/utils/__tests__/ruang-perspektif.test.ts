@@ -32,6 +32,15 @@ describe("Ruang Perspektif Utilities", () => {
       expect(estimateReadingTime("")).toBe(1);
       expect(estimateReadingTime("Beberapa kata saja")).toBe(1);
     });
+
+    it("should strip HTML tags before counting words", () => {
+      const htmlContent = "<p>Paragraf satu.</p><blockquote>Kutipan penting di sini.</blockquote><h2>Sub Judul</h2>";
+      // 8 words total, should return 1
+      expect(estimateReadingTime(htmlContent)).toBe(1);
+
+      const htmlWith400Words = `<p>${"kata ".repeat(400)}</p>`;
+      expect(estimateReadingTime(htmlWith400Words)).toBe(2);
+    });
   });
 
   describe("formatWhatsAppNumber", () => {
