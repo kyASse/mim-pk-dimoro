@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { StatusOpini, KategoriOpini } from "@/lib/types/ruang-perspektif";
 import { revalidatePath } from "next/cache";
 
@@ -12,7 +12,7 @@ export async function updateOpiniStatusAction(
   try {
     if (!id) return { success: false, error: "ID naskah tidak valid" };
 
-    const supabase = await createClient();
+    const supabase = await createAdminClient();
     const updatePayload: {
       status: StatusOpini;
       updated_at: string;
@@ -31,10 +31,12 @@ export async function updateOpiniStatusAction(
       updatePayload.waktu_terbit = new Date().toISOString();
     }
 
-    const { error } = await supabase
+    const { data: updated, error } = await supabase
       .from("opini_perspektif")
       .update(updatePayload)
-      .eq("id", id);
+      .eq("id", id)
+      .select("slug")
+      .single();
 
     if (error) {
       return { success: false, error: error.message };
@@ -43,6 +45,9 @@ export async function updateOpiniStatusAction(
     revalidatePath("/admin/ruang-perspektif");
     revalidatePath(`/admin/ruang-perspektif/${id}`);
     revalidatePath("/ruang-perspektif");
+    if (updated?.slug) {
+      revalidatePath(`/ruang-perspektif/${updated.slug}`);
+    }
     revalidatePath("/");
 
     return { success: true };
@@ -65,8 +70,8 @@ export async function updateOpiniContentAction(
   try {
     if (!id) return { success: false, error: "ID naskah tidak valid" };
 
-    const supabase = await createClient();
-    const { error } = await supabase
+    const supabase = await createAdminClient();
+    const { data: updated, error } = await supabase
       .from("opini_perspektif")
       .update({
         judul: data.judul,
@@ -76,13 +81,19 @@ export async function updateOpiniContentAction(
         catatan_redaksi: data.catatan_redaksi,
         updated_at: new Date().toISOString(),
       })
-      .eq("id", id);
+      .eq("id", id)
+      .select("slug")
+      .single();
 
     if (error) return { success: false, error: error.message };
 
     revalidatePath("/admin/ruang-perspektif");
     revalidatePath(`/admin/ruang-perspektif/${id}`);
     revalidatePath("/ruang-perspektif");
+    if (updated?.slug) {
+      revalidatePath(`/ruang-perspektif/${updated.slug}`);
+    }
+    revalidatePath("/");
     return { success: true };
   } catch (err: unknown) {
     const errorMsg = err instanceof Error ? err.message : "Gagal menyimpan perubahan";
@@ -97,16 +108,21 @@ export async function toggleFeaturedOpiniAction(
   try {
     if (!id) return { success: false, error: "ID tidak valid" };
 
-    const supabase = await createClient();
-    const { error } = await supabase
+    const supabase = await createAdminClient();
+    const { data: updated, error } = await supabase
       .from("opini_perspektif")
       .update({ is_featured: isFeatured, updated_at: new Date().toISOString() })
-      .eq("id", id);
+      .eq("id", id)
+      .select("slug")
+      .single();
 
     if (error) return { success: false, error: error.message };
 
     revalidatePath("/admin/ruang-perspektif");
     revalidatePath("/ruang-perspektif");
+    if (updated?.slug) {
+      revalidatePath(`/ruang-perspektif/${updated.slug}`);
+    }
     revalidatePath("/");
     return { success: true };
   } catch (err: unknown) {
@@ -119,16 +135,21 @@ export async function deleteOpiniAction(id: string): Promise<{ success: boolean;
   try {
     if (!id) return { success: false, error: "ID tidak valid" };
 
-    const supabase = await createClient();
-    const { error } = await supabase
+    const supabase = await createAdminClient();
+    const { data: deleted, error } = await supabase
       .from("opini_perspektif")
       .delete()
-      .eq("id", id);
+      .eq("id", id)
+      .select("slug")
+      .single();
 
     if (error) return { success: false, error: error.message };
 
     revalidatePath("/admin/ruang-perspektif");
     revalidatePath("/ruang-perspektif");
+    if (deleted?.slug) {
+      revalidatePath(`/ruang-perspektif/${deleted.slug}`);
+    }
     revalidatePath("/");
     return { success: true };
   } catch (err: unknown) {

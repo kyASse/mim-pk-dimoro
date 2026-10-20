@@ -11,8 +11,8 @@ vi.mock("next/cache", () => ({
   revalidatePath: vi.fn(),
 }));
 
-vi.mock("@/lib/supabase/server", () => ({
-  createClient: vi.fn(),
+vi.mock("@/lib/supabase/admin", () => ({
+  createAdminClient: vi.fn(),
 }));
 
 describe("Admin Ruang Perspektif Actions", () => {
@@ -28,11 +28,16 @@ describe("Admin Ruang Perspektif Actions", () => {
     });
 
     it("should succeed when valid status is passed to supabase", async () => {
-      const updateMock = vi.fn().mockReturnValue({
-        eq: vi.fn().mockResolvedValue({ error: null }),
+      const singleMock = vi.fn().mockResolvedValue({
+        data: { slug: "artikel-uji" },
+        error: null,
       });
-      const { createClient } = await import("@/lib/supabase/server");
-      (createClient as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+      const selectMock = vi.fn().mockReturnValue({ single: singleMock });
+      const eqMock = vi.fn().mockReturnValue({ select: selectMock });
+      const updateMock = vi.fn().mockReturnValue({ eq: eqMock });
+
+      const { createAdminClient } = await import("@/lib/supabase/admin");
+      (createAdminClient as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
         from: () => ({
           update: updateMock,
         }),
@@ -51,15 +56,20 @@ describe("Admin Ruang Perspektif Actions", () => {
       expect(revalidatePath).toHaveBeenCalledWith("/admin/ruang-perspektif");
       expect(revalidatePath).toHaveBeenCalledWith("/admin/ruang-perspektif/some-uuid");
       expect(revalidatePath).toHaveBeenCalledWith("/ruang-perspektif");
+      expect(revalidatePath).toHaveBeenCalledWith("/ruang-perspektif/artikel-uji");
       expect(revalidatePath).toHaveBeenCalledWith("/");
     });
 
     it("should handle error when supabase fails to update status", async () => {
-      const { createClient } = await import("@/lib/supabase/server");
-      (createClient as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+      const { createAdminClient } = await import("@/lib/supabase/admin");
+      (createAdminClient as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
         from: () => ({
           update: () => ({
-            eq: () => Promise.resolve({ error: { message: "Database error" } }),
+            eq: () => ({
+              select: () => ({
+                single: () => Promise.resolve({ data: null, error: { message: "Database error" } }),
+              }),
+            }),
           }),
         }),
       });
@@ -82,12 +92,17 @@ describe("Admin Ruang Perspektif Actions", () => {
       expect(result.error).toBe("ID naskah tidak valid");
     });
 
-    it("should update content successfully", async () => {
-      const updateMock = vi.fn().mockReturnValue({
-        eq: vi.fn().mockResolvedValue({ error: null }),
+    it("should update content successfully and revalidate slug path", async () => {
+      const singleMock = vi.fn().mockResolvedValue({
+        data: { slug: "opini-baru" },
+        error: null,
       });
-      const { createClient } = await import("@/lib/supabase/server");
-      (createClient as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+      const selectMock = vi.fn().mockReturnValue({ single: singleMock });
+      const eqMock = vi.fn().mockReturnValue({ select: selectMock });
+      const updateMock = vi.fn().mockReturnValue({ eq: eqMock });
+
+      const { createAdminClient } = await import("@/lib/supabase/admin");
+      (createAdminClient as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
         from: () => ({
           update: updateMock,
         }),
@@ -114,14 +129,19 @@ describe("Admin Ruang Perspektif Actions", () => {
       expect(revalidatePath).toHaveBeenCalledWith("/admin/ruang-perspektif");
       expect(revalidatePath).toHaveBeenCalledWith("/admin/ruang-perspektif/some-uuid");
       expect(revalidatePath).toHaveBeenCalledWith("/ruang-perspektif");
+      expect(revalidatePath).toHaveBeenCalledWith("/ruang-perspektif/opini-baru");
     });
 
     it("should handle error when supabase fails to update content", async () => {
-      const { createClient } = await import("@/lib/supabase/server");
-      (createClient as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+      const { createAdminClient } = await import("@/lib/supabase/admin");
+      (createAdminClient as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
         from: () => ({
           update: () => ({
-            eq: () => Promise.resolve({ error: { message: "Update error" } }),
+            eq: () => ({
+              select: () => ({
+                single: () => Promise.resolve({ data: null, error: { message: "Update error" } }),
+              }),
+            }),
           }),
         }),
       });
@@ -145,11 +165,16 @@ describe("Admin Ruang Perspektif Actions", () => {
     });
 
     it("should toggle featured successfully", async () => {
-      const updateMock = vi.fn().mockReturnValue({
-        eq: vi.fn().mockResolvedValue({ error: null }),
+      const singleMock = vi.fn().mockResolvedValue({
+        data: { slug: "opini-featured" },
+        error: null,
       });
-      const { createClient } = await import("@/lib/supabase/server");
-      (createClient as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+      const selectMock = vi.fn().mockReturnValue({ single: singleMock });
+      const eqMock = vi.fn().mockReturnValue({ select: selectMock });
+      const updateMock = vi.fn().mockReturnValue({ eq: eqMock });
+
+      const { createAdminClient } = await import("@/lib/supabase/admin");
+      (createAdminClient as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
         from: () => ({
           update: updateMock,
         }),
@@ -165,15 +190,20 @@ describe("Admin Ruang Perspektif Actions", () => {
       );
       expect(revalidatePath).toHaveBeenCalledWith("/admin/ruang-perspektif");
       expect(revalidatePath).toHaveBeenCalledWith("/ruang-perspektif");
+      expect(revalidatePath).toHaveBeenCalledWith("/ruang-perspektif/opini-featured");
       expect(revalidatePath).toHaveBeenCalledWith("/");
     });
 
     it("should handle error when supabase fails to toggle featured", async () => {
-      const { createClient } = await import("@/lib/supabase/server");
-      (createClient as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+      const { createAdminClient } = await import("@/lib/supabase/admin");
+      (createAdminClient as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
         from: () => ({
           update: () => ({
-            eq: () => Promise.resolve({ error: { message: "Toggle error" } }),
+            eq: () => ({
+              select: () => ({
+                single: () => Promise.resolve({ data: null, error: { message: "Toggle error" } }),
+              }),
+            }),
           }),
         }),
       });
@@ -192,11 +222,16 @@ describe("Admin Ruang Perspektif Actions", () => {
     });
 
     it("should delete opinion successfully", async () => {
-      const deleteMock = vi.fn().mockReturnValue({
-        eq: vi.fn().mockResolvedValue({ error: null }),
+      const singleMock = vi.fn().mockResolvedValue({
+        data: { slug: "opini-deleted" },
+        error: null,
       });
-      const { createClient } = await import("@/lib/supabase/server");
-      (createClient as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+      const selectMock = vi.fn().mockReturnValue({ single: singleMock });
+      const eqMock = vi.fn().mockReturnValue({ select: selectMock });
+      const deleteMock = vi.fn().mockReturnValue({ eq: eqMock });
+
+      const { createAdminClient } = await import("@/lib/supabase/admin");
+      (createAdminClient as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
         from: () => ({
           delete: deleteMock,
         }),
@@ -207,15 +242,20 @@ describe("Admin Ruang Perspektif Actions", () => {
       expect(deleteMock).toHaveBeenCalled();
       expect(revalidatePath).toHaveBeenCalledWith("/admin/ruang-perspektif");
       expect(revalidatePath).toHaveBeenCalledWith("/ruang-perspektif");
+      expect(revalidatePath).toHaveBeenCalledWith("/ruang-perspektif/opini-deleted");
       expect(revalidatePath).toHaveBeenCalledWith("/");
     });
 
     it("should handle error when supabase fails to delete", async () => {
-      const { createClient } = await import("@/lib/supabase/server");
-      (createClient as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+      const { createAdminClient } = await import("@/lib/supabase/admin");
+      (createAdminClient as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
         from: () => ({
           delete: () => ({
-            eq: () => Promise.resolve({ error: { message: "Delete error" } }),
+            eq: () => ({
+              select: () => ({
+                single: () => Promise.resolve({ data: null, error: { message: "Delete error" } }),
+              }),
+            }),
           }),
         }),
       });

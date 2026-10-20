@@ -72,6 +72,10 @@ function ToolbarButton({
       title={label}
       aria-label={ariaLabel}
       disabled={isDisabled}
+      onMouseDown={(e) => {
+        // Prevent toolbar button click from stealing focus and collapsing selection in editor
+        e.preventDefault();
+      }}
       onClick={onClick}
       className={cn(
         "inline-flex items-center justify-center rounded-md p-1.5 text-xs font-medium transition-colors shrink-0 h-8 w-8",
@@ -138,6 +142,12 @@ export default function OpiniRichTextEditor({
           "text-foreground leading-relaxed selection:bg-primary/20"
         ),
       },
+    },
+    onCreate: ({ editor }) => {
+      // If legacy plain text was passed without HTML tags, sync parsed HTML to parent
+      if (value && !/<[a-z][\s\S]*>/i.test(value)) {
+        onChange(editor.getHTML(), editor.getText());
+      }
     },
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML(), editor.getText());

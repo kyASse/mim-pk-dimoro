@@ -77,7 +77,7 @@ export default function OpiniArticleReader({ item }: { item: OpiniPublicDetail }
 
         {/<[a-z][\s\S]*>/i.test(item.isi_lengkap || "") ? (
           <div
-            className="prose prose-base sm:prose-lg prose-emerald dark:prose-invert max-w-none text-foreground/90 leading-relaxed font-normal"
+            className="prose prose-base sm:prose-lg prose-emerald dark:prose-invert max-w-none text-foreground/90 leading-relaxed font-normal [&_[style*='text-align:center']]:text-center [&_[style*='text-align:right']]:text-right [&_[style*='text-align:justify']]:text-justify [&_[style*='text-align:left']]:text-left [&_p]:mb-4"
             dangerouslySetInnerHTML={{ __html: item.isi_lengkap }}
           />
         ) : (

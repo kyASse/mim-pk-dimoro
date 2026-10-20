@@ -80,4 +80,26 @@ describe("OpiniRichTextEditor Component", () => {
     const { container } = render(<OpiniRichTextEditor {...defaultProps} />);
     expect(container.querySelector(".ProseMirror")).toBeDefined();
   });
+
+  it("applies text alignment when alignment button is clicked", async () => {
+    const onChangeMock = vi.fn();
+    render(
+      <OpiniRichTextEditor
+        value="<p>Teks paragraf opini untuk testing perataan teks.</p>"
+        onChange={onChangeMock}
+      />
+    );
+
+    const centerButton = screen.getByRole("button", { name: /Rata Tengah \(Align Center\)/i });
+    expect(centerButton).toBeDefined();
+
+    // Click center button
+    centerButton.click();
+
+    // Check that onChange was called and produced text-align center
+    expect(onChangeMock).toHaveBeenCalled();
+    const calls = onChangeMock.mock.calls;
+    const lastCallHtml = calls[calls.length - 1][0];
+    expect(lastCallHtml).toContain('style="text-align: center;"');
+  });
 });
