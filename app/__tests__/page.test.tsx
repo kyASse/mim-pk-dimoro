@@ -43,6 +43,13 @@ vi.mock("@/components/home/ProgramSection", () => ({
 vi.mock("@/components/home/GalleryPreview", () => ({
   default: () => <div data-testid="gallery-preview">GalleryPreview</div>,
 }));
+vi.mock("@/components/home/RuangPerspektifSection", () => ({
+  default: ({ opinions }: { opinions: any }) => (
+    <div data-testid="ruang-perspektif-section">
+      RuangPerspektifSection ({opinions?.length ?? 0})
+    </div>
+  ),
+}));
 vi.mock("@/components/home/TestimonialsSection", () => ({
   default: () => <div data-testid="testimonials-section">TestimonialsSection</div>,
 }));
@@ -118,6 +125,7 @@ describe("Home Page (app/page.tsx)", () => {
       )
     ).toBeDefined();
     expect(screen.getByTestId("home-hero")).toBeDefined();
+    expect(screen.getByTestId("ruang-perspektif-section")).toBeDefined();
   });
 
   it("handles null or empty spotlight news gracefully when no published news exists", async () => {

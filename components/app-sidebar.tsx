@@ -147,6 +147,11 @@ const navGroupsData: NavGroup[] = [
         ],
       },
       {
+        title: "Ruang Perspektif",
+        url: "/admin/ruang-perspektif",
+        icon: BookOpen,
+      },
+      {
         title: "Galeri Foto",
         url: "/admin/galeri",
         icon: ImageIcon,
