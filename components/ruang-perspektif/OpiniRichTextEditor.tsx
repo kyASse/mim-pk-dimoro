@@ -6,6 +6,7 @@ import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
+import TextAlign from "@tiptap/extension-text-align";
 import {
   Bold,
   Italic,
@@ -17,6 +18,10 @@ import {
   List,
   ListOrdered,
   Minus,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify,
   Link as LinkIcon,
   Unlink,
   Undo,
@@ -117,6 +122,10 @@ export default function OpiniRichTextEditor({
       }),
       Placeholder.configure({
         placeholder,
+      }),
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+        alignments: ["left", "center", "right", "justify"],
       }),
     ],
     content: value,
@@ -287,6 +296,44 @@ export default function OpiniRichTextEditor({
             isActive={false}
             isDisabled={disabled || !editor}
             onClick={() => editor?.chain().focus().setHorizontalRule().run()}
+          />
+        </div>
+
+        <ToolbarDivider />
+
+        {/* Text Alignment */}
+        <div className="flex items-center gap-0.5 shrink-0">
+          <ToolbarButton
+            label="Rata Kiri (Align Left)"
+            ariaLabel="Rata Kiri (Align Left)"
+            icon={<AlignLeft className="h-4 w-4" />}
+            isActive={editor?.isActive({ textAlign: "left" })}
+            isDisabled={disabled || !editor}
+            onClick={() => editor?.chain().focus().setTextAlign("left").run()}
+          />
+          <ToolbarButton
+            label="Rata Tengah (Align Center)"
+            ariaLabel="Rata Tengah (Align Center)"
+            icon={<AlignCenter className="h-4 w-4" />}
+            isActive={editor?.isActive({ textAlign: "center" })}
+            isDisabled={disabled || !editor}
+            onClick={() => editor?.chain().focus().setTextAlign("center").run()}
+          />
+          <ToolbarButton
+            label="Rata Kanan (Align Right)"
+            ariaLabel="Rata Kanan (Align Right)"
+            icon={<AlignRight className="h-4 w-4" />}
+            isActive={editor?.isActive({ textAlign: "right" })}
+            isDisabled={disabled || !editor}
+            onClick={() => editor?.chain().focus().setTextAlign("right").run()}
+          />
+          <ToolbarButton
+            label="Rata Kanan Kiri (Justify)"
+            ariaLabel="Rata Kanan Kiri (Justify)"
+            icon={<AlignJustify className="h-4 w-4" />}
+            isActive={editor?.isActive({ textAlign: "justify" })}
+            isDisabled={disabled || !editor}
+            onClick={() => editor?.chain().focus().setTextAlign("justify").run()}
           />
         </div>
 

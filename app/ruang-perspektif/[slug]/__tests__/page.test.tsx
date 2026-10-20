@@ -52,11 +52,11 @@ describe("Ruang Perspektif Detail Page (app/ruang-perspektif/[slug]/page.tsx)", 
     expect(screen.getByText(/2 mnt baca/i)).toBeDefined();
   });
 
-  it("renders rich HTML article content with prose formatting", async () => {
+  it("renders rich HTML article content with prose formatting and text alignment", async () => {
     const { getPublicOpinionBySlug } = await import("@/lib/services/ruang-perspektif");
     const htmlOpinion = {
       ...mockOpinion,
-      isi_lengkap: "<h2>Subjudul Opini</h2><blockquote>Kutipan mendalam guru</blockquote><p>Paragraf isi terformat.</p>",
+      isi_lengkap: "<h2>Subjudul Opini</h2><blockquote>Kutipan mendalam guru</blockquote><p style=\"text-align: center;\">Paragraf rata tengah.</p><p style=\"text-align: justify;\">Paragraf rata kiri kanan.</p>",
     };
     vi.mocked(getPublicOpinionBySlug).mockResolvedValue(htmlOpinion);
 
@@ -65,7 +65,8 @@ describe("Ruang Perspektif Detail Page (app/ruang-perspektif/[slug]/page.tsx)", 
 
     expect(screen.getByText("Subjudul Opini")).toBeDefined();
     expect(screen.getByText("Kutipan mendalam guru")).toBeDefined();
-    expect(screen.getByText("Paragraf isi terformat.")).toBeDefined();
+    expect(screen.getByText("Paragraf rata tengah.")).toBeDefined();
+    expect(screen.getByText("Paragraf rata kiri kanan.")).toBeDefined();
     expect(container.querySelector(".prose")).toBeDefined();
   });
 

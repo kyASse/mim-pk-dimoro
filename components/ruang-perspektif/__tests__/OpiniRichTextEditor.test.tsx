@@ -62,6 +62,12 @@ describe("OpiniRichTextEditor Component", () => {
     expect(screen.getByRole("button", { name: /Garis Pemisah \(Divider\)/i })).toBeDefined();
     expect(screen.getByRole("button", { name: /Sisipkan Tautan/i })).toBeDefined();
 
+    // Text Alignment
+    expect(screen.getByRole("button", { name: /Rata Kiri \(Align Left\)/i })).toBeDefined();
+    expect(screen.getByRole("button", { name: /Rata Tengah \(Align Center\)/i })).toBeDefined();
+    expect(screen.getByRole("button", { name: /Rata Kanan \(Align Right\)/i })).toBeDefined();
+    expect(screen.getByRole("button", { name: /Rata Kanan Kiri \(Justify\)/i })).toBeDefined();
+
     // History
     expect(screen.getByRole("button", { name: /Undo/i })).toBeDefined();
     expect(screen.getByRole("button", { name: /Redo/i })).toBeDefined();
