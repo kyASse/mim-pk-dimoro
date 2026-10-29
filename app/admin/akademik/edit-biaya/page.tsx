@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { parseCatatanSpp } from "../../konten/edit/[slug]/utils";
 import EditBiayaClient from "./EditBiayaClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function EditBiayaPage() {
   const supabase = await createClient();
 
@@ -24,7 +26,7 @@ export default async function EditBiayaPage() {
   const [{ data: biaya, error: biayaError }, { data: catatanSpp }] =
     await Promise.all([biayaPromise, sppPromise]);
 
-  if (biayaError || !biaya) {
+  if (biayaError) {
     console.error("Gagal mengambil data biaya_pendaftaran:", biayaError);
     return redirect("/admin/akademik");
   }
@@ -33,7 +35,7 @@ export default async function EditBiayaPage() {
 
   return (
     <EditBiayaClient
-      initialBiaya={biaya}
+      initialBiaya={biaya || []}
       initialCatatanSpp={defaultSppText}
     />
   );

@@ -2,7 +2,7 @@
 
 import React, { useState, useTransition, useMemo } from "react";
 import Link from "next/link";
-import { ArrowLeft, Save, RotateCcw, Check, AlertCircle, Loader2 } from "lucide-react";
+import { ArrowLeft, Save, RotateCcw, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
@@ -24,6 +24,7 @@ export default function EditBiayaClient({
 }: EditBiayaClientProps) {
   const [biayaItems, setBiayaItems] = useState<BiayaItemRow[]>(initialBiaya);
   const [catatanSpp, setCatatanSpp] = useState<string>(initialCatatanSpp || "");
+  const [deletedIds, setDeletedIds] = useState<number[]>([]);
   const [isPending, startTransition] = useTransition();
 
   // Snapshot for dirty tracking & reset
@@ -38,13 +39,16 @@ export default function EditBiayaClient({
   // Calculate if form has unsaved changes
   const isDirty = useMemo(() => {
     if (catatanSpp !== savedSnapshot.spp) return true;
+    if (deletedIds.length > 0) return true;
     if (biayaItems.length !== savedSnapshot.biaya.length) return true;
 
     for (let i = 0; i < biayaItems.length; i++) {
       const current = biayaItems[i];
       const saved = savedSnapshot.biaya[i];
+      if (!saved) return true;
       if (
         current.id !== saved.id ||
+        (current.komponen_biaya || "") !== (saved.komponen_biaya || "") ||
         (current.biaya_putra || 0) !== (saved.biaya_putra || 0) ||
         (current.biaya_putri || 0) !== (saved.biaya_putri || 0)
       ) {
@@ -52,19 +56,39 @@ export default function EditBiayaClient({
       }
     }
     return false;
-  }, [biayaItems, catatanSpp, savedSnapshot]);
+  }, [biayaItems, catatanSpp, deletedIds, savedSnapshot]);
 
   // Live Totals
   const totals = useMemo(() => calculateTotals(biayaItems), [biayaItems]);
 
   const handleItemChange = (
     id: number,
-    field: "biaya_putra" | "biaya_putri",
-    value: number
+    field: "komponen_biaya" | "biaya_putra" | "biaya_putri",
+    value: any
   ) => {
     setBiayaItems((prev) =>
       prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
     );
+  };
+
+  const handleAddItem = () => {
+    const tempId = -Date.now();
+    setBiayaItems((prev) => [
+      ...prev,
+      {
+        id: tempId,
+        komponen_biaya: "Komponen Biaya Baru",
+        biaya_putra: 0,
+        biaya_putri: 0,
+      },
+    ]);
+  };
+
+  const handleDeleteItem = (id: number) => {
+    setBiayaItems((prev) => prev.filter((item) => item.id !== id));
+    if (id > 0) {
+      setDeletedIds((prev) => [...prev, id]);
+    }
   };
 
   const handleCopyPutraToPutri = (id: number) => {
@@ -81,6 +105,7 @@ export default function EditBiayaClient({
   const handleReset = () => {
     setBiayaItems(savedSnapshot.biaya);
     setCatatanSpp(savedSnapshot.spp);
+    setDeletedIds([]);
     toast.info("Perubahan dibatalkan.");
   };
 
@@ -94,10 +119,12 @@ export default function EditBiayaClient({
       const payload = {
         biaya: biayaItems.map((item) => ({
           id: item.id,
+          komponen_biaya: item.komponen_biaya || "Komponen Biaya",
           biaya_putra: item.biaya_putra || 0,
           biaya_putri: item.biaya_putri || 0,
         })),
         catatanSpp,
+        deletedIds,
       };
 
       const result = await updateBiayaAndSppAction(payload);
@@ -106,6 +133,7 @@ export default function EditBiayaClient({
           biaya: biayaItems,
           spp: catatanSpp,
         });
+        setDeletedIds([]);
         toast.success(result.message);
       } else {
         toast.error(result.message || "Gagal menyimpan perubahan.");
@@ -212,6 +240,8 @@ export default function EditBiayaClient({
                 items={biayaItems}
                 onChange={handleItemChange}
                 onCopyPutraToPutri={handleCopyPutraToPutri}
+                onAddItem={handleAddItem}
+                onDeleteItem={handleDeleteItem}
               />
             </div>
 
@@ -221,6 +251,8 @@ export default function EditBiayaClient({
                 items={biayaItems}
                 onChange={handleItemChange}
                 onCopyPutraToPutri={handleCopyPutraToPutri}
+                onAddItem={handleAddItem}
+                onDeleteItem={handleDeleteItem}
               />
             </div>
           </div>

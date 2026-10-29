@@ -6,15 +6,30 @@ vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(),
 }));
 
+vi.mock('@/lib/supabase/admin', () => ({
+  createAdminClient: vi.fn(),
+}));
+
+vi.mock('@/lib/auth/guards', () => ({
+  requireRole: vi.fn(),
+}));
+
 vi.mock('next/cache', () => ({
   revalidatePath: vi.fn(),
 }));
 
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
+import { requireRole } from '@/lib/auth/guards';
 
 describe('Akademik Actions', () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    (requireRole as any).mockResolvedValue({
+      authorized: true,
+      user: { id: 'user-admin-1', email: 'admin@mimpkdimoro.sch.id' },
+      profile: { id: 'user-admin-1', role: 'admin_tu', nama_lengkap: 'Staf TU' },
+    });
   });
 
   describe('createPrestasiAction', () => {
@@ -82,17 +97,40 @@ describe('Akademik Actions', () => {
   });
 
   describe('updateBiayaAndSppAction', () => {
-    it('should update both biaya items and catatan SPP successfully', async () => {
+    it('should return error when user is not authorized', async () => {
+      (requireRole as any).mockResolvedValue({
+        authorized: false,
+        message: 'Akses ditolak: role tidak memiliki izin.',
+      });
+
+      const payload = {
+        biaya: [{ id: 1, komponen_biaya: 'Pendaftaran', biaya_putra: 0, biaya_putri: 0 }],
+        catatanSpp: 'Catatan SPP',
+      };
+
+      const result = await updateBiayaAndSppAction(payload);
+      expect(result.success).toBe(false);
+      expect(result.message).toContain('Akses ditolak');
+    });
+
+    it('should update existing items, insert new items, delete removed items, and update SPP successfully', async () => {
       const mockEqBiaya = vi.fn().mockResolvedValue({ error: null });
       const mockUpdateBiaya = vi.fn().mockReturnValue({ eq: mockEqBiaya });
+      const mockInsertBiaya = vi.fn().mockResolvedValue({ error: null });
+      const mockInDelete = vi.fn().mockResolvedValue({ error: null });
+      const mockDeleteBiaya = vi.fn().mockReturnValue({ in: mockInDelete });
 
       const mockEqSpp = vi.fn().mockResolvedValue({ error: null });
       const mockUpdateSpp = vi.fn().mockReturnValue({ eq: mockEqSpp });
 
-      const mockSupabase = {
+      const mockAdminSupabase = {
         from: vi.fn((table: string) => {
           if (table === 'biaya_pendaftaran') {
-            return { update: mockUpdateBiaya };
+            return {
+              update: mockUpdateBiaya,
+              insert: mockInsertBiaya,
+              delete: mockDeleteBiaya,
+            };
           }
           if (table === 'konten_halaman') {
             return { update: mockUpdateSpp };
@@ -100,40 +138,70 @@ describe('Akademik Actions', () => {
           return {};
         }),
       };
-      vi.mocked(createClient).mockResolvedValue(mockSupabase as any);
+      vi.mocked(createAdminClient).mockResolvedValue(mockAdminSupabase as any);
 
       const payload = {
         biaya: [
-          { id: 1, biaya_putra: 600000, biaya_putri: 650000 },
-          { id: 2, biaya_putra: 100000, biaya_putri: 100000 },
+          { id: 1, komponen_biaya: 'Biaya Pendaftaran (GRATIS)', biaya_putra: 0, biaya_putri: 0 },
+          { id: -123, komponen_biaya: 'Infaq Gedung Baru', biaya_putra: 250000, biaya_putri: 250000 },
         ],
         catatanSpp: 'SPP sudah termasuk seragam dan ekstrakurikuler wajib.',
+        deletedIds: [5, 6],
       };
 
       const result = await updateBiayaAndSppAction(payload);
 
       expect(result.success).toBe(true);
       expect(result.message).toBe('Data rincian biaya dan catatan SPP berhasil diperbarui.');
-      expect(mockUpdateBiaya).toHaveBeenCalledTimes(2);
+
+      // Update existing item 1
+      expect(mockUpdateBiaya).toHaveBeenCalledWith({
+        komponen_biaya: 'Biaya Pendaftaran (GRATIS)',
+        biaya_putra: 0,
+        biaya_putri: 0,
+      });
+      expect(mockEqBiaya).toHaveBeenCalledWith('id', 1);
+
+      // Insert new item
+      expect(mockInsertBiaya).toHaveBeenCalledWith([
+        {
+          komponen_biaya: 'Infaq Gedung Baru',
+          biaya_putra: 250000,
+          biaya_putri: 250000,
+        },
+      ]);
+
+      // Delete items
+      expect(mockDeleteBiaya).toHaveBeenCalled();
+      expect(mockInDelete).toHaveBeenCalledWith('id', [5, 6]);
+
+      // SPP Update
       expect(mockUpdateSpp).toHaveBeenCalledWith({
-        isi: { catatan: 'SPP sudah termasuk seragam dan ekstrakurikuler wajib.' },
+        isi: {
+          catatan: 'SPP sudah termasuk seragam dan ekstrakurikuler wajib.',
+          blocks: [{ text: 'SPP sudah termasuk seragam dan ekstrakurikuler wajib.' }],
+        },
       });
       expect(mockEqSpp).toHaveBeenCalledWith('slug', 'catatan-spp');
+
+      // Revalidate paths
       expect(revalidatePath).toHaveBeenCalledWith('/admin/akademik');
+      expect(revalidatePath).toHaveBeenCalledWith('/admin/akademik/edit-biaya');
       expect(revalidatePath).toHaveBeenCalledWith('/pendaftaran');
+      expect(revalidatePath).toHaveBeenCalledWith('/portal/keuangan');
     });
 
     it('should return error when updating biaya fails', async () => {
       const mockEqBiaya = vi.fn().mockResolvedValue({ error: { message: 'Database error' } });
       const mockUpdateBiaya = vi.fn().mockReturnValue({ eq: mockEqBiaya });
 
-      const mockSupabase = {
+      const mockAdminSupabase = {
         from: vi.fn().mockReturnValue({ update: mockUpdateBiaya }),
       };
-      vi.mocked(createClient).mockResolvedValue(mockSupabase as any);
+      vi.mocked(createAdminClient).mockResolvedValue(mockAdminSupabase as any);
 
       const payload = {
-        biaya: [{ id: 1, biaya_putra: 600000, biaya_putri: 650000 }],
+        biaya: [{ id: 1, komponen_biaya: 'Pendaftaran', biaya_putra: 600000, biaya_putri: 650000 }],
         catatanSpp: 'Catatan SPP',
       };
 
@@ -149,17 +217,17 @@ describe('Akademik Actions', () => {
       const mockEqSpp = vi.fn().mockResolvedValue({ error: { message: 'SPP table error' } });
       const mockUpdateSpp = vi.fn().mockReturnValue({ eq: mockEqSpp });
 
-      const mockSupabase = {
+      const mockAdminSupabase = {
         from: vi.fn((table: string) => {
           if (table === 'biaya_pendaftaran') return { update: mockUpdateBiaya };
           if (table === 'konten_halaman') return { update: mockUpdateSpp };
           return {};
         }),
       };
-      vi.mocked(createClient).mockResolvedValue(mockSupabase as any);
+      vi.mocked(createAdminClient).mockResolvedValue(mockAdminSupabase as any);
 
       const payload = {
-        biaya: [{ id: 1, biaya_putra: 600000, biaya_putri: 650000 }],
+        biaya: [{ id: 1, komponen_biaya: 'Pendaftaran', biaya_putra: 600000, biaya_putri: 650000 }],
         catatanSpp: 'Catatan SPP',
       };
 
@@ -169,4 +237,3 @@ describe('Akademik Actions', () => {
     });
   });
 });
-
