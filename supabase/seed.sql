@@ -13,9 +13,9 @@
 -- ============================================================
 INSERT INTO public.konten_halaman (slug, judul, isi) 
 VALUES 
-  ('persyaratan-pendaftaran', 'Persyaratan Pendaftaran', '{"blocks": [{"text": "1. Mengisi formulir pendaftaran online\n2. Fotokopi Akta Kelahiran\n3. Fotokopi Kartu Keluarga\n4. Pas foto 3x4 berwarna (2 lembar)\n5. Surat keterangan dari TK/RA asal (bila ada)"}]}'),
-  ('catatan-spp', 'Catatan SPP & Pembiayaan', '{"blocks": [{"text": "SPP bulanan sudah mencakup seluruh program unggulan (Tahfidz, Klinik Belajar, makan siang, dan ekstrakurikuler wajib)."}]}'),
-  ('jadwal-pendaftaran', 'Jadwal Pendaftaran PPDB', '{"blocks": [{"text": "Gelombang 1: Januari - Maret 2026\nGelombang 2: April - Juni 2026\nTes Observasi: Setiap hari Sabtu pada akhir bulan"}]}')
+  ('persyaratan-pendaftaran', 'Persyaratan Pendaftaran', '{"blocks": [{"text": "1. Lembar Formulir Pendaftaran\n2. Fotokopi Akta Kelahiran\n3. Fotokopi KTP Orang Tua\n4. Fotokopi Kartu Keluarga (KK)"}]}'),
+  ('catatan-spp', 'Catatan SPP & Pembiayaan', '{"blocks": [{"text": "SPESIAL PPDB TA 2027-2028:\n- GRATIS Uang Pendaftaran & GRATIS Uang Gedung\n- Voucher Spesial: Golden Tiket 200 K (Pendaftar Oktober) & Silver Tiket 100 K (Pendaftar Nopember-Desember)\n- SPP bulanan sudah mencakup seluruh program unggulan (Tahfidz, Klinik Belajar, makan siang, dan ekstrakurikuler wajib)."}]}'),
+  ('jadwal-pendaftaran', 'Jadwal Pendaftaran PPDB', '{"blocks": [{"text": "Tahap Indent: Oktober - Desember 2026\nTahap Pertama: Januari - Juli 2027"}]}')
 ON CONFLICT (slug) DO UPDATE SET judul = EXCLUDED.judul, isi = EXCLUDED.isi;
 
 -- ============================================================
@@ -24,8 +24,8 @@ ON CONFLICT (slug) DO UPDATE SET judul = EXCLUDED.judul, isi = EXCLUDED.isi;
 TRUNCATE public.biaya_pendaftaran CASCADE;
 INSERT INTO public.biaya_pendaftaran (komponen_biaya, biaya_putra, biaya_putri)
 VALUES
-  ('Biaya Formulir & Observasi', 200000, 200000),
-  ('Dana Pengembangan Pendidikan (DPP)', 1500000, 1500000),
+  ('Biaya Formulir & Pendaftaran (GRATIS)', 0, 0),
+  ('Dana Pengembangan Pendidikan / Gedung (GRATIS)', 0, 0),
   ('Paket Seragam & Atribut Madrasah', 600000, 650000),
   ('Kegiatan & Ekstrakurikuler 1 Tahun', 450000, 450000);
 
@@ -33,14 +33,17 @@ VALUES
 -- 3. SEED DATA: Kontak Sekolah
 -- ============================================================
 TRUNCATE public.kontak_sekolah CASCADE;
-INSERT INTO public.kontak_sekolah (alamat, whatsapp, email_utama, email_admin, jam_operasional, maps_embed_url)
+INSERT INTO public.kontak_sekolah (alamat, whatsapp, email_utama, email_admin, jam_operasional, maps_embed_url, facebook_url, instagram_url, youtube_url)
 VALUES (
   'Sudimoro, RT.003/RW.X, Parangjoro, Grogol, Sukoharjo, Jawa Tengah 57552',
   '+62 821-3388-1991',
   'info@mimpkdimoro.sch.id',
   'admin@mimpkdimoro.sch.id',
   E'Senin - Kamis: 07.30 - 14.00 WIB\nJumat: 07.30 - 11.00 WIB\nSabtu: 07.30 - 12.00 WIB',
-  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3954.6!2d110.8!3d-7.6!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zN8KwMzY''MDAuMCJTIDExMMKwNDgnMDAuMCJF!5e0!3m2!1sen!2sid!4v1234567890'
+  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3954.6!2d110.8!3d-7.6!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zN8KwMzY''MDAuMCJTIDExMMKwNDgnMDAuMCJF!5e0!3m2!1sen!2sid!4v1234567890',
+  'https://facebook.com/mimpkdimoro',
+  'https://instagram.com/mimpkdimoro',
+  'https://youtube.com/@mimpkdimoro'
 );
 
 -- ============================================================

@@ -1,7 +1,12 @@
 'use server';
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { requireRole } from "@/lib/auth/guards";
+import type { UserRole } from "@/lib/auth/types";
 import { revalidatePath } from "next/cache";
 import { extractStoragePath } from "@/lib/utils/storage";
+
+const ALLOWED_BIAYA_ROLES: UserRole[] = ["super_admin", "admin", "admin_tu", "kepala_madrasah", "bendahara"];
 
 interface BiayaInput {
     id?: string;
@@ -51,7 +56,8 @@ export async function updateBiayaAction(formData: FormData): Promise<{ success: 
 }
 
 export interface UnifiedBiayaItemInput {
-    id: number;
+    id?: number;
+    komponen_biaya?: string;
     biaya_putra: number;
     biaya_putri: number;
 }
@@ -59,43 +65,106 @@ export interface UnifiedBiayaItemInput {
 export interface UpdateBiayaAndSppPayload {
     biaya: UnifiedBiayaItemInput[];
     catatanSpp: string;
+    deletedIds?: number[];
 }
 
 export async function updateBiayaAndSppAction(payload: UpdateBiayaAndSppPayload): Promise<{ success: boolean; message: string }> {
-    const supabase = await createClient();
+    const auth = await requireRole(ALLOWED_BIAYA_ROLES);
+    if (!auth.authorized) {
+        return { success: false, message: auth.message || "Akses tidak diizinkan." };
+    }
 
-    for (const item of payload.biaya) {
-        if (!item || typeof item.id !== 'number') continue;
-        const putra = Math.max(0, Math.round(Number(item.biaya_putra) || 0));
-        const putri = Math.max(0, Math.round(Number(item.biaya_putri) || 0));
+    try {
+        const admin = await createAdminClient();
 
-        const { error: biayaError } = await supabase
-            .from('biaya_pendaftaran')
-            .update({
-                biaya_putra: putra,
-                biaya_putri: putri,
-            })
-            .eq('id', item.id);
+        // 1. Hapus item yang ditandai untuk dihapus
+        if (Array.isArray(payload.deletedIds) && payload.deletedIds.length > 0) {
+            const validDeleteIds = payload.deletedIds.filter(id => typeof id === 'number' && id > 0);
+            if (validDeleteIds.length > 0) {
+                const { error: deleteError } = await admin
+                    .from('biaya_pendaftaran')
+                    .delete()
+                    .in('id', validDeleteIds);
 
-        if (biayaError) {
-            console.error(`Error updating biaya_pendaftaran for id ${item.id}:`, biayaError);
-            return { success: false, message: `Gagal memperbarui data biaya: ${biayaError.message}` };
+                if (deleteError) {
+                    console.error('Error deleting biaya_pendaftaran:', deleteError);
+                    return { success: false, message: `Gagal menghapus komponen biaya: ${deleteError.message}` };
+                }
+            }
         }
+
+        // 2. Pisahkan update existing dan insert new
+        const itemsToUpdate = payload.biaya.filter(item => item && typeof item.id === 'number' && item.id > 0);
+        const itemsToInsert = payload.biaya.filter(item => item && (!item.id || item.id <= 0));
+
+        // Eksekusi Update
+        for (const item of itemsToUpdate) {
+            const putra = Math.max(0, Math.round(Number(item.biaya_putra) || 0));
+            const putri = Math.max(0, Math.round(Number(item.biaya_putri) || 0));
+            const komponen = (item.komponen_biaya || '').trim() || 'Komponen Biaya';
+
+            const { error: biayaError } = await admin
+                .from('biaya_pendaftaran')
+                .update({
+                    komponen_biaya: komponen,
+                    biaya_putra: putra,
+                    biaya_putri: putri,
+                })
+                .eq('id', item.id);
+
+            if (biayaError) {
+                console.error(`Error updating biaya_pendaftaran for id ${item.id}:`, biayaError);
+                return { success: false, message: `Gagal memperbarui data biaya: ${biayaError.message}` };
+            }
+        }
+
+        // Eksekusi Insert
+        if (itemsToInsert.length > 0) {
+            const insertPayload = itemsToInsert.map(item => ({
+                komponen_biaya: (item.komponen_biaya || '').trim() || 'Komponen Biaya Baru',
+                biaya_putra: Math.max(0, Math.round(Number(item.biaya_putra) || 0)),
+                biaya_putri: Math.max(0, Math.round(Number(item.biaya_putri) || 0)),
+            }));
+
+            const { error: insertError } = await admin
+                .from('biaya_pendaftaran')
+                .insert(insertPayload);
+
+            if (insertError) {
+                console.error('Error inserting new biaya_pendaftaran:', insertError);
+                return { success: false, message: `Gagal menambah komponen biaya baru: ${insertError.message}` };
+            }
+        }
+
+        // 3. Update catatan-spp (kompatibel dengan JSON object dan block text)
+        const newCatatanText = payload.catatanSpp || '';
+        const { error: sppError } = await admin
+            .from('konten_halaman')
+            .update({
+                isi: {
+                    catatan: newCatatanText,
+                    blocks: [{ text: newCatatanText }],
+                },
+            })
+            .eq('slug', 'catatan-spp');
+
+        if (sppError) {
+            console.error('Error updating catatan SPP:', sppError);
+            return { success: false, message: `Gagal memperbarui catatan SPP: ${sppError.message}` };
+        }
+
+        // 4. Revalidate seluruh halaman terkait
+        revalidatePath('/admin/akademik');
+        revalidatePath('/admin/akademik/edit-biaya');
+        revalidatePath('/pendaftaran');
+        revalidatePath('/portal/keuangan');
+        revalidatePath('/admin/konten');
+
+        return { success: true, message: 'Data rincian biaya dan catatan SPP berhasil diperbarui.' };
+    } catch (err: any) {
+        console.error('Unexpected error in updateBiayaAndSppAction:', err);
+        return { success: false, message: `Terjadi kesalahan sistem: ${err?.message || 'Gagal menyimpan'}` };
     }
-
-    const { error: sppError } = await supabase
-        .from('konten_halaman')
-        .update({ isi: { catatan: payload.catatanSpp } })
-        .eq('slug', 'catatan-spp');
-
-    if (sppError) {
-        console.error('Error updating catatan SPP:', sppError);
-        return { success: false, message: `Gagal memperbarui catatan SPP: ${sppError.message}` };
-    }
-
-    revalidatePath('/admin/akademik');
-    revalidatePath('/pendaftaran');
-    return { success: true, message: 'Data rincian biaya dan catatan SPP berhasil diperbarui.' };
 }
 
 export async function updateCatatanSppAction(formData: FormData): Promise<{ success: boolean; message?: string }> {
