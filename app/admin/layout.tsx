@@ -6,6 +6,8 @@ import { ThemeSwitcher } from "@/components/theme-switcher"
 import { AdminMobileHeader } from "@/components/admin/navigation/AdminMobileHeader"
 import { AdminNavigationWrapper } from "@/components/admin/navigation/AdminNavigationWrapper"
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
     title: "Admin Panel",
     description: "Admin dashboard for managing the application",
@@ -32,4 +34,4 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </SidebarProvider>
         </ThemeProvider>
     );
-}
+}
