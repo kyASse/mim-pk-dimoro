@@ -19,7 +19,7 @@ vi.mock("next/navigation", () => ({
 
 // Mock next/image
 vi.mock("next/image", () => ({
-  default: ({ fill, priority, ...props }: any) => <img {...props} />,
+  default: ({ fill: _fill, priority: _priority, ...props }: any) => <img alt="" {...props} />,
 }));
 
 import { createClient } from "@/lib/supabase/server";
@@ -90,7 +90,7 @@ describe("Public Berita Detail Page (app/berita/[id]/page.tsx)", () => {
     return mockSupabase;
   };
 
-  it("renders rich HTML content when isi_lengkap contains HTML tags", async () => {
+  it("renders rich HTML content when isi_lengkap contains HTML tags with dark mode styles", async () => {
     setupMockSupabase(mockBeritaHtml);
 
     const params = Promise.resolve({ id: "123" });
@@ -101,22 +101,39 @@ describe("Public Berita Detail Page (app/berita/[id]/page.tsx)", () => {
     expect(screen.getByText("Santri MIM PK Dimoro berhasil memenangkan kejuaraan robotik.")).toBeDefined();
     expect(screen.getByText("Tim Redaksi")).toBeDefined();
 
-    // Check HTML container
+    // Check root page container uses bg-background instead of hardcoded bg-gray-50
+    const pageContainer = container.firstElementChild as HTMLElement;
+    expect(pageContainer.className).toContain("bg-background");
+    expect(pageContainer.className).not.toContain("bg-gray-50");
+
+    // Check HTML container has dark:prose-invert
     const htmlContainer = container.querySelector(".prose-emerald");
     expect(htmlContainer).not.toBeNull();
+    expect(htmlContainer?.className).toContain("dark:prose-invert");
     expect(htmlContainer?.innerHTML).toContain("<strong>berhasil</strong>");
+
+    // Check back button has dark mode friendly classes (text-muted-foreground instead of hardcoded text-gray-600)
+    const backLink = screen.getByRole("link", { name: /kembali ke/i });
+    expect(backLink.className).toContain("text-muted-foreground");
+    expect(backLink.className).not.toContain("text-gray-600");
   });
 
-  it("renders fallback paragraph split when isi_lengkap contains plain text", async () => {
+  it("renders fallback paragraph split with dark mode classes when isi_lengkap is plain text", async () => {
     setupMockSupabase(mockBeritaPlainText, { id: "penulis-2", role: "guru" });
 
     const params = Promise.resolve({ id: "124" });
     const jsx = await BeritaDetailPage({ params });
-    render(jsx);
+    const { container } = render(jsx);
 
     expect(screen.getByText("Berita Format Teks Jadul")).toBeDefined();
     expect(screen.getByText("Paragraf pertama format legacy.")).toBeDefined();
     expect(screen.getByText("Paragraf kedua format legacy.")).toBeDefined();
+
+    // Plain text container should have dark mode prose and prose-emerald classes
+    const proseContainer = container.querySelector(".prose");
+    expect(proseContainer).not.toBeNull();
+    expect(proseContainer?.className).toContain("dark:prose-invert");
+    expect(proseContainer?.className).toContain("prose-emerald");
   });
 
   it("calls notFound() when berita is not found", async () => {
