@@ -2,93 +2,104 @@
 'use client';
 
 import { deleteKegiatanAction } from './actions';
-import { useTransition } from 'react';
-import { Trash2, Loader2 } from 'lucide-react';
+import { useTransition, useState } from 'react';
+import { Trash2, Loader2, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 type DeleteKegiatanButtonProps = {
     kegiatanId: number;
+    judulKegiatan?: string;
 };
 
-export default function DeleteKegiatanButton({ kegiatanId }: DeleteKegiatanButtonProps) {
+export default function DeleteKegiatanButton({ kegiatanId, judulKegiatan }: DeleteKegiatanButtonProps) {
     const [isPending, startTransition] = useTransition();
+    const [open, setOpen] = useState(false);
 
-    const handleDelete = () => {
-        toast.custom((t) => (
-            <div className="flex flex-col gap-3 p-4 bg-white border border-gray-200 rounded-lg shadow-lg">
-                <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                        <Trash2 className="w-4 h-4 text-red-600" />
-                    </div>
-                    <div className="flex-1">
-                        <h3 className="font-medium text-gray-900">Konfirmasi Hapus</h3>
-                        <p className="text-sm text-gray-600 mt-1">
-                            Apakah Anda yakin ingin menghapus kegiatan ini secara permanen? Tindakan ini tidak dapat dibatalkan.
-                        </p>
-                    </div>
-                </div>
-                <div className="flex gap-2 justify-end">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => toast.dismiss(t)}
-                        className="h-8"
-                    >
-                        Batal
-                    </Button>
-                    <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => {
-                            toast.dismiss(t);
-                            startTransition(async () => {
-                                try {
-                                    const result = await deleteKegiatanAction(kegiatanId);
-                                    if (result?.success !== false) {
-                                        toast.success('Kegiatan berhasil dihapus!');
-                                    } else {
-                                        toast.error(result?.message || 'Gagal menghapus kegiatan');
-                                    }
-                                } catch (error) {
-                                    console.error('Error deleting kegiatan:', error);
-                                    toast.error('Terjadi kesalahan saat menghapus kegiatan');
-                                }
-                            });
-                        }}
-                        disabled={isPending}
-                        className="h-8"
-                    >
-                        {isPending ? (
-                            <>
-                                <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-                                Menghapus...
-                            </>
-                        ) : (
-                            'Hapus'
-                        )}
-                    </Button>
-                </div>
-            </div>
-        ), {
-            duration: Infinity, // Keep toast open until user responds
-            position: 'top-center',
+    const handleDelete = async () => {
+        startTransition(async () => {
+            try {
+                const result = await deleteKegiatanAction(kegiatanId);
+                if (result?.success !== false) {
+                    toast.success('Kegiatan berhasil dihapus!');
+                    setOpen(false);
+                } else {
+                    toast.error(result?.message || 'Gagal menghapus kegiatan');
+                }
+            } catch (error) {
+                console.error('Error deleting kegiatan:', error);
+                toast.error('Terjadi kesalahan saat menghapus kegiatan');
+            }
         });
     };
 
     return (
-        <Button
-            variant="outline"
-            size="sm"
-            className="h-8 w-8 p-0 hover:bg-red-50 hover:border-red-300"
-            onClick={handleDelete}
-            disabled={isPending}
-        >
-            {isPending ? (
-                <Loader2 className="h-4 w-4 text-red-600 animate-spin" />
-            ) : (
-                <Trash2 className="h-4 w-4 text-red-600" />
-            )}
-        </Button>
+        <AlertDialog open={open} onOpenChange={setOpen}>
+            <AlertDialogTrigger asChild>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 w-8 p-0 border-border/80 text-muted-foreground hover:bg-destructive/10 hover:border-destructive/30 hover:text-destructive dark:hover:bg-destructive/20 dark:hover:text-destructive-foreground transition-colors"
+                    disabled={isPending}
+                    aria-label={`Hapus kegiatan ${judulKegiatan || ''}`}
+                >
+                    {isPending ? (
+                        <Loader2 className="h-4 w-4 animate-spin text-destructive" />
+                    ) : (
+                        <Trash2 className="h-4 w-4 text-destructive/80" />
+                    )}
+                </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="max-w-md p-6 bg-card text-card-foreground border border-border rounded-2xl shadow-xl">
+                <AlertDialogHeader>
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center shrink-0">
+                            <AlertTriangle className="h-5 w-5 text-destructive" />
+                        </div>
+                        <div>
+                            <AlertDialogTitle className="text-lg font-semibold text-foreground">
+                                Konfirmasi Hapus Kegiatan
+                            </AlertDialogTitle>
+                        </div>
+                    </div>
+                    <AlertDialogDescription className="text-sm text-muted-foreground leading-relaxed">
+                        Apakah Anda yakin ingin menghapus kegiatan {judulKegiatan ? <strong className="text-foreground font-semibold">"{judulKegiatan}"</strong> : "ini"} secara permanen? Tindakan ini tidak dapat dibatalkan.
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter className="mt-4 gap-2 sm:gap-0">
+                    <AlertDialogCancel disabled={isPending} className="border-border text-foreground hover:bg-muted">
+                        Batal
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                        onClick={(e) => {
+                            e.preventDefault();
+                            handleDelete();
+                        }}
+                        disabled={isPending}
+                        className="bg-destructive hover:bg-destructive/90 text-destructive-foreground font-medium"
+                    >
+                        {isPending ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Menghapus...
+                            </>
+                        ) : (
+                            'Hapus Kegiatan'
+                        )}
+                    </AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
     );
 }
