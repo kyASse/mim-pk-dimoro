@@ -1,47 +1,62 @@
 // app/admin/kalender/tambah/page.tsx
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, ArrowLeft } from "lucide-react";
+import { Calendar, ArrowLeft, ChevronRight, Home } from "lucide-react";
 import TambahKegiatanForm from "./TambahKegiatanForm";
+
+export const metadata = {
+  title: "Tambah Kegiatan Akademik | Admin MIM PK Dimoro",
+  description: "Formulir penambahan agenda kalender akademik madrasah",
+};
 
 export default function TambahKegiatanPage() {
     return (
-        <div className="max-w-4xl mx-auto py-8 px-4">
-            {/* Header Section */}
-            <div className="mb-8">
-                <div className="flex items-center gap-4 mb-4">
-                    <Button variant="ghost" size="sm" asChild className="text-blue-600 hover:text-blue-700 hover:bg-blue-50">
-                        <Link href="/admin/kalender" className="flex items-center gap-2">
-                            <ArrowLeft className="w-4 h-4" />
-                            Kembali ke Kalender
-                        </Link>
-                    </Button>
-                </div>
-                
-                <div className="flex items-center gap-3 mb-2">
-                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <Calendar className="h-5 w-5 text-blue-600" />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-900">Tambah Kegiatan Akademik</h1>
-                        <p className="text-gray-600 mt-1">Buat kegiatan baru untuk kalender akademik</p>
-                    </div>
-                </div>
+        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 space-y-6 pb-28 lg:pb-8">
+            {/* Top Breadcrumb Navigation */}
+            <div className="flex items-center justify-between gap-4">
+                <nav className="inline-flex items-center gap-1.5 text-xs text-muted-foreground bg-muted/40 px-3 py-1.5 rounded-full border border-border/60">
+                    <Link href="/admin" className="hover:text-foreground transition-colors flex items-center gap-1">
+                        <Home className="w-3.5 h-3.5" />
+                        <span>Dasbor</span>
+                    </Link>
+                    <ChevronRight className="w-3 h-3 text-muted-foreground/60" />
+                    <Link href="/admin/kalender" className="hover:text-foreground transition-colors">
+                        Kalender
+                    </Link>
+                    <ChevronRight className="w-3 h-3 text-muted-foreground/60" />
+                    <span className="font-semibold text-foreground">Tambah Kegiatan</span>
+                </nav>
+
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    asChild
+                    className="h-8 px-2.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                >
+                    <Link href="/admin/kalender" className="flex items-center gap-1.5">
+                        <ArrowLeft className="w-3.5 h-3.5" />
+                        <span>Kembali ke Kalender</span>
+                    </Link>
+                </Button>
             </div>
 
-            {/* Form Section */}
-            <Card className="border border-gray-200">
-                <CardHeader>
-                    <CardTitle>Informasi Kegiatan</CardTitle>
-                    <CardDescription>
-                        Lengkapi formulir di bawah ini untuk menambahkan kegiatan baru ke kalender akademik
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <TambahKegiatanForm />
-                </CardContent>
-            </Card>
+            {/* Header Section */}
+            <div className="space-y-1 pb-3 border-b border-border/60">
+                <div className="flex items-center gap-2.5 mb-1">
+                    <div className="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                        <Calendar className="w-4 h-4" />
+                    </div>
+                    <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+                        Tambah Kegiatan Akademik
+                    </h1>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                    Lengkapi rincian formulir di bawah ini untuk menerbitkan agenda baru ke dalam kalender akademik madrasah.
+                </p>
+            </div>
+
+            {/* Main Interactive Form with 2-Column Split & Live Preview */}
+            <TambahKegiatanForm />
         </div>
     );
 }
