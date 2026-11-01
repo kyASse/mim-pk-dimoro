@@ -1,156 +1,93 @@
-'use client';
-
-import { useState } from "react";
+// app/admin/akademik/prestasi/tambah/page.tsx
+import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
+import { redirect } from "next/navigation";
+import { ArrowLeft, ChevronRight, Home, Trophy } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import TambahPrestasiForm from "./TambahPrestasiForm";
+import { SCHOOL_NAME } from "@/lib/school-config";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const dynamic = "force-dynamic";
 
-export default function TambahPrestasiPage() {
-    const [form, setForm] = useState({
-        nama_siswa: "",
-        nama_prestasi: "",
-        tingkat: "",
-        tahun: "",
-    });
-    const [file, setFile] = useState<File | null>(null);
-    const [loading, setLoading] = useState(false);
-    const router = useRouter();
+export const metadata = {
+    title: `Tambah Prestasi Siswa | Admin ${SCHOOL_NAME}`,
+    description: "Formulir pencatatan prestasi dan kejuaraan santri madrasah",
+};
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
+export default async function TambahPrestasiPage() {
+    const supabase = await createClient();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return redirect("/auth/login");
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            setFile(e.target.files[0]);
-        }
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-
-        let dokumentasi_url = null;
-        if (file) {
-            const fileExt = file.name.split('.').pop();
-            const fileName = `prestasi-${Date.now()}.${fileExt}`;
-            const { data: _upload, error } = await supabase
-                .storage
-                .from('dokumentasi-prestasi')
-                .upload(fileName, file);
-
-            if (error) {
-                alert("Gagal upload file: " + error.message);
-                setLoading(false);
-                return;
-            }
-            const { data: publicUrlData } = supabase
-                .storage
-                .from('dokumentasi-prestasi')
-                .getPublicUrl(fileName);
-            dokumentasi_url = publicUrlData.publicUrl;
-        }
-
-        const { error } = await supabase
-            .from('prestasi')
-            .insert([{
-                nama_siswa: form.nama_siswa,
-                nama_prestasi: form.nama_prestasi,
-                tingkat: form.tingkat,
-                tahun: form.tahun,
-                dokumentasi_url,
-            }]);
-
-        setLoading(false);
-
-        if (error) {
-            alert("Gagal menyimpan data: " + error.message);
-        } else {
-            router.push("/admin/akademik");
-        }
-    };
+    const currentYear = new Date().getFullYear();
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-white">
-            <div className="w-full max-w-xl bg-white rounded-xl shadow p-8 mt-8">
-                <h1 className="text-3xl font-bold text-center mb-8">Form Tambah Prestasi</h1>
-                <form onSubmit={handleSubmit} className="space-y-5">
-                    <div>
-                        <label className="block mb-1 font-medium">Nama Siswa</label>
-                        <input
-                            type="text"
-                            name="nama_siswa"
-                            value={form.nama_siswa}
-                            onChange={handleChange}
-                            className="w-full border rounded px-3 py-2"
-                            required
-                        />
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+            {/* Breadcrumb Navigation */}
+            <nav
+                aria-label="Breadcrumb"
+                className="flex items-center gap-1.5 text-xs text-muted-foreground"
+            >
+                <Link
+                    href="/admin"
+                    className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
+                >
+                    <Home className="w-3.5 h-3.5" />
+                    <span>Dasbor</span>
+                </Link>
+                <ChevronRight className="w-3 h-3 text-muted-foreground/60" />
+                <Link
+                    href="/admin/akademik"
+                    className="hover:text-foreground transition-colors"
+                >
+                    Akademik
+                </Link>
+                <ChevronRight className="w-3 h-3 text-muted-foreground/60" />
+                <Link
+                    href="/admin/akademik/prestasi"
+                    className="hover:text-foreground transition-colors"
+                >
+                    Prestasi Siswa
+                </Link>
+                <ChevronRight className="w-3 h-3 text-muted-foreground/60" />
+                <span className="font-semibold text-foreground">Tambah Prestasi</span>
+            </nav>
+
+            {/* Header Section */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border/60">
+                <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                        <div className="h-8 w-8 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                            <Trophy className="w-4 h-4" />
+                        </div>
+                        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+                            Tambah Prestasi Siswa
+                        </h1>
                     </div>
-                    <div>
-                        <label className="block mb-1 font-medium">Prestasi</label>
-                        <input
-                            type="text"
-                            name="nama_prestasi"
-                            value={form.nama_prestasi}
-                            onChange={handleChange}
-                            className="w-full border rounded px-3 py-2"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="block mb-1 font-medium">Tingkat</label>
-                        <input
-                            type="text"
-                            name="tingkat"
-                            value={form.tingkat}
-                            onChange={handleChange}
-                            className="w-full border rounded px-3 py-2"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="block mb-1 font-medium">Tahun</label>
-                        <input
-                            type="number"
-                            name="tahun"
-                            value={form.tahun}
-                            onChange={handleChange}
-                            className="w-full border rounded px-3 py-2"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="block mb-1 font-medium">Unggah Foto</label>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleFileChange}
-                            className="w-full"
-                        />
-                    </div>
-                    <div className="flex justify-end gap-4 mt-8">
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="bg-green-400 hover:bg-green-500 text-white px-8 py-2 rounded transition-colors"
-                        >
-                            {loading ? "Menyimpan..." : "Simpan"}
-                        </button>
-                        <Link href="/admin/akademik">
-                            <button
-                                type="button"
-                                className="bg-red-400 hover:bg-red-500 text-white px-8 py-2 rounded transition-colors"
-                            >
-                                Batal
-                            </button>
+                    <p className="text-sm text-muted-foreground">
+                        Tambahkan rekam jejak capaian lomba atau penghargaan santri baru disertai foto dokumentasi.
+                    </p>
+                </div>
+
+                <div className="flex items-center gap-2.5 shrink-0">
+                    <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        className="h-9 px-3 text-xs border-border hover:bg-muted text-foreground"
+                    >
+                        <Link href="/admin/akademik/prestasi">
+                            <ArrowLeft className="w-3.5 h-3.5 mr-1.5 text-muted-foreground" />
+                            Kembali ke Daftar
                         </Link>
-                    </div>
-                </form>
+                    </Button>
+                </div>
             </div>
+
+            {/* Form Component with 2-Column Live Preview */}
+            <TambahPrestasiForm defaultYear={currentYear} />
         </div>
     );
 }

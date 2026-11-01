@@ -200,17 +200,37 @@ export async function createPrestasiAction(prevState: unknown, formData: FormDat
         return { success: false, message: 'Harap isi semua kolom wajib dengan benar.' };
     }
 
+    let dokumentasi_url: string | null = null;
+    const imageFile = formData.get('image') as File | null;
+    if (imageFile && imageFile.size > 0 && typeof imageFile.name === 'string') {
+        if (imageFile.size > 5 * 1024 * 1024) {
+            return { success: false, message: 'Ukuran file gambar terlalu besar (maksimal 5MB).' };
+        }
+        const sanitizedName = imageFile.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+        const filePath = 'uploads/' + Date.now() + '_' + sanitizedName;
+        const { error: uploadError } = await supabase.storage
+            .from('dokumentasi-prestasi')
+            .upload(filePath, imageFile);
+        if (uploadError) {
+            console.error('Error uploading prestasi image:', uploadError);
+            return { success: false, message: `Gagal mengunggah foto: ${uploadError.message}` };
+        }
+        dokumentasi_url = filePath;
+    }
+
     const data = {
         tahun,
         nama_prestasi,
         tingkat,
         deskripsi,
         nama_siswa,
+        dokumentasi_url,
     };
     const { error } = await supabase.from('prestasi').insert(data);
     if (error) { return { success: false, message: `Gagal membuat prestasi: ${error.message}` }; }
 
     revalidatePath('/admin/akademik');
+    revalidatePath('/admin/akademik/prestasi');
     return { success: true, message: "Prestasi berhasil ditambahkan." };
 }
 

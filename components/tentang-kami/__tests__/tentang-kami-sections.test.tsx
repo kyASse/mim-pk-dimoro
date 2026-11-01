@@ -158,6 +158,24 @@ describe("Achievements Component", () => {
     expect(screen.queryByTestId("achievements-skeleton")).toBeNull();
   });
 
+  it("renders student name on achievement card when nama_siswa is provided", async () => {
+    const mockData = [
+      {
+        nama_prestasi: "Juara 1 Lomba Tahfidz",
+        tingkat: "Nasional",
+        tahun: 2026,
+        nama_siswa: "Ahmad Fauzi",
+        deskripsi: "Lomba Tahfidz Al-Qur'an",
+      },
+    ];
+    mockSelect.mockResolvedValueOnce({ data: mockData, error: null });
+
+    render(<Achievements />);
+
+    const studentName = await screen.findByText(/Ahmad Fauzi/);
+    expect(studentName).toBeDefined();
+  });
+
   it("renders empty state if no achievements found", async () => {
     mockSelect.mockResolvedValueOnce({ data: [], error: null });
 
