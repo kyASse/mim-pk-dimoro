@@ -1,16 +1,27 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import { Award, Trophy, Medal, Star, Crown } from "lucide-react";
+import { Award, Trophy, Medal, Star, Crown, User } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 type Prestasi = {
     nama_prestasi: string;
     tingkat: string;
     tahun: number;
-    deskripsi?: string;
+    nama_siswa?: string | null;
+    deskripsi?: string | null;
+    dokumentasi_url?: string | null;
 };
+
+function getAchievementImageUrl(path?: string | null): string | null {
+    if (!path) return null;
+    if (path.startsWith("http://") || path.startsWith("https://")) return path;
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+    if (!supabaseUrl) return null;
+    return `${supabaseUrl}/storage/v1/object/public/dokumentasi-prestasi/${path}`;
+}
 
 function getTingkatStyle(tingkat: string, index: number) {
     const t = (tingkat || "").toLowerCase();
@@ -173,6 +184,7 @@ export default function Achievements() {
                                         {prestasiList.map((item, index) => {
                                             const style = getTingkatStyle(item.tingkat, index);
                                             const IconComponent = style.icon;
+                                            const imageUrl = getAchievementImageUrl(item.dokumentasi_url);
 
                                             return (
                                                 <motion.div
@@ -188,29 +200,54 @@ export default function Achievements() {
                                                         className={`absolute -top-12 -right-12 w-28 h-28 rounded-full bg-gradient-to-bl ${style.glow} blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none`}
                                                     />
 
-                                                    <div className="relative z-10 flex items-start gap-4">
-                                                        <div
-                                                            className={`p-3 rounded-2xl shrink-0 mt-0.5 border shadow-2xs transition-transform duration-300 group-hover:scale-110 ${style.iconClass}`}
-                                                        >
-                                                            <IconComponent className="w-5 h-5" />
-                                                        </div>
-                                                        <div className="flex-1 min-w-0">
-                                                            <div className="mb-2">
-                                                                <span
-                                                                    className={`inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${style.badgeClass}`}
-                                                                >
-                                                                    <Medal className="w-3 h-3" />
-                                                                    Tingkat {item.tingkat}
-                                                                </span>
+                                                    <div className="relative z-10 space-y-3.5">
+                                                        {/* Optional Image Thumbnail */}
+                                                        {imageUrl && (
+                                                            <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-border/60 bg-muted/40 shadow-2xs">
+                                                                <Image
+                                                                    src={imageUrl}
+                                                                    alt={item.nama_prestasi}
+                                                                    fill
+                                                                    sizes="(max-width: 768px) 100vw, 33vw"
+                                                                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                                                />
                                                             </div>
-                                                            <h4 className="text-base font-bold text-foreground leading-snug group-hover:text-primary transition-colors">
-                                                                {item.nama_prestasi}
-                                                            </h4>
-                                                            {item.deskripsi && (
-                                                                <p className="text-xs text-muted-foreground mt-1.5 line-clamp-2 leading-relaxed">
-                                                                    {item.deskripsi}
-                                                                </p>
-                                                            )}
+                                                        )}
+
+                                                        <div className="flex items-start gap-3.5">
+                                                            <div
+                                                                className={`p-2.5 rounded-2xl shrink-0 mt-0.5 border shadow-2xs transition-transform duration-300 group-hover:scale-110 ${style.iconClass}`}
+                                                            >
+                                                                <IconComponent className="w-5 h-5" />
+                                                            </div>
+                                                            <div className="flex-1 min-w-0">
+                                                                <div className="mb-1.5">
+                                                                    <span
+                                                                        className={`inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${style.badgeClass}`}
+                                                                    >
+                                                                        <Medal className="w-3 h-3" />
+                                                                        Tingkat {item.tingkat}
+                                                                    </span>
+                                                                </div>
+
+                                                                <h4 className="text-base font-bold text-foreground leading-snug group-hover:text-primary transition-colors">
+                                                                    {item.nama_prestasi}
+                                                                </h4>
+
+                                                                {/* Student Attribution */}
+                                                                {item.nama_siswa && (
+                                                                    <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground/90 mt-1">
+                                                                        <User className="w-3.5 h-3.5 text-primary shrink-0" />
+                                                                        <span className="truncate">{item.nama_siswa}</span>
+                                                                    </div>
+                                                                )}
+
+                                                                {item.deskripsi && (
+                                                                    <p className="text-xs text-muted-foreground mt-1.5 line-clamp-2 leading-relaxed">
+                                                                        {item.deskripsi}
+                                                                    </p>
+                                                                )}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </motion.div>
