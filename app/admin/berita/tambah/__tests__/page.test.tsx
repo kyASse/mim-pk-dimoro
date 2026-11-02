@@ -72,7 +72,7 @@ describe('TambahBeritaPage (app/admin/berita/tambah/page.tsx)', () => {
     vi.clearAllMocks();
   });
 
-  it('renders all form fields including RichTextEditor', () => {
+  it('renders all form fields, 2-column sections, and RichTextEditor', () => {
     render(<TambahBeritaPage />);
 
     expect(screen.getByText('Tambah Berita Baru')).toBeDefined();
@@ -80,7 +80,7 @@ describe('TambahBeritaPage (app/admin/berita/tambah/page.tsx)', () => {
     expect(screen.getByPlaceholderText(/Tulis ringkasan singkat tentang berita ini/i)).toBeDefined();
     expect(screen.getByTestId('rich-text-editor')).toBeDefined();
     expect(screen.getByText(/Tambahkan foto dan judul ke galeri/i)).toBeDefined();
-    expect(screen.getByRole('button', { name: /Simpan Berita/i })).toBeDefined();
+    expect(screen.getAllByRole('button', { name: /Simpan Berita/i }).length).toBeGreaterThan(0);
   });
 
   it('shows error toast if submitted without an image', async () => {
@@ -96,8 +96,8 @@ describe('TambahBeritaPage (app/admin/berita/tambah/page.tsx)', () => {
       target: { value: '<p>Konten berita lengkap</p>' },
     });
 
-    const submitBtn = screen.getByRole('button', { name: /Simpan Berita/i });
-    fireEvent.click(submitBtn);
+    const submitBtns = screen.getAllByRole('button', { name: /Simpan Berita/i });
+    fireEvent.click(submitBtns[0]);
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith('Silakan pilih gambar untuk berita');
@@ -134,8 +134,8 @@ describe('TambahBeritaPage (app/admin/berita/tambah/page.tsx)', () => {
     fireEvent.change(fileInput, { target: { files: [rawFile] } });
 
     // Submit
-    const submitBtn = screen.getByRole('button', { name: /Simpan Berita/i });
-    fireEvent.click(submitBtn);
+    const submitBtns = screen.getAllByRole('button', { name: /Simpan Berita/i });
+    fireEvent.click(submitBtns[0]);
 
     await waitFor(() => {
       expect(compressSpy).toHaveBeenCalledWith(rawFile);
@@ -177,8 +177,8 @@ describe('TambahBeritaPage (app/admin/berita/tambah/page.tsx)', () => {
     const fileInput = document.getElementById('image-upload') as HTMLInputElement;
     fireEvent.change(fileInput, { target: { files: [rawFile] } });
 
-    const submitBtn = screen.getByRole('button', { name: /Simpan Berita/i });
-    fireEvent.click(submitBtn);
+    const submitBtns = screen.getAllByRole('button', { name: /Simpan Berita/i });
+    fireEvent.click(submitBtns[0]);
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith('Gagal membuat berita');
