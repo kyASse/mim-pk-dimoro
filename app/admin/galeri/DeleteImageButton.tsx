@@ -50,42 +50,43 @@ export default function DeleteImageButton({ galeriId, imageUrl }: Props) {
         <AlertDialog>
             <AlertDialogTrigger asChild>
                 <Button 
-                    variant="destructive" 
+                    variant="outline" 
                     size="sm" 
                     disabled={isPending}
+                    className="h-8 text-xs border-destructive/30 text-destructive hover:bg-destructive/10 dark:hover:bg-destructive/20 transition-colors"
                 >
                     {isPending ? (
                         <>
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
                             Menghapus...
                         </>
                     ) : (
                         <>
-                            <Trash2 className="w-4 h-4 mr-2" />
+                            <Trash2 className="w-3.5 h-3.5 mr-1.5" />
                             Hapus
                         </>
                     )}
                 </Button>
             </AlertDialogTrigger>
             
-            <AlertDialogContent>
+            <AlertDialogContent className="bg-card border-border text-foreground">
                 <AlertDialogHeader>
-                    <AlertDialogTitle className="flex items-center gap-2">
-                        <AlertTriangle className="w-5 h-5 text-red-600" />
+                    <AlertDialogTitle className="flex items-center gap-2 text-foreground">
+                        <AlertTriangle className="w-5 h-5 text-destructive" />
                         Hapus Gambar?
                     </AlertDialogTitle>
-                    <AlertDialogDescription>
+                    <AlertDialogDescription className="text-muted-foreground text-sm">
                         Apakah Anda yakin ingin menghapus gambar ini dari galeri? 
-                        Tindakan ini tidak dapat dibatalkan.
+                        Tindakan ini tidak dapat dibatalkan dan file akan dihapus permanen.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Batal</AlertDialogCancel>
+                    <AlertDialogCancel className="border-border">Batal</AlertDialogCancel>
                     <AlertDialogAction 
                         onClick={handleConfirm}
                         disabled={isPending}
-                        className="bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {isPending ? (
                             <>
