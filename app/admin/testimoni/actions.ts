@@ -23,6 +23,7 @@ export async function createTestimoniAction(formData: FormData) {
     }
     
     revalidatePath('/admin/testimoni');
+    revalidatePath('/');
     return { success: true, message: "Testimoni berhasil dibuat." };
 }
 
@@ -50,6 +51,7 @@ export async function updateTestimoniAction(testimoniId: number, formData: FormD
 
     revalidatePath('/admin/testimoni');
     revalidatePath(`/admin/testimoni/edit/${testimoniId}`);
+    revalidatePath('/');
     redirect('/admin/testimoni'); // Redirect kembali ke daftar setelah sukses
 }
 
@@ -67,6 +69,7 @@ export async function deleteTestimoniAction(testimoniId: number) {
     }
 
     revalidatePath('/admin/testimoni');
+    revalidatePath('/');
     return { success: true, message: "Testimoni berhasil dihapus." };
 }
 
@@ -85,6 +88,7 @@ export async function toggleFeaturedTestimoniAction(testimoniId: number, current
     }
 
     revalidatePath('/admin/testimoni');
+    revalidatePath('/');
     return { 
         success: true, 
         message: newFeaturedState ? "Testimoni ditampilkan di beranda." : "Testimoni disembunyikan dari beranda.",

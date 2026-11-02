@@ -105,15 +105,39 @@ describe('TestimoniAdminHub', () => {
     expect(screen.queryByText('Ibu Ratna')).not.toBeInTheDocument();
   });
 
-  it('filters data when clicking a metric card', () => {
+  it('filters data when clicking a metric card and updates aria-pressed', () => {
     render(<TestimoniAdminHub initialTestimoni={sampleData} />);
 
-    // Click on regular (Belum Ditampilkan) metric card
-    const regularCard = screen.getByTestId('stat-regular-count').closest('button') || screen.getByTestId('stat-regular-count').closest('[role="button"]') || screen.getByTestId('stat-regular-count');
-    fireEvent.click(regularCard);
+    const totalCard = screen.getByTestId('stat-total-count').closest('button');
+    const regularCard = screen.getByTestId('stat-regular-count').closest('button');
+    expect(totalCard).toHaveAttribute('aria-pressed', 'true');
+    expect(regularCard).toHaveAttribute('aria-pressed', 'false');
 
+    // Click on regular (Belum Ditampilkan) metric card
+    fireEvent.click(regularCard!);
+
+    expect(totalCard).toHaveAttribute('aria-pressed', 'false');
+    expect(regularCard).toHaveAttribute('aria-pressed', 'true');
     expect(screen.getByText('Ibu Ratna')).toBeInTheDocument();
     expect(screen.queryByText('Bapak Hendra')).not.toBeInTheDocument();
+  });
+
+  it('renders fallback quote when isi_testimoni is empty in Table view', () => {
+    const emptyQuoteData = [
+      {
+        id: 99,
+        nama_orang_tua: 'Tanpa Kutipan',
+        status_orang_tua: 'Wali Kelas 1',
+        isi_testimoni: '',
+        is_featured: false,
+        created_at: '2026-01-01T00:00:00Z',
+      },
+    ];
+    render(<TestimoniAdminHub initialTestimoni={emptyQuoteData} />);
+    const tableBtn = screen.getByRole('button', { name: /Tampilan Tabel/i });
+    fireEvent.click(tableBtn);
+
+    expect(screen.getByText(/Tidak ada kutipan/i)).toBeInTheDocument();
   });
 
   it('switches view mode between Grid and Table', () => {

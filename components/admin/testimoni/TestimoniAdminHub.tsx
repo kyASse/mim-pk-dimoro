@@ -167,6 +167,7 @@ export default function TestimoniAdminHub({ initialTestimoni }: TestimoniAdminHu
                 <button
                     type="button"
                     onClick={() => setActiveFilter('all')}
+                    aria-pressed={activeFilter === 'all'}
                     className={cn(
                         "text-left rounded-2xl border transition-all p-4 sm:p-5 flex items-center justify-between bg-card shadow-2xs hover:border-primary/40 cursor-pointer",
                         activeFilter === 'all' ? "border-primary ring-1 ring-primary/40" : "border-border/80"
@@ -192,6 +193,7 @@ export default function TestimoniAdminHub({ initialTestimoni }: TestimoniAdminHu
                 <button
                     type="button"
                     onClick={() => setActiveFilter('featured')}
+                    aria-pressed={activeFilter === 'featured'}
                     className={cn(
                         "text-left rounded-2xl border transition-all p-4 sm:p-5 flex items-center justify-between bg-card shadow-2xs hover:border-emerald-500/40 cursor-pointer",
                         activeFilter === 'featured' ? "border-emerald-500 ring-1 ring-emerald-500/40" : "border-border/80"
@@ -217,6 +219,7 @@ export default function TestimoniAdminHub({ initialTestimoni }: TestimoniAdminHu
                 <button
                     type="button"
                     onClick={() => setActiveFilter('regular')}
+                    aria-pressed={activeFilter === 'regular'}
                     className={cn(
                         "text-left rounded-2xl border transition-all p-4 sm:p-5 flex items-center justify-between bg-card shadow-2xs hover:border-amber-500/40 cursor-pointer",
                         activeFilter === 'regular' ? "border-amber-500 ring-1 ring-amber-500/40" : "border-border/80"
@@ -242,6 +245,7 @@ export default function TestimoniAdminHub({ initialTestimoni }: TestimoniAdminHu
                 <button
                     type="button"
                     onClick={() => setActiveFilter('recent')}
+                    aria-pressed={activeFilter === 'recent'}
                     className={cn(
                         "text-left rounded-2xl border transition-all p-4 sm:p-5 flex items-center justify-between bg-card shadow-2xs hover:border-blue-500/40 cursor-pointer",
                         activeFilter === 'recent' ? "border-blue-500 ring-1 ring-blue-500/40" : "border-border/80"
@@ -465,7 +469,7 @@ export default function TestimoniAdminHub({ initialTestimoni }: TestimoniAdminHu
                                         </TableCell>
                                         <TableCell className="max-w-md">
                                             <p className="line-clamp-2 text-xs italic text-foreground/80 leading-relaxed">
-                                                &ldquo;{item.isi_testimoni || ''}&rdquo;
+                                                &ldquo;{item.isi_testimoni || 'Tidak ada kutipan'}&rdquo;
                                             </p>
                                         </TableCell>
                                         <TableCell>
