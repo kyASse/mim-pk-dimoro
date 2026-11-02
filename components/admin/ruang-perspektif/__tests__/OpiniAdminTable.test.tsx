@@ -146,7 +146,6 @@ describe('OpiniAdminTable component', () => {
   it('toggles featured state when clicking star button in desktop table', async () => {
     vi.mocked(actions.toggleFeaturedOpiniAction).mockResolvedValueOnce({
       success: true,
-      data: { id: 'opini-1', is_featured: true } as any,
     });
 
     render(<OpiniAdminTable items={mockOpinions} />);
