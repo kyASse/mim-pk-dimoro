@@ -15,20 +15,32 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { createBeritaAction } from "@/app/admin/berita/actions";
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Upload, Image as ImageIcon, X, Calendar, Save } from "lucide-react";
+import { ArrowLeft, Upload, Image as ImageIcon, X, Calendar, Save, Sparkles } from "lucide-react";
 import Image from "next/image";
 import RichTextEditor from "@/components/admin/berita/RichTextEditor";
 import { compressImageToWebP } from "@/lib/utils/image-compression";
 
-// Schema validation untuk form
+// Schema validation untuk form berita
 const newsFormSchema = z.object({
   judul: z.string().min(1, "Judul berita wajib diisi").max(200, "Judul maksimal 200 karakter"),
   ringkasan: z.string().min(1, "Ringkasan wajib diisi").max(500, "Ringkasan maksimal 500 karakter"),
@@ -44,7 +56,7 @@ export default function TambahBeritaPage() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const router = useRouter();
 
   const form = useForm<NewsFormData>({
@@ -64,8 +76,8 @@ export default function TambahBeritaPage() {
     if (file) {
       setImageFile(file);
       const reader = new FileReader();
-      reader.onload = (e) => {
-        setImagePreview(e.target?.result as string);
+      reader.onload = (event) => {
+        setImagePreview(event.target?.result as string);
       };
       reader.readAsDataURL(file);
     }
@@ -92,7 +104,7 @@ export default function TambahBeritaPage() {
       fd.append('status', data.status);
       fd.append('tanggalTerbit', data.tanggalTerbit);
       fd.append('tambahkanKeGaleri', data.tambahkanKeGaleri ? 'true' : 'false');
-      
+
       const compressedCover = await compressImageToWebP(imageFile);
       fd.append('image', compressedCover);
 
@@ -107,7 +119,6 @@ export default function TambahBeritaPage() {
       toast.success('Berita berhasil ditambahkan!');
       router.push('/admin/berita');
       router.refresh();
-
     } catch (error: unknown) {
       const msg = (error as Error)?.message || 'Terjadi kesalahan sistem saat menyimpan berita';
       console.error('Error adding news:', msg);
@@ -118,7 +129,7 @@ export default function TambahBeritaPage() {
   };
 
   return (
-    <div className="space-y-6 pb-28 sm:pb-8">
+    <div className="space-y-6 pb-28 lg:pb-8">
       {/* Header with Breadcrumb Back Navigation */}
       <div className="space-y-1.5 sm:space-y-2">
         <Link
@@ -129,171 +140,129 @@ export default function TambahBeritaPage() {
           <span>Kembali ke Kelola Berita</span>
         </Link>
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
             Tambah Berita Baru
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground">
-            Buat dan publikasikan berita terbaru untuk website
+            Buat dan publikasikan berita atau pengumuman terbaru untuk website sekolah
           </p>
         </div>
       </div>
 
-      {/* Outer Shell (Double-Bezel) */}
-      <div className="rounded-2xl sm:rounded-3xl p-1 sm:p-1.5 bg-muted/40 dark:bg-muted/20 border border-border/60 shadow-xs">
-        <Card className="rounded-xl sm:rounded-2xl border border-border/80 shadow-xs">
-          <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-4 border-b border-border/60">
-            <CardTitle className="text-lg sm:text-xl font-bold">Informasi Berita</CardTitle>
-            <CardDescription className="text-xs sm:text-sm">
-              Isi form di bawah ini untuk menambahkan berita baru
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-4 sm:p-6 pt-4 sm:pt-6">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 sm:space-y-6">
-                {/* Judul */}
-                <FormField
-                  control={form.control}
-                  name="judul"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs sm:text-sm font-semibold">Judul Berita *</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="Masukkan judul berita yang menarik..." 
-                          className="h-10 text-base sm:h-9 sm:text-sm rounded-lg"
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+      {/* Main Form */}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* Left Column: Editor & Content (lg:col-span-8) */}
+            <div className="lg:col-span-8 space-y-6">
+              {/* Double-Bezel Card Container */}
+              <div className="rounded-2xl sm:rounded-3xl p-1 sm:p-1.5 bg-muted/40 dark:bg-muted/20 border border-border/60 shadow-xs">
+                <Card className="rounded-xl sm:rounded-2xl border border-border/80 bg-card shadow-xs">
+                  <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-4 border-b border-border/60">
+                    <CardTitle className="text-base sm:text-lg font-bold text-foreground">
+                      Konten Berita
+                    </CardTitle>
+                    <CardDescription className="text-xs sm:text-sm text-muted-foreground">
+                      Tulis judul artikel, ringkasan pendek, dan isi lengkap berita
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-4 sm:p-6 space-y-5">
+                    {/* Judul */}
+                    <FormField
+                      control={form.control}
+                      name="judul"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-xs sm:text-sm font-semibold text-foreground">
+                            Judul Berita *
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Masukkan judul berita yang menarik..."
+                              className="h-10 text-base sm:h-9 sm:text-sm rounded-lg bg-background border-border/80 focus-visible:ring-primary/20"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                {/* Ringkasan */}
-                <FormField
-                  control={form.control}
-                  name="ringkasan"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs sm:text-sm font-semibold">Ringkasan *</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Tulis ringkasan singkat tentang berita ini..."
-                          className="resize-none text-base sm:text-sm rounded-lg"
-                          rows={3}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                    {/* Ringkasan */}
+                    <FormField
+                      control={form.control}
+                      name="ringkasan"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-xs sm:text-sm font-semibold text-foreground">
+                            Ringkasan Singkat *
+                          </FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Tulis ringkasan singkat tentang berita ini..."
+                              className="resize-none text-base sm:text-sm rounded-lg bg-background border-border/80 focus-visible:ring-primary/20 leading-relaxed"
+                              rows={3}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                {/* Isi Lengkap */}
-                <FormField
-                  control={form.control}
-                  name="isiLengkap"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs sm:text-sm font-semibold">Isi Lengkap *</FormLabel>
-                      <FormControl>
-                        <RichTextEditor
-                          value={field.value}
-                          onChange={field.onChange}
-                          placeholder="Tulis isi lengkap berita di sini..."
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                    {/* Isi Lengkap (RichTextEditor) */}
+                    <FormField
+                      control={form.control}
+                      name="isiLengkap"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-xs sm:text-sm font-semibold text-foreground">
+                            Isi Lengkap Berita *
+                          </FormLabel>
+                          <FormControl>
+                            <RichTextEditor
+                              value={field.value}
+                              onChange={field.onChange}
+                              placeholder="Tulis isi lengkap berita di sini..."
+                              disabled={isSubmitting}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
 
-                {/* Gambar Utama */}
-                <div className="space-y-2">
-                  <Label className="text-xs sm:text-sm font-semibold">Gambar Utama *</Label>
-                  <div className="border-2 border-dashed border-border/80 hover:border-primary/50 transition-colors rounded-xl p-4 sm:p-6 bg-muted/20">
-                    {imagePreview ? (
-                      <div className="relative rounded-xl overflow-hidden shadow-xs border border-border/60">
-                        <Image
-                          src={imagePreview}
-                          alt="Preview"
-                          width={600}
-                          height={280}
-                          className="w-full h-auto max-h-[360px] object-cover"
-                          unoptimized={true}
-                        />
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          size="sm"
-                          className="absolute top-3 right-3 h-8 w-8 p-0 rounded-full shadow-md"
-                          onClick={removeImage}
-                        >
-                          <X className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    ) : (
-                      <div 
-                        className="text-center py-4 sm:py-6"
-                        onDrop={(e) => {
-                          e.preventDefault();
-                          const file = e.dataTransfer.files?.[0];
-                          if (file && file.type.startsWith('image/')) {
-                            setImageFile(file);
-                            const reader = new FileReader();
-                            reader.onload = (e) => {
-                              setImagePreview(e.target?.result as string);
-                            };
-                            reader.readAsDataURL(file);
-                          }
-                        }}
-                        onDragOver={(e) => e.preventDefault()}
-                        onDragEnter={(e) => e.preventDefault()}
-                      >
-                        <div className="w-12 h-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center mb-3">
-                          <ImageIcon className="h-6 w-6" />
-                        </div>
-                        <div className="mt-2">
-                          <Label htmlFor="image-upload" className="cursor-pointer">
-                            <div className="inline-flex items-center justify-center gap-2 text-xs sm:text-sm font-semibold text-primary hover:underline">
-                              <Upload className="w-4 h-4" />
-                              Pilih gambar atau drag & drop
-                            </div>
-                          </Label>
-                          <Input
-                            id="image-upload"
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageChange}
-                            className="hidden"
-                          />
-                        </div>
-                        <p className="text-[11px] sm:text-xs text-muted-foreground mt-1.5">
-                          PNG, JPG, WebP hingga 10MB (Otomatis terkompresi ke WebP)
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Row untuk Status dan Tanggal */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            {/* Right Column: Metadata & Settings Sidebar (lg:col-span-4) */}
+            <div className="lg:col-span-4 space-y-5">
+              {/* Card 1: Publikasi & Jadwal */}
+              <Card className="rounded-xl border border-border/80 bg-card shadow-xs">
+                <CardHeader className="p-4 pb-3 border-b border-border/60">
+                  <CardTitle className="text-sm font-bold text-foreground">
+                    Pengaturan Publikasi
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 space-y-4">
                   {/* Status */}
                   <FormField
                     control={form.control}
                     name="status"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs sm:text-sm font-semibold">Status *</FormLabel>
+                        <FormLabel className="text-xs font-semibold text-foreground">
+                          Status Publikasi *
+                        </FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
-                            <SelectTrigger className="h-10 text-base sm:h-9 sm:text-sm rounded-lg">
+                            <SelectTrigger className="h-10 sm:h-9 text-xs rounded-lg bg-background border-border/80">
                               <SelectValue placeholder="Pilih status" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent>
-                            <SelectItem value="draft">Draft</SelectItem>
+                          <SelectContent className="bg-popover border-border">
+                            <SelectItem value="draft">Draft (Draf)</SelectItem>
                             <SelectItem value="terbit">Dipublikasikan</SelectItem>
                           </SelectContent>
                         </Select>
@@ -308,67 +277,142 @@ export default function TambahBeritaPage() {
                     name="tanggalTerbit"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs sm:text-sm font-semibold">Tanggal Terbit *</FormLabel>
+                        <FormLabel className="text-xs font-semibold text-foreground">
+                          Tanggal Terbit *
+                        </FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <Input 
-                              type="date" 
-                              className="h-10 text-base sm:h-9 sm:text-sm rounded-lg pr-9" 
-                              {...field} 
+                            <Input
+                              type="date"
+                              className="h-10 sm:h-9 text-xs rounded-lg pr-9 bg-background border-border/80"
+                              {...field}
                             />
-                            <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+                            <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                           </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                </div>
+                </CardContent>
+              </Card>
 
-                {/* Checkbox Galeri */}
-                <FormField
-                  control={form.control}
-                  name="tambahkanKeGaleri"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-xl border border-border/60 p-3.5 sm:p-4 bg-muted/20">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                          className="mt-0.5"
+              {/* Card 2: Cover Image */}
+              <Card className="rounded-xl border border-border/80 bg-card shadow-xs">
+                <CardHeader className="p-4 pb-3 border-b border-border/60">
+                  <CardTitle className="text-sm font-bold text-foreground">
+                    Gambar Cover Utama *
+                  </CardTitle>
+                  <CardDescription className="text-[11px] text-muted-foreground">
+                    Otomatis terkompresi ke WebP resolusi tajam
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-4">
+                  <div className="border-2 border-dashed border-border/80 hover:border-primary/50 transition-colors rounded-xl p-3 sm:p-4 bg-muted/20">
+                    {imagePreview ? (
+                      <div className="relative rounded-lg overflow-hidden shadow-xs border border-border/60">
+                        <Image
+                          src={imagePreview}
+                          alt="Preview Cover"
+                          width={400}
+                          height={220}
+                          className="w-full h-auto max-h-[220px] object-cover"
+                          unoptimized={true}
                         />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel className="text-xs sm:text-sm font-semibold cursor-pointer">
-                          Tambahkan foto dan judul ke galeri
-                        </FormLabel>
-                        <p className="text-[11px] sm:text-xs text-muted-foreground">
-                          Gambar berita ini akan otomatis ditambahkan ke halaman galeri sekolah
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          className="absolute top-2 right-2 h-7 w-7 p-0 rounded-full shadow-md"
+                          onClick={removeImage}
+                          aria-label="Hapus gambar cover"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <div
+                        className="text-center py-4"
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          const file = e.dataTransfer.files?.[0];
+                          if (file && file.type.startsWith('image/')) {
+                            setImageFile(file);
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                              setImagePreview(event.target?.result as string);
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                        onDragOver={(e) => e.preventDefault()}
+                        onDragEnter={(e) => e.preventDefault()}
+                      >
+                        <div className="w-10 h-10 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center mb-2">
+                          <ImageIcon className="h-5 w-5" />
+                        </div>
+                        <Label htmlFor="image-upload" className="cursor-pointer">
+                          <div className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-primary hover:underline">
+                            <Upload className="w-3.5 h-3.5" />
+                            <span>Pilih gambar / Drag & drop</span>
+                          </div>
+                        </Label>
+                        <Input
+                          id="image-upload"
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageChange}
+                          className="hidden"
+                        />
+                        <p className="text-[10px] text-muted-foreground mt-1">
+                          PNG, JPG, WebP hingga 10MB
                         </p>
                       </div>
-                    </FormItem>
-                  )}
-                />
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
 
-                {/* Action Buttons: Unified Responsive Mobile & Desktop Action Bar */}
-                <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4 sm:pt-6 border-t border-border/60">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => router.push('/admin/berita')}
-                    disabled={isSubmitting}
-                    className="h-11 sm:h-10 px-6 text-xs sm:text-sm flex-1 sm:flex-none"
-                  >
-                    Batal
-                  </Button>
+              {/* Card 3: Galeri Sekolah Checkbox */}
+              <Card className="rounded-xl border border-border/80 bg-card shadow-xs">
+                <CardContent className="p-4">
+                  <FormField
+                    control={form.control}
+                    name="tambahkanKeGaleri"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            className="mt-0.5"
+                          />
+                        </FormControl>
+                        <div className="space-y-0.5 leading-none">
+                          <FormLabel className="text-xs font-semibold text-foreground cursor-pointer">
+                            Tambahkan foto dan judul ke galeri
+                          </FormLabel>
+                          <p className="text-[11px] text-muted-foreground leading-normal">
+                            Gambar berita otomatis ditampilkan di halaman galeri publik
+                          </p>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+              </Card>
+
+              {/* Card 4: Desktop Action Buttons (hidden lg:block) */}
+              <Card className="hidden lg:block rounded-xl border border-border/80 bg-card shadow-xs">
+                <CardContent className="p-4 space-y-2.5">
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex-1 h-11 sm:h-10 text-xs sm:text-sm font-semibold shadow-xs"
+                    className="w-full h-10 text-sm font-semibold shadow-xs"
                   >
                     {isSubmitting ? (
                       <>
-                        <div className="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <div className="w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full animate-spin" />
                         Menyimpan...
                       </>
                     ) : (
@@ -378,12 +422,51 @@ export default function TambahBeritaPage() {
                       </>
                     )}
                   </Button>
-                </div>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
-      </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => router.push('/admin/berita')}
+                    disabled={isSubmitting}
+                    className="w-full h-9 text-xs border-border"
+                  >
+                    Batal
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Mobile Sticky Floating Action Dock (lg:hidden) */}
+          <div className="fixed bottom-0 left-0 right-0 z-30 p-3 bg-background/95 backdrop-blur-md border-t border-border lg:hidden flex items-center gap-2 shadow-lg safe-area-pb">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => router.push('/admin/berita')}
+              disabled={isSubmitting}
+              className="flex-1 h-11 text-xs font-semibold rounded-xl border-border"
+            >
+              Batal
+            </Button>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex-1 h-11 text-xs font-semibold rounded-xl shadow-xs"
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  Menyimpan...
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4 mr-2" />
+                  Simpan Berita
+                </>
+              )}
+            </Button>
+          </div>
+        </form>
+      </Form>
     </div>
   );
 }
