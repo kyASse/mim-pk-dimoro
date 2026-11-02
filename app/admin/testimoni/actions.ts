@@ -69,3 +69,25 @@ export async function deleteTestimoniAction(testimoniId: number) {
     revalidatePath('/admin/testimoni');
     return { success: true, message: "Testimoni berhasil dihapus." };
 }
+
+// TOGGLE FEATURED Action
+export async function toggleFeaturedTestimoniAction(testimoniId: number, currentFeatured: boolean) {
+    const supabase = await createClient();
+    const newFeaturedState = !currentFeatured;
+
+    const { error } = await supabase
+        .from('testimoni')
+        .update({ is_featured: newFeaturedState })
+        .eq('id', testimoniId);
+
+    if (error) {
+        return { success: false, message: `Gagal mengubah status testimoni: ${error.message}` };
+    }
+
+    revalidatePath('/admin/testimoni');
+    return { 
+        success: true, 
+        message: newFeaturedState ? "Testimoni ditampilkan di beranda." : "Testimoni disembunyikan dari beranda.",
+        is_featured: newFeaturedState
+    };
+}
