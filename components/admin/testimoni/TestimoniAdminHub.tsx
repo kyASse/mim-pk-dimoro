@@ -275,13 +275,13 @@ export default function TestimoniAdminHub({ initialTestimoni }: TestimoniAdminHu
                             placeholder="Cari nama orang tua, status, atau isi testimoni..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-9 pr-9 h-10 text-sm sm:h-8 sm:text-xs bg-card border-border/80 text-foreground placeholder:text-muted-foreground focus-visible:ring-1"
+                            className="pl-9 pr-10 h-10 text-sm sm:h-8 sm:text-xs bg-card border-border/80 text-foreground placeholder:text-muted-foreground focus-visible:ring-1"
                         />
                         {searchQuery && (
                             <button
                                 type="button"
                                 onClick={() => setSearchQuery('')}
-                                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1 rounded-md transition-colors"
+                                className="absolute right-1 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground h-8 w-8 flex items-center justify-center p-2 rounded-md transition-colors"
                                 title="Hapus pencarian"
                                 aria-label="Hapus pencarian"
                             >
