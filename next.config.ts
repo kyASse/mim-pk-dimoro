@@ -39,6 +39,8 @@ const nextConfig: NextConfig = {
               "font-src 'self' https: data:",
               "frame-ancestors 'self'",
               "object-src 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
               "report-uri /api/csp/report",
             ].join('; '),
           },
@@ -50,6 +52,7 @@ const nextConfig: NextConfig = {
   images: {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'inline',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     remotePatterns: [
       ...(supabaseUrlConfig
         ? [
