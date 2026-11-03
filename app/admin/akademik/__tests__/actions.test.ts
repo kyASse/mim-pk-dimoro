@@ -68,6 +68,7 @@ describe('Akademik Actions', () => {
         tingkat: 'Provinsi',
         deskripsi: 'Kompetisi Sains SD',
         nama_siswa: 'Siti',
+        dokumentasi_url: null,
       });
     });
   });

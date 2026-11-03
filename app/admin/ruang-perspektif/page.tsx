@@ -1,69 +1,62 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import { ArrowLeft, ExternalLink } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { getAdminOpinions } from "@/lib/services/ruang-perspektif";
 import OpiniAdminTable from "@/components/admin/ruang-perspektif/OpiniAdminTable";
-import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Meja Redaksi Ruang Perspektif | Admin MIM PK Dimoro",
 };
 
-const STATUS_TABS = [
-  { value: "semua", label: "Semua" },
-  { value: "menunggu_kurasi", label: "Menunggu Kurasi" },
-  { value: "terbit", label: "Terbit" },
-  { value: "ditolak", label: "Ditolak" },
-  { value: "arsip", label: "Arsip" },
-];
+export const dynamic = "force-dynamic";
 
-export default async function AdminRuangPerspektifPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ status?: string; search?: string }>;
-}) {
-  const { status, search } = await searchParams;
-  const currentStatus = status || "semua";
-  const opinions = await getAdminOpinions({ status: currentStatus, search });
-
-  const pendingCount = opinions.filter((o) => o.status === "menunggu_kurasi").length;
+export default async function AdminRuangPerspektifPage() {
+  const opinions = await getAdminOpinions();
 
   return (
     <div className="space-y-6">
+      {/* Header with Breadcrumb Navigation & Public Link CTA */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1.5">
+            <Link
+              href="/admin"
+              className="hover:text-foreground transition-colors flex items-center gap-1"
+            >
+              <ArrowLeft className="h-3 w-3" />
+              <span>Dasbor</span>
+            </Link>
+            <span>/</span>
+            <span className="text-foreground font-medium">Ruang Perspektif</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
             Meja Redaksi Ruang Perspektif
           </h1>
-          <p className="text-xs sm:text-sm text-muted-foreground">
-            Kurasi, proofreading, dan penerbitan naskah opini komunitas madrasah
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+            Kurasi naskah opini, proofreading, dan publikasi gagasan komunitas madrasah
           </p>
         </div>
-      </div>
 
-      {/* Tabs Horizontal Mobile-Safe */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b">
-        {STATUS_TABS.map((tab) => (
+        <Button
+          asChild
+          variant="outline"
+          size="sm"
+          className="gap-2 h-10 text-xs sm:h-9 self-start sm:self-auto rounded-xl shadow-xs"
+        >
           <Link
-            key={tab.value}
-            href={`/admin/ruang-perspektif?status=${tab.value}`}
-            className={cn(
-              "shrink-0 whitespace-nowrap min-w-max px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-colors",
-              currentStatus === tab.value
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground"
-            )}
+            href="/ruang-perspektif"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            {tab.label}
-            {tab.value === "menunggu_kurasi" && pendingCount > 0 && (
-              <span className="ml-1.5 px-1.5 py-0.5 rounded-full bg-rose-500 text-white text-[10px]">
-                {pendingCount}
-              </span>
-            )}
+            <ExternalLink className="w-3.5 h-3.5 text-primary" />
+            <span>Lihat Halaman Publik</span>
           </Link>
-        ))}
+        </Button>
       </div>
 
-      <OpiniAdminTable items={opinions} />
+      {/* Main Interactive Table & Highlights */}
+      <OpiniAdminTable items={opinions || []} />
     </div>
   );
 }

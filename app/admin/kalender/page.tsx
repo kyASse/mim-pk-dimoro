@@ -2,21 +2,16 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Calendar, Edit, Eye } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Plus, ExternalLink, ChevronRight, Home, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { categoryColors } from '@/lib/constants/calendar';
-import DeleteKegiatanButton from "./DeleteKegiatanButton";
+import KalenderManagement, { type KegiatanAkademik } from "@/components/admin/kalender/KalenderManagement";
 import { SCHOOL_NAME } from "@/lib/school-config";
 
-type KegiatanAkademik = {
-    id: number;
-    judul: string;
-    tanggal: string;
-    tanggal_berakhir: string | null;
-    waktu: string | null;
-    kategori: string;
-    deskripsi: string | null;
+export const dynamic = "force-dynamic";
+
+export const metadata = {
+  title: "Manajemen Kalender Akademik | Admin MIM PK Dimoro",
+  description: "Kelola agenda, kegiatan belajar, dan kalender pendidikan madrasah",
 };
 
 export default async function KelolaKalenderPage() {
@@ -24,173 +19,80 @@ export default async function KelolaKalenderPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return redirect('/auth/login');
 
-    const { data: kegiatan, error } = await supabase
+    const { data: kegiatanData, error } = await supabase
         .from('kalender_akademik')
         .select('*')
         .order('tanggal', { ascending: true });
 
     if (error) {
         console.error('Error fetching kalender akademik:', error);
-        return <p>Gagal memuat data kalender akademik. Cek konsol server untuk detail.</p>;
     }
 
+    const kegiatan: KegiatanAkademik[] = (kegiatanData as KegiatanAkademik[]) || [];
+
     return (
-        <div className="max-w-7xl mx-auto py-8 px-4">
-            {/* Header Section */}
-            <div className="mb-8">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-900">Manajemen Kalender Akademik</h1>
-                        <p className="text-gray-600 mt-1">Kelola jadwal kegiatan dan acara akademik {SCHOOL_NAME}</p>
-                    </div>
-                    <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                        <Link href="/admin/kalender/tambah">
-                            <span className="mr-2">+</span>
-                            Tambah Kegiatan Baru
-                        </Link>
-                    </Button>
-                </div>
-                
-                <Button variant="ghost" size="sm" asChild className="text-blue-600 hover:text-blue-700 hover:bg-blue-50">
-                    <Link href="/admin" className="flex items-center gap-2">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                        </svg>
-                        Kembali ke Dasbor
+        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 space-y-6">
+            {/* Top Breadcrumbs & Back Navigation */}
+            <div className="flex items-center justify-between gap-4">
+                <nav className="inline-flex items-center gap-1.5 text-xs text-muted-foreground bg-muted/40 px-3 py-1.5 rounded-full border border-border/60">
+                    <Link href="/admin" className="hover:text-foreground transition-colors flex items-center gap-1">
+                        <Home className="w-3.5 h-3.5" />
+                        <span>Dasbor</span>
+                    </Link>
+                    <ChevronRight className="w-3 h-3 text-muted-foreground/60" />
+                    <span className="font-semibold text-foreground">Kalender Akademik</span>
+                </nav>
+
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    asChild
+                    className="h-8 px-2.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors hidden sm:inline-flex"
+                >
+                    <Link href="/admin" className="flex items-center gap-1.5">
+                        <ArrowLeft className="w-3.5 h-3.5" />
+                        <span>Kembali ke Dasbor</span>
                     </Link>
                 </Button>
             </div>
 
-            {/* Table Section */}
-            <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead>
-                            <tr className="bg-gray-50 border-b border-gray-200">
-                                <th className="text-left px-6 py-4 font-semibold text-gray-900">No</th>
-                                <th className="text-left px-6 py-4 font-semibold text-gray-900">Judul Kegiatan</th>
-                                <th className="text-left px-6 py-4 font-semibold text-gray-900">Tanggal Mulai</th>
-                                <th className="text-left px-6 py-4 font-semibold text-gray-900">Tanggal Berakhir</th>
-                                <th className="text-left px-6 py-4 font-semibold text-gray-900">Waktu</th>
-                                <th className="text-left px-6 py-4 font-semibold text-gray-900">Kategori</th>
-                                <th className="text-left px-6 py-4 font-semibold text-gray-900">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                            {kegiatan && kegiatan.length > 0 ? (
-                                kegiatan.map((item: KegiatanAkademik, index: number) => (
-                                    <tr key={item.id} className="hover:bg-gray-50 transition-colors">
-                                        <td className="px-6 py-4 text-gray-900 font-medium">
-                                            {index + 1}.
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                                                    <Calendar className="h-5 w-5 text-blue-600" />
-                                                </div>
-                                                <div>
-                                                    <span className="font-medium text-gray-900 line-clamp-1">
-                                                        {item.judul}
-                                                    </span>
-                                                    {item.deskripsi && (
-                                                        <p className="text-sm text-gray-500 line-clamp-1 mt-1">
-                                                            {item.deskripsi}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 text-gray-600">
-                                            {new Date(item.tanggal).toLocaleDateString('id-ID', {
-                                                weekday: 'short',
-                                                year: 'numeric',
-                                                month: 'short',
-                                                day: 'numeric'
-                                            })}
-                                        </td>
-                                        <td className="px-6 py-4 text-gray-600">
-                                            {item.tanggal_berakhir ? (
-                                                new Date(item.tanggal_berakhir).toLocaleDateString('id-ID', {
-                                                    weekday: 'short',
-                                                    year: 'numeric',
-                                                    month: 'short',
-                                                    day: 'numeric'
-                                                })
-                                            ) : (
-                                                <span className="text-gray-400 italic">-</span>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4 text-gray-600">
-                                            {item.waktu || (
-                                                <span className="text-gray-400 italic">Sepanjang hari</span>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <Badge 
-                                                variant="secondary"
-                                                className="text-gray-800 border"
-                                                style={{ 
-                                                    backgroundColor: categoryColors[item.kategori] || '#e5e7eb',
-                                                    color: '#1f2937',
-                                                    borderColor: categoryColors[item.kategori] || '#e5e7eb'
-                                                }}
-                                            >
-                                                <div className="flex items-center gap-1">
-                                                    <div 
-                                                        className="w-2 h-2 rounded-full"
-                                                        style={{ 
-                                                            backgroundColor: categoryColors[item.kategori] || '#6b7280',
-                                                            filter: 'brightness(0.7)'
-                                                        }}
-                                                    />
-                                                    {item.kategori}
-                                                </div>
-                                            </Badge>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2">
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="h-8 w-8 p-0 hover:bg-blue-50 hover:border-blue-300"
-                                                    asChild
-                                                >
-                                                    <Link href={`/kalender-akademik`}>
-                                                        <Eye className="h-4 w-4 text-blue-600" />
-                                                    </Link>
-                                                </Button>
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="h-8 w-8 p-0 hover:bg-orange-50 hover:border-orange-300"
-                                                    asChild
-                                                >
-                                                    <Link href={`/admin/kalender/edit/${item.id}`}>
-                                                        <Edit className="h-4 w-4 text-orange-600" />
-                                                    </Link>
-                                                </Button>
-                                                <DeleteKegiatanButton kegiatanId={item.id} />
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan={7} className="text-center py-12 text-gray-500">
-                                        <div className="flex flex-col items-center gap-2">
-                                            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-                                                <Calendar className="w-8 h-8 text-gray-400" />
-                                            </div>
-                                            <p className="font-medium">Belum ada kegiatan</p>
-                                            <p className="text-sm">Silakan tambahkan kegiatan akademik baru untuk memulai</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+            {/* Header Section */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-2 border-b border-border/60">
+                <div className="space-y-1">
+                    <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+                        Manajemen Kalender Akademik
+                    </h1>
+                    <p className="text-sm text-muted-foreground">
+                        Kelola jadwal kegiatan, asesmen, hari libur, dan agenda penting {SCHOOL_NAME}
+                    </p>
+                </div>
+
+                <div className="flex items-center gap-2.5 w-full sm:w-auto">
+                    <Button
+                        variant="outline"
+                        asChild
+                        className="flex-1 sm:flex-initial h-10 rounded-xl border-border/80 text-foreground hover:bg-muted text-xs sm:text-sm font-medium"
+                    >
+                        <Link href="/kalender-akademik" target="_blank" rel="noopener noreferrer">
+                            <ExternalLink className="w-4 h-4 mr-1.5 text-muted-foreground" />
+                            <span>Lihat Publik</span>
+                        </Link>
+                    </Button>
+
+                    <Button
+                        asChild
+                        className="flex-1 sm:flex-initial h-10 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm font-semibold shadow-xs"
+                    >
+                        <Link href="/admin/kalender/tambah">
+                            <Plus className="w-4 h-4 mr-1.5" />
+                            <span>Tambah Kegiatan</span>
+                        </Link>
+                    </Button>
                 </div>
             </div>
+
+            {/* Main Interactive Management View */}
+            <KalenderManagement initialKegiatan={kegiatan} />
         </div>
     );
 }

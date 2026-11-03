@@ -50,7 +50,7 @@ export default async function BeritaDetailPage({ params }: PageProps) {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-background text-foreground">
             {/* Page Header */}
             <PageHeader
                 title="Detail Berita"
@@ -61,11 +61,11 @@ export default async function BeritaDetailPage({ params }: PageProps) {
             {/* Back Button */}
             <div className="container mx-auto px-4 py-6">
                 <Link 
-                    href="/" 
-                    className="inline-flex items-center text-sm font-medium text-gray-600 hover:text-primary transition-colors"
+                    href="/berita" 
+                    className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
                 >
                     <ArrowLeft className="mr-2 h-4 w-4" />
-                    Kembali ke Beranda
+                    Kembali ke Berita
                 </Link>
             </div>
 
@@ -73,7 +73,7 @@ export default async function BeritaDetailPage({ params }: PageProps) {
             <div className="container mx-auto px-4 pb-16">
                 <div className="max-w-4xl mx-auto">
                     {/* Hero Image */}
-                    <div className="relative w-full h-[240px] sm:h-[380px] md:h-[480px] lg:h-[560px] mb-6 sm:mb-8 rounded-xl sm:rounded-2xl overflow-hidden shadow-md">
+                    <div className="relative w-full h-[240px] sm:h-[380px] md:h-[480px] lg:h-[560px] mb-6 sm:mb-8 rounded-xl sm:rounded-2xl overflow-hidden shadow-md bg-muted border border-border/40">
                         <Image
                             src={berita.image_url || '/placeholder-news.jpg'}
                             alt={berita.judul}
@@ -81,25 +81,25 @@ export default async function BeritaDetailPage({ params }: PageProps) {
                             className="object-cover"
                             priority
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                     </div>
 
                     {/* Content Wrapper */}
-                    <div className="bg-white dark:bg-card rounded-xl sm:rounded-2xl shadow-xs border border-border/60 p-5 sm:p-8 md:p-12">
+                    <div className="bg-card text-card-foreground rounded-xl sm:rounded-2xl shadow-xs border border-border/60 p-5 sm:p-8 md:p-12">
                         {/* Article Title */}
-                        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 tracking-tight leading-tight mb-4 sm:mb-6">
+                        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground tracking-tight leading-tight mb-4 sm:mb-6">
                             {berita.judul}
                         </h1>
 
                         {/* Article Subtitle/Summary */}
                         {berita.ringkasan && (
-                            <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 font-medium leading-relaxed mb-6 sm:mb-8 border-l-4 border-primary pl-4 sm:pl-6 bg-muted/20 py-2 rounded-r-lg">
+                            <p className="text-base sm:text-lg md:text-xl text-foreground/80 font-medium leading-relaxed mb-6 sm:mb-8 border-l-4 border-primary pl-4 sm:pl-6 bg-muted/40 dark:bg-muted/20 py-2.5 rounded-r-lg">
                                 {berita.ringkasan}
                             </p>
                         )}
 
                         {/* Meta Information */}
-                        <div className="flex flex-wrap items-center gap-3 sm:gap-6 mb-6 sm:mb-8 pb-6 sm:pb-8 border-b border-border/80 text-xs sm:text-sm">
+                        <div className="flex flex-wrap items-center gap-3 sm:gap-6 mb-6 sm:mb-8 pb-6 sm:pb-8 border-b border-border/60 text-xs sm:text-sm">
                             <div className="flex items-center text-muted-foreground">
                                 <UserIcon className="h-4 w-4 mr-1.5 text-primary" />
                                 <span className="font-semibold text-foreground">
@@ -118,18 +118,12 @@ export default async function BeritaDetailPage({ params }: PageProps) {
                         {/* Article Content */}
                         {/<[a-z][\s\S]*>/i.test(berita.isi_lengkap || '') ? (
                             <div 
-                                className="prose prose-base sm:prose-lg prose-emerald dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed overflow-hidden"
+                                className="prose prose-base sm:prose-lg prose-emerald dark:prose-invert max-w-none text-foreground/90 leading-relaxed overflow-hidden prose-headings:text-foreground prose-strong:text-foreground prose-a:text-primary hover:prose-a:underline prose-blockquote:border-primary prose-blockquote:text-muted-foreground prose-img:rounded-xl prose-img:border prose-img:border-border/60 [&_[style*='text-align:center']]:text-center [&_[style*='text-align:right']]:text-right [&_[style*='text-align:justify']]:text-justify [&_[style*='text-align:left']]:text-left"
                                 dangerouslySetInnerHTML={{ __html: berita.isi_lengkap }}
                             />
                         ) : (
-                            <div className="prose prose-base sm:prose-lg max-w-none">
-                                <div 
-                                    className="text-gray-800 dark:text-gray-200 leading-relaxed space-y-4 sm:space-y-6"
-                                    style={{
-                                        fontSize: '17px',
-                                        lineHeight: '1.75',
-                                    }}
-                                >
+                            <div className="prose prose-base sm:prose-lg prose-emerald dark:prose-invert max-w-none text-foreground/90 leading-relaxed">
+                                <div className="space-y-4 sm:space-y-6">
                                     {/* Split content by paragraphs and render */}
                                     {berita.isi_lengkap.split('\n').map((paragraph: string, index: number) => {
                                         if (paragraph.trim() === '') return null;

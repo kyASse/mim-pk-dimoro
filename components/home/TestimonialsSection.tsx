@@ -50,7 +50,7 @@ export default async function TestimonialsSection() {
     const testimonials = await fetchData();
 
     return (
-        <section className="py-20 bg-muted/30 border-y border-border/40">
+        <section id="testimoni" className="py-20 bg-muted/30 border-y border-border/40">
             <div className="container mx-auto px-4">
                 <div className="text-center max-w-3xl mx-auto mb-14">
                     <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-4">
