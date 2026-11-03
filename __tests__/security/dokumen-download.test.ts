@@ -111,39 +111,74 @@ describe('Security Route: /api/dokumen/download', () => {
     expect(res.headers.get('location')).toBe('https://storage/signed-url');
   });
 
+  it('should return 403 when non-admin user has no email', async () => {
+    const { GET } = await import('@/app/api/dokumen/download/route');
+    const mockSupabase = {
+      auth: {
+        getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'user-no-email' } }, error: null }),
+      },
+      from: vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({ data: { role: 'orang_tua' }, error: null }),
+          }),
+        }),
+      }),
+    };
+    (serverSupabase.createClient as any).mockResolvedValue(mockSupabase);
+
+    const mockAdmin = {
+      from: vi.fn(),
+      storage: {
+        from: vi.fn(),
+      },
+    };
+    (adminSupabase.createAdminClient as any).mockResolvedValue(mockAdmin);
+
+    const req = new NextRequest('http://localhost:3000/api/dokumen/download?path=test.pdf');
+    const res = await GET(req);
+    expect(res.status).toBe(403);
+    expect(mockAdmin.from).not.toHaveBeenCalled();
+  });
+
   it('should return 403 when non-admin user is not the document owner', async () => {
     const { GET } = await import('@/app/api/dokumen/download/route');
     const mockSupabase = {
       auth: {
         getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'user-2', email: 'parent@example.com' } }, error: null }),
       },
-      from: vi.fn((table: string) => {
-        if (table === 'profiles') {
-          return {
-            select: vi.fn().mockReturnValue({
-              eq: vi.fn().mockReturnValue({
-                single: vi.fn().mockResolvedValue({ data: { role: 'orang_tua' }, error: null }),
-              }),
-            }),
-          };
-        }
-        if (table === 'pendaftar') {
-          return {
-            select: vi.fn().mockReturnValue({
-              or: vi.fn().mockReturnValue({
-                limit: vi.fn().mockResolvedValue({ data: [], error: null }),
-              }),
-            }),
-          };
-        }
-        return {};
+      from: vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({ data: { role: 'orang_tua' }, error: null }),
+          }),
+        }),
       }),
     };
     (serverSupabase.createClient as any).mockResolvedValue(mockSupabase);
 
+    const mockLimit = vi.fn().mockResolvedValue({ data: [], error: null });
+    const mockEqEmail = vi.fn().mockReturnValue({ limit: mockLimit });
+    const mockEqPath = vi.fn().mockReturnValue({ eq: mockEqEmail });
+    const mockSelect = vi.fn().mockReturnValue({ eq: mockEqPath });
+    const mockFrom = vi.fn().mockReturnValue({ select: mockSelect });
+
+    const mockAdmin = {
+      from: mockFrom,
+      storage: {
+        from: vi.fn(),
+      },
+    };
+    (adminSupabase.createAdminClient as any).mockResolvedValue(mockAdmin);
+
     const req = new NextRequest('http://localhost:3000/api/dokumen/download?path=other-kid.pdf');
     const res = await GET(req);
     expect(res.status).toBe(403);
+
+    expect(mockFrom).toHaveBeenCalledWith('pendaftar');
+    expect(mockSelect).toHaveBeenCalledWith('id');
+    expect(mockEqPath).toHaveBeenCalledWith('dokumen_pendukung_url', 'other-kid.pdf');
+    expect(mockEqEmail).toHaveBeenCalledWith('email', 'parent@example.com');
   });
 
   it('should redirect to signed URL when non-admin user owns the document', async () => {
@@ -152,38 +187,29 @@ describe('Security Route: /api/dokumen/download', () => {
       auth: {
         getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'user-2', email: 'parent@example.com' } }, error: null }),
       },
-      from: vi.fn((table: string) => {
-        if (table === 'profiles') {
-          return {
-            select: vi.fn().mockReturnValue({
-              eq: vi.fn().mockReturnValue({
-                single: vi.fn().mockResolvedValue({ data: { role: 'orang_tua' }, error: null }),
-              }),
-            }),
-          };
-        }
-        if (table === 'pendaftar') {
-          return {
-            select: vi.fn().mockReturnValue({
-              or: vi.fn().mockReturnValue({
-                limit: vi.fn().mockResolvedValue({
-                  data: [{ id: 'reg-1', email: 'parent@example.com', dokumen_pendukung_url: 'my-kid.pdf' }],
-                  error: null,
-                }),
-              }),
-            }),
-          };
-        }
-        return {};
+      from: vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({ data: { role: 'orang_tua' }, error: null }),
+          }),
+        }),
       }),
     };
     (serverSupabase.createClient as any).mockResolvedValue(mockSupabase);
 
+    const mockLimit = vi.fn().mockResolvedValue({ data: [{ id: 'reg-1' }], error: null });
+    const mockEqEmail = vi.fn().mockReturnValue({ limit: mockLimit });
+    const mockEqPath = vi.fn().mockReturnValue({ eq: mockEqEmail });
+    const mockSelect = vi.fn().mockReturnValue({ eq: mockEqPath });
+    const mockFrom = vi.fn().mockReturnValue({ select: mockSelect });
+
+    const mockCreateSignedUrl = vi.fn().mockResolvedValue({ data: { signedUrl: 'https://storage/signed-url-parent' }, error: null });
+    const mockStorageFrom = vi.fn().mockReturnValue({ createSignedUrl: mockCreateSignedUrl });
+
     const mockAdmin = {
+      from: mockFrom,
       storage: {
-        from: vi.fn().mockReturnValue({
-          createSignedUrl: vi.fn().mockResolvedValue({ data: { signedUrl: 'https://storage/signed-url-parent' }, error: null }),
-        }),
+        from: mockStorageFrom,
       },
     };
     (adminSupabase.createAdminClient as any).mockResolvedValue(mockAdmin);
@@ -192,5 +218,12 @@ describe('Security Route: /api/dokumen/download', () => {
     const res = await GET(req);
     expect(res.status).toBe(302);
     expect(res.headers.get('location')).toBe('https://storage/signed-url-parent');
+
+    expect(mockFrom).toHaveBeenCalledWith('pendaftar');
+    expect(mockSelect).toHaveBeenCalledWith('id');
+    expect(mockEqPath).toHaveBeenCalledWith('dokumen_pendukung_url', 'my-kid.pdf');
+    expect(mockEqEmail).toHaveBeenCalledWith('email', 'parent@example.com');
+    expect(mockStorageFrom).toHaveBeenCalledWith('dokumen-pendukung');
+    expect(mockCreateSignedUrl).toHaveBeenCalledWith('my-kid.pdf', 60);
   });
 });

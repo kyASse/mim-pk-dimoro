@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { ADMIN_ROLES } from "@/lib/auth/types";
+import { ADMIN_ROLES, UserRole } from "@/lib/auth/types";
 
 // GET /api/dokumen/download?path=<object_path>
 export async function GET(req: NextRequest) {
@@ -35,14 +35,21 @@ export async function GET(req: NextRequest) {
       .single();
 
     const role = profile?.role;
-    const isAdmin = role && ADMIN_ROLES.includes(role as any);
+    const isAdmin = role && ADMIN_ROLES.includes(role as UserRole);
+
+    const admin = await createAdminClient();
 
     if (!isAdmin) {
+      if (!user.email) {
+        return NextResponse.json({ error: 'Forbidden: Insufficient privileges to access document' }, { status: 403 });
+      }
+
       // If parent user, verify ownership: document must belong to their child's registration record
-      const { data: pendaftar, error: pendErr } = await supabase
+      const { data: pendaftar, error: pendErr } = await admin
         .from('pendaftar')
-        .select('id, email, dokumen_pendukung_url')
-        .or(`dokumen_pendukung_url.eq.${path},email.eq.${user.email || ''}`)
+        .select('id')
+        .eq('dokumen_pendukung_url', path)
+        .eq('email', user.email)
         .limit(1);
 
       if (pendErr || !pendaftar || pendaftar.length === 0) {
@@ -50,7 +57,6 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    const admin = await createAdminClient();
     const { data, error } = await admin.storage
       .from('dokumen-pendukung')
       .createSignedUrl(path, 60); // valid 60s
@@ -60,7 +66,8 @@ export async function GET(req: NextRequest) {
     }
 
     return NextResponse.redirect(data.signedUrl, 302);
-  } catch (e: any) {
-    return NextResponse.json({ error: e?.message || 'Unexpected error' }, { status: 500 });
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : 'Unexpected error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
