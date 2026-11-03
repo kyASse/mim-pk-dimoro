@@ -3,6 +3,7 @@ import { OpiniPublicDetail } from "@/lib/types/ruang-perspektif";
 import { ArrowLeft, Clock, Share2, ShieldCheck, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SCHOOL_DOMAIN } from "@/lib/school-config";
+import { sanitizeHtml } from "@/lib/utils/sanitize-html";
 
 export default function OpiniArticleReader({ item }: { item: OpiniPublicDetail }) {
   const articleUrl = `${SCHOOL_DOMAIN}/ruang-perspektif/${item.slug}`;
@@ -78,7 +79,7 @@ export default function OpiniArticleReader({ item }: { item: OpiniPublicDetail }
         {/<[a-z][\s\S]*>/i.test(item.isi_lengkap || "") ? (
           <div
             className="prose prose-base sm:prose-lg prose-emerald dark:prose-invert max-w-none text-foreground/90 leading-relaxed font-normal [&_[style*='text-align:center']]:text-center [&_[style*='text-align:right']]:text-right [&_[style*='text-align:justify']]:text-justify [&_[style*='text-align:left']]:text-left [&_p]:mb-4"
-            dangerouslySetInnerHTML={{ __html: item.isi_lengkap }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.isi_lengkap || "") }}
           />
         ) : (
           <div className="whitespace-pre-line space-y-4">
