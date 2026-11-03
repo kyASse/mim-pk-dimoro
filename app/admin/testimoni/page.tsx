@@ -1,18 +1,28 @@
-// app/admin/testimoni/page.tsx
-import { createClient } from "@/lib/supabase/server";
-import Link from "next/link";
-import { redirect } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Plus, ArrowLeft, Users, Star } from "lucide-react";
-import TestimoniTable from "@/components/admin/TestimoniTable";
+import type { Metadata } from 'next';
+import { createClient } from '@/lib/supabase/server';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { ArrowLeft, Plus, ExternalLink } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import TestimoniAdminHub from '@/components/admin/testimoni/TestimoniAdminHub';
+import type { TestimoniItem } from '@/components/admin/testimoni/TestimoniCard';
+
+export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+    title: 'Manajemen Testimoni | Admin MIM PK Dimoro',
+    description: 'Kelola testimoni dan apresiasi orang tua siswa MIM PK Dimoro',
+};
 
 export default async function KelolaTestimoniPage() {
     const supabase = await createClient();
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return redirect('/auth/login');
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+        return redirect('/auth/login');
+    }
 
     const { data: testimoni, error } = await supabase
         .from('testimoni')
@@ -21,114 +31,67 @@ export default async function KelolaTestimoniPage() {
 
     if (error) {
         console.error('Error fetching testimoni:', error);
-        console.error('Error details:', JSON.stringify(error, null, 2));
         return (
-            <div className="min-h-screen p-6">
-                <Card>
-                    <CardContent className="flex items-center justify-center py-8">
-                        <div className="text-center">
-                            <p className="text-red-600">Gagal memuat data testimoni. Silakan coba lagi.</p>
-                            <p className="text-sm text-gray-500 mt-2">Error: {error.message}</p>
-                        </div>
-                    </CardContent>
-                </Card>
+            <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6">
+                <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-destructive">
+                    <h2 className="font-semibold text-base">Gagal memuat data testimoni</h2>
+                    <p className="text-sm mt-1">
+                        Terjadi kesalahan saat mengambil data testimoni dari server: {error.message}
+                    </p>
+                </div>
             </div>
         );
     }
 
-    // Hitung statistik
-    const totalTestimoni = testimoni?.length || 0;
-    const featuredTestimoni = testimoni?.filter(t => t.is_featured).length || 0;
-    const recentTestimoni = testimoni?.filter(t => {
-        const created = new Date(t.created_at);
-        const weekAgo = new Date();
-        weekAgo.setDate(weekAgo.getDate() - 7);
-        return created >= weekAgo;
-    }).length || 0;
-
     return (
-        <div className="min-h-screen p-6 space-y-6">
-            {/* Header Section */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="max-w-7xl mx-auto py-6 sm:py-8 px-4 sm:px-6 space-y-6">
+            {/* Header Section with Breadcrumbs */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Manajemen Testimoni</h1>
-                    <p className="text-gray-600 mt-1">Kelola testimoni dari orang tua siswa</p>
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1.5">
+                        <Link
+                            href="/admin"
+                            className="hover:text-foreground transition-colors flex items-center gap-1"
+                        >
+                            <ArrowLeft className="h-3 w-3" />
+                            <span>Dasbor</span>
+                        </Link>
+                        <span>/</span>
+                        <span className="text-foreground font-medium">Testimoni</span>
+                    </div>
+                    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+                        Manajemen Testimoni & Aspirasi
+                    </h1>
+                    <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+                        Kelola testimoni dan apresiasi orang tua siswa untuk dipublikasikan pada halaman utama madrasah
+                    </p>
                 </div>
-                <div className="flex items-center gap-3">
-                    <Button variant="outline" asChild>
-                        <Link href="/admin">
-                            <ArrowLeft className="w-4 h-4 mr-2" />
-                            Kembali ke Dashboard
+
+                <div className="flex items-center gap-2.5 w-full sm:w-auto shrink-0">
+                    <Button
+                        variant="outline"
+                        asChild
+                        className="h-10 text-xs sm:h-9 rounded-xl border-border/80 flex-1 sm:flex-initial"
+                    >
+                        <Link href="/#testimoni" target="_blank" rel="noopener noreferrer">
+                            <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
+                            Lihat di Beranda
+                        </Link>
+                    </Button>
+                    <Button
+                        asChild
+                        className="h-10 text-xs sm:h-9 rounded-xl gap-1.5 flex-1 sm:flex-initial shadow-xs"
+                    >
+                        <Link href="/admin/testimoni/tambah">
+                            <Plus className="w-4 h-4" />
+                            <span>Tambah Testimoni</span>
                         </Link>
                     </Button>
                 </div>
             </div>
 
-            {/* Statistics Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card>
-                    <CardContent className="flex items-center p-6">
-                        <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-lg mr-4">
-                            <Users className="w-6 h-6 text-blue-600" />
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-gray-600">Total Testimoni</p>
-                            <p className="text-2xl font-bold text-gray-900">{totalTestimoni}</p>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardContent className="flex items-center p-6">
-                        <div className="flex items-center justify-center w-12 h-12 bg-yellow-100 rounded-lg mr-4">
-                            <Star className="w-6 h-6 text-yellow-600" />
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-gray-600">Tampil di Beranda</p>
-                            <p className="text-2xl font-bold text-gray-900">{featuredTestimoni}</p>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardContent className="flex items-center p-6">
-                        <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-lg mr-4">
-                            <Plus className="w-6 h-6 text-green-600" />
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-gray-600">Terbaru (7 hari)</p>
-                            <p className="text-2xl font-bold text-gray-900">{recentTestimoni}</p>
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
-
-            {/* Content Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                {/* Main Content */}
-                <div className="lg:col-span-4">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <span>Daftar Testimoni</span>
-                                {testimoni && <Badge variant="secondary">{testimoni.length} items</Badge>}
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            {testimoni && testimoni.length > 0 ? (
-                                <TestimoniTable testimoni={testimoni} />
-                            ) : (
-                                <div className="text-center py-8">
-                                    <div className="bg-gray-50 rounded-lg p-8">
-                                        <h3 className="text-lg font-medium text-gray-900 mb-2">Belum ada testimoni</h3>
-                                        <p className="text-gray-600 mb-4">
-                                            Menunggu testimoni dari orang tua.
-                                        </p>
-                                    </div>
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
-                </div>
-            </div>
+            {/* Interactive Admin Hub (Metrics, Filters, Grid/Table Views) */}
+            <TestimoniAdminHub initialTestimoni={(testimoni as TestimoniItem[]) || []} />
         </div>
     );
 }
