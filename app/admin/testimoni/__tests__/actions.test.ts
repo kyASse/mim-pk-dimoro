@@ -20,6 +20,14 @@ vi.mock('@/lib/supabase/server', () => ({
   })),
 }));
 
+vi.mock('@/lib/auth/guard', () => ({
+  requireAdminSession: vi.fn().mockResolvedValue({
+    user: { id: 'admin-1', email: 'admin@mim.sch.id' },
+    role: 'admin',
+    profile: { id: 'admin-1', role: 'admin', nama_lengkap: 'Admin' },
+  }),
+}));
+
 vi.mock('next/cache', () => ({
   revalidatePath: vi.fn(),
 }));
