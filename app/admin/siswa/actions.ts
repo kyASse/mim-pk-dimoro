@@ -5,6 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
 import { sendCustomRecoveryEmail } from "@/lib/auth/recovery";
 import { buildInitialParentPasswordFromDOB } from "@/lib/utils/password";
+import { requireAdminSession } from "@/lib/auth/guard";
 
 /**
  * Update data rombel (Wali Kelas, Tahun Ajaran, Kapasitas)
@@ -14,6 +15,7 @@ export async function updateRombelWaliKelasAction(
   formData: FormData
 ): Promise<{ success: boolean; message?: string }> {
   try {
+    await requireAdminSession();
     const supabase = await createClient();
     const wali_kelas_nama = (formData.get('wali_kelas_nama') as string)?.trim() || null;
     const tahun_ajaran = (formData.get('tahun_ajaran') as string)?.trim() || '2026/2027';
@@ -35,8 +37,8 @@ export async function updateRombelWaliKelasAction(
 
     revalidatePath('/admin/siswa');
     return { success: true };
-  } catch (err: any) {
-    return { success: false, message: err?.message || 'Gagal memperbarui rombel' };
+  } catch (err: unknown) {
+    return { success: false, message: err instanceof Error ? err.message : 'Gagal memperbarui rombel' };
   }
 }
 
@@ -48,6 +50,7 @@ export async function assignSiswaRombelAction(
   rombelId: string | null
 ): Promise<{ success: boolean; message?: string }> {
   try {
+    await requireAdminSession();
     const supabase = await createClient();
 
     let kelompokName: string | null = null;
@@ -76,8 +79,8 @@ export async function assignSiswaRombelAction(
 
     revalidatePath('/admin/siswa');
     return { success: true };
-  } catch (err: any) {
-    return { success: false, message: err?.message || 'Gagal menetapkan rombel siswa' };
+  } catch (err: unknown) {
+    return { success: false, message: err instanceof Error ? err.message : 'Gagal menetapkan rombel siswa' };
   }
 }
 
@@ -88,6 +91,7 @@ export async function searchParentProfilesAction(
   query: string
 ): Promise<{ success: boolean; data: any[]; message?: string }> {
   try {
+    await requireAdminSession();
     const supabase = await createClient();
     const cleanQuery = query.trim();
 
@@ -107,8 +111,8 @@ export async function searchParentProfilesAction(
     }
 
     return { success: true, data: data || [] };
-  } catch (err: any) {
-    return { success: false, data: [], message: err?.message || 'Gagal mencari profil orang tua' };
+  } catch (err: unknown) {
+    return { success: false, data: [], message: err instanceof Error ? err.message : 'Gagal mencari profil orang tua' };
   }
 }
 
@@ -120,6 +124,7 @@ export async function linkExistingParentAccountAction(
   parentProfileId: string
 ): Promise<{ success: boolean; message?: string }> {
   try {
+    await requireAdminSession();
     const admin = await createAdminClient();
 
     const { error } = await admin
@@ -133,8 +138,8 @@ export async function linkExistingParentAccountAction(
 
     revalidatePath('/admin/siswa');
     return { success: true };
-  } catch (err: any) {
-    return { success: false, message: err?.message || 'Gagal menautkan akun orang tua' };
+  } catch (err: unknown) {
+    return { success: false, message: err instanceof Error ? err.message : 'Gagal menautkan akun orang tua' };
   }
 }
 
@@ -145,6 +150,7 @@ export async function unlinkParentAccountAction(
   siswaId: string
 ): Promise<{ success: boolean; message?: string }> {
   try {
+    await requireAdminSession();
     const admin = await createAdminClient();
 
     const { error } = await admin
@@ -158,8 +164,8 @@ export async function unlinkParentAccountAction(
 
     revalidatePath('/admin/siswa');
     return { success: true };
-  } catch (err: any) {
-    return { success: false, message: err?.message || 'Gagal memutuskan tautan akun orang tua' };
+  } catch (err: unknown) {
+    return { success: false, message: err instanceof Error ? err.message : 'Gagal memutuskan tautan akun orang tua' };
   }
 }
 
@@ -170,6 +176,12 @@ export async function linkOrCreateParentAccountAction(
   siswaId: string,
   formData: FormData
 ): Promise<{ success: boolean; message?: string; userId?: string }> {
+  try {
+    await requireAdminSession();
+  } catch (err: unknown) {
+    return { success: false, message: err instanceof Error ? err.message : 'Unauthorized' };
+  }
+
   const admin = await createAdminClient();
   const email = (formData.get('email') as string)?.trim().toLowerCase();
   const nama_lengkap = (formData.get('nama_lengkap') as string)?.trim() || null;
@@ -194,7 +206,7 @@ export async function linkOrCreateParentAccountAction(
     // Cek apakah user sudah ada di Auth
     const { data: list, error: listErr } = await admin.auth.admin.listUsers();
     if (listErr) throw listErr;
-    const existing = list.users.find((u: any) => u.email?.toLowerCase() === email);
+    const existing = list.users.find((u) => u.email?.toLowerCase() === email);
 
     let userId = existing?.id;
 
@@ -247,11 +259,11 @@ export async function linkOrCreateParentAccountAction(
 
     revalidatePath('/admin/siswa');
     return { success: true, userId };
-  } catch (e: any) {
-    console.error('linkOrCreateParentAccountAction failed:', e?.message);
+  } catch (e: unknown) {
+    console.error('linkOrCreateParentAccountAction failed:', e instanceof Error ? e.message : e);
     return {
       success: false,
-      message: e?.message || 'Gagal menghubungkan/membuat akun orang tua',
+      message: e instanceof Error ? e.message : 'Gagal menghubungkan/membuat akun orang tua',
     };
   }
 }
@@ -263,6 +275,7 @@ export async function createSiswaAction(
   formData: FormData
 ): Promise<{ success: boolean; message?: string }> {
   try {
+    await requireAdminSession();
     const supabase = await createClient();
     const nama_lengkap = (formData.get('nama_lengkap') as string)?.trim();
     const rombel_id = (formData.get('rombel_id') as string)?.trim() || null;
@@ -291,8 +304,8 @@ export async function createSiswaAction(
 
     revalidatePath('/admin/siswa');
     return { success: true };
-  } catch (err: any) {
-    return { success: false, message: err?.message || 'Gagal menambahkan siswa' };
+  } catch (err: unknown) {
+    return { success: false, message: err instanceof Error ? err.message : 'Gagal menambahkan siswa' };
   }
 }
 
@@ -303,6 +316,7 @@ export async function importSiswaFromPendaftarAction(
   formData: FormData
 ): Promise<{ success: boolean; message?: string }> {
   try {
+    await requireAdminSession();
     const supabase = await createClient();
     const pendaftarId = (formData.get('pendaftar_id') as string)?.trim();
     const rombel_id = (formData.get('rombel_id') as string)?.trim() || null;
@@ -340,7 +354,7 @@ export async function importSiswaFromPendaftarAction(
       if (rombel) kelompokName = rombel.nama;
     }
 
-    const insertPayload: any = {
+    const insertPayload = {
       nama_lengkap: pendaftar.nama_lengkap,
       tanggal_lahir: pendaftar.tanggal_lahir,
       rombel_id,
@@ -353,8 +367,8 @@ export async function importSiswaFromPendaftarAction(
 
     revalidatePath('/admin/siswa');
     return { success: true };
-  } catch (err: any) {
-    return { success: false, message: err?.message || 'Gagal mengimpor pendaftar' };
+  } catch (err: unknown) {
+    return { success: false, message: err instanceof Error ? err.message : 'Gagal mengimpor pendaftar' };
   }
 }
 
@@ -365,13 +379,14 @@ export async function deleteSiswaAction(
   siswaId: string
 ): Promise<{ success: boolean; message?: string }> {
   try {
+    await requireAdminSession();
     const supabase = await createClient();
     const { error } = await supabase.from('siswa').delete().eq('id', siswaId);
     if (error) return { success: false, message: error.message };
 
     revalidatePath('/admin/siswa');
     return { success: true };
-  } catch (err: any) {
-    return { success: false, message: err?.message || 'Gagal menghapus siswa' };
+  } catch (err: unknown) {
+    return { success: false, message: err instanceof Error ? err.message : 'Gagal menghapus siswa' };
   }
 }

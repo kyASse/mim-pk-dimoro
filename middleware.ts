@@ -54,17 +54,19 @@ export async function middleware(request: NextRequest) {
             .eq('id', user.id)
             .single();
 
-        const role = (profile?.role || 'orang_tua') as UserRole;
+        const role = profile?.role as UserRole | undefined;
 
-        // Orang tua dilarang mengakses rute /admin -> redirect ke /portal
-        if (role === 'orang_tua' && pathname.startsWith('/admin')) {
-            const url = request.nextUrl.clone();
-            url.pathname = '/portal';
-            return NextResponse.redirect(url);
+        // Proteksi rute /admin: hanya role yang terdaftar di ADMIN_ROLES yang diizinkan (strict allowlist)
+        if (pathname.startsWith('/admin')) {
+            if (!role || !ADMIN_ROLES.includes(role)) {
+                const url = request.nextUrl.clone();
+                url.pathname = '/portal';
+                return NextResponse.redirect(url);
+            }
         }
 
-        // Pengguna orang tua yang membuka root /auth/* saat sudah login -> redirect ke /portal
-        if (role === 'orang_tua' && pathname.startsWith('/auth')) {
+        // Pengguna non-admin yang membuka root /auth/* saat sudah login -> redirect ke /portal
+        if (pathname.startsWith('/auth') && (!role || !ADMIN_ROLES.includes(role))) {
             const url = request.nextUrl.clone();
             url.pathname = '/portal';
             return NextResponse.redirect(url);
