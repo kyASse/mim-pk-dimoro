@@ -213,3 +213,38 @@ export interface IKWMContent {
   kegiatan: IKWMKegiatanItem[];
 }
 
+// 13. Struktur Organisasi Madrasah
+export interface PersonilOrganisasi {
+  id: string;
+  nama: string;
+  foto_url: string;
+  gender?: "L" | "P";
+}
+
+export interface SlotJabatan {
+  id: string;
+  jabatan: string;
+  personil_id: string;
+  sub_unit?: SlotJabatan | null;
+}
+
+export interface StrukturOrganisasiContent {
+  hero: {
+    badge: string;
+    judul: string;
+    subjudul: string;
+    tahun_ajaran: string;
+  };
+  personil: PersonilOrganisasi[];
+  komite: SlotJabatan;
+  kamad: SlotJabatan;
+  administrasi: SlotJabatan[];
+  waka: SlotJabatan[];
+  penunjang: SlotJabatan[];
+  wali_kelas: SlotJabatan[];
+  dewan_guru_label: string;
+  guru_mapel: SlotJabatan[];
+  siswa_label: string;
+}
+
+

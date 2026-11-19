@@ -78,6 +78,7 @@ export default function Footer() {
   const exploreLinks = [
     { label: "Beranda", href: "/" },
     { label: "Tentang Kami", href: "/tentang-kami" },
+    { label: "Struktur Organisasi", href: "/struktur-organisasi" },
     { label: "Program & Kurikulum", href: "/program" },
     { label: "Ikatan Wali Murid", href: "/ikatan-wali-murid" },
     { label: "Galeri Kegiatan", href: "/galeri" },

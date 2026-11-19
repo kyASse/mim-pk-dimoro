@@ -16,6 +16,7 @@ import {
   parseFAQContent,
   parsePPDBFlowContent,
   parseIKWMContent,
+  parseStrukturOrganisasiContent,
 } from "@/lib/utils/content-parsers";
 import {
   HeroContent,
@@ -29,6 +30,7 @@ import {
   MainStatItem,
   EkstrakurikulerItem,
   IKWMContent,
+  StrukturOrganisasiContent,
 } from "@/lib/types/content";
 import { EXCELLENT_PROGRAMS } from "@/lib/school-data";
 
@@ -293,6 +295,28 @@ export async function getIKWMContent(): Promise<IKWMContent> {
   } catch (err) {
     console.error("[public-content] Error fetching IKWM content:", err);
     return parseIKWMContent(null);
+  }
+}
+
+/**
+ * Mengambil konten Struktur Organisasi Madrasah
+ */
+export async function getStrukturOrganisasiContent(): Promise<StrukturOrganisasiContent> {
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("konten_halaman")
+      .select("isi")
+      .eq("slug", "struktur-organisasi")
+      .maybeSingle();
+
+    if (error) {
+      return parseStrukturOrganisasiContent(null);
+    }
+    return parseStrukturOrganisasiContent(data?.isi ?? null);
+  } catch (err) {
+    console.error("[public-content] Error fetching struktur organisasi content:", err);
+    return parseStrukturOrganisasiContent(null);
   }
 }
 

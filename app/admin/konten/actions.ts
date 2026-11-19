@@ -17,6 +17,7 @@ import {
   EkstrakurikulerItem,
   MainStatItem,
   IKWMContent,
+  StrukturOrganisasiContent,
 } from "@/lib/types/content";
 
 const ALLOWED_CONTENT_ROLES: UserRole[] = ["super_admin", "admin", "admin_tu", "kepala_madrasah"];
@@ -380,5 +381,19 @@ export async function saveIKWMContentAction(
     "Ikatan Wali Murid (IKWM)",
     data as unknown as Record<string, unknown>,
     ["/ikatan-wali-murid", "/admin/konten"]
+  );
+}
+
+/**
+ * 14. Simpan Konten Struktur Organisasi Madrasah
+ */
+export async function saveStrukturOrganisasiAction(
+  data: StrukturOrganisasiContent
+): Promise<{ success: boolean; message: string }> {
+  return upsertPageContent(
+    "struktur-organisasi",
+    "Struktur Organisasi Madrasah",
+    data as unknown as Record<string, unknown>,
+    ["/struktur-organisasi", "/tentang-kami", "/admin/konten"]
   );
 }
