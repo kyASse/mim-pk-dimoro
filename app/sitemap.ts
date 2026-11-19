@@ -14,6 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/kontak",
     "/pendaftaran",
     "/tentang-kami",
+    "/struktur-organisasi",
   ];
 
   const now = new Date();
