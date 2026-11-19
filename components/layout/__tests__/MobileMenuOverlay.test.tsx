@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import '@testing-library/jest-dom'
 import React from 'react'
-import MobileMenuOverlay from '../MobileMenuOverlay'
+import MobileMenuOverlay, { primaryNavLinks, secondaryNavLinks } from '../MobileMenuOverlay'
 
 vi.mock('next/navigation', () => ({
   usePathname: () => '/',
@@ -26,9 +26,15 @@ describe('MobileMenuOverlay', () => {
     expect(screen.getByRole('link', { name: /^wali murid$/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /berita & artikel/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /ruang perspektif/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /struktur organisasi/i })).toHaveAttribute('href', '/struktur-organisasi')
     expect(screen.getByRole('link', { name: /kalender akademik/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /galeri foto/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /kontak & lokasi/i })).toBeInTheDocument()
+  })
+
+  it('keeps primaryNavLinks at 5 items and puts Struktur Organisasi in secondaryNavLinks', () => {
+    expect(primaryNavLinks).toHaveLength(5)
+    expect(secondaryNavLinks.some((link) => link.href === '/struktur-organisasi')).toBe(true)
   })
 
   it('renders WhatsApp consultation link, PPDB CTA button, and Portal login link', () => {

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { COMPETENT_EDUCATORS } from "@/lib/school-data";
 import {
   GraduationCap,
@@ -14,6 +15,8 @@ import {
   ShieldCheck,
   HeartHandshake,
   CheckCircle2,
+  Network,
+  ArrowRight,
 } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 
@@ -253,6 +256,36 @@ export default function EducatorsSection() {
               );
             })}
           </div>
+        </motion.div>
+
+        {/* CTA to Organizational Structure & Teacher Profiles */}
+        <motion.div
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.4 }}
+          className="bg-card border border-border/60 rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+        >
+          <div className="flex items-start sm:items-center gap-3.5">
+            <div className="p-3 rounded-2xl bg-primary/10 text-primary shrink-0">
+              <Network className="w-5 h-5" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-base sm:text-lg font-bold text-foreground">
+                Kenali Pimpinan & Dewan Guru Kami
+              </h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Jelajahi susunan kepemimpinan madrasah beserta profil pendidik dan tenaga kependidikan.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/struktur-organisasi"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-xs sm:text-sm font-semibold hover:bg-primary/90 transition-colors shrink-0 shadow-xs"
+          >
+            <span>Lihat Bagan Struktur Organisasi &amp; Profil Guru</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </motion.div>
       </div>
     </section>

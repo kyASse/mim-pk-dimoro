@@ -85,6 +85,10 @@ describe("Tentang Kami Sections", () => {
     // Check first program and first commitment
     expect(screen.getByText(COMPETENT_EDUCATORS.programs[0])).toBeDefined();
     expect(screen.getByText(COMPETENT_EDUCATORS.commitments[0])).toBeDefined();
+
+    // Check CTA link to Struktur Organisasi
+    const strukturLink = screen.getByRole("link", { name: /struktur organisasi/i });
+    expect(strukturLink.getAttribute("href")).toBe("/struktur-organisasi");
   });
 
   it("renders AboutUs page with Headmaster Welcome, Graduate Profiles, and child sections", async () => {
