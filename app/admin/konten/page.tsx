@@ -12,6 +12,7 @@ import {
   getPPDBFlowContent,
   getPublicFAQ,
   getIKWMContent,
+  getStrukturOrganisasiContent,
 } from "@/lib/services/public-content";
 import { AdminKontenHub } from "@/components/admin/konten/AdminKontenHub";
 
@@ -44,6 +45,7 @@ export default async function AdminKontenPage() {
     ppdbFlow,
     faqList,
     ikwm,
+    strukturOrganisasi,
     syaratRes,
     jadwalRes,
     sppRes,
@@ -60,6 +62,7 @@ export default async function AdminKontenPage() {
     getPPDBFlowContent(),
     getPublicFAQ(),
     getIKWMContent(),
+    getStrukturOrganisasiContent(),
     supabase.from("konten_halaman").select("isi").eq("slug", "persyaratan-pendaftaran").maybeSingle(),
     supabase.from("konten_halaman").select("isi").eq("slug", "jadwal-pendaftaran").maybeSingle(),
     supabase.from("konten_halaman").select("isi").eq("slug", "catatan-spp").maybeSingle(),
@@ -120,6 +123,7 @@ export default async function AdminKontenPage() {
         kontak={kontak}
         faqList={faqList}
         ikwmContent={ikwm}
+        strukturOrganisasi={strukturOrganisasi}
       />
     </div>
   );
