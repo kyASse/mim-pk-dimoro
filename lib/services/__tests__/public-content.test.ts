@@ -9,6 +9,7 @@ import {
   getPPDBFlowContent,
   getMainStats,
   getExtracurriculars,
+  getStrukturOrganisasiContent,
 } from "@/lib/services/public-content";
 
 // Mock Supabase server client
@@ -122,5 +123,37 @@ describe("public-content service", () => {
         e.nama_eskul.toLowerCase().includes("tapak suci")
       )
     ).toBe(true);
+  });
+
+  it("getStrukturOrganisasiContent returns default fallback when database returns null", async () => {
+    mockMaybeSingle.mockResolvedValueOnce({ data: null, error: null });
+    const struktur = await getStrukturOrganisasiContent();
+    expect(struktur.personil).toHaveLength(20);
+    expect(struktur.kamad.jabatan).toContain("Kepala Madrasah");
+  });
+
+  it("getStrukturOrganisasiContent queries struktur-organisasi slug and parses database isi", async () => {
+    const mockEq = vi.fn().mockReturnValue({ maybeSingle: mockMaybeSingle });
+    mockSelect.mockReturnValueOnce({ eq: mockEq });
+    mockMaybeSingle.mockResolvedValueOnce({
+      data: {
+        isi: {
+          hero: {
+            badge: "Custom Badge",
+            judul: "Struktur Kustom",
+            subjudul: "Subjudul Kustom",
+            tahun_ajaran: "2026/2027",
+          },
+        },
+      },
+      error: null,
+    });
+
+    const struktur = await getStrukturOrganisasiContent();
+    expect(mockFrom).toHaveBeenCalledWith("konten_halaman");
+    expect(mockSelect).toHaveBeenCalledWith("isi");
+    expect(mockEq).toHaveBeenCalledWith("slug", "struktur-organisasi");
+    expect(struktur.hero.judul).toBe("Struktur Kustom");
+    expect(struktur.personil).toHaveLength(20);
   });
 });
