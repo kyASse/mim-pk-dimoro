@@ -326,4 +326,107 @@ describe("StrukturOrganisasiClient", () => {
     expect(desktopScope.queryByText("Koord. Perpus")).toBeNull();
     expect(desktopScope.queryByText("Guru BP")).toBeNull();
   });
+
+  it("busbar horizontal pada grid desktop menggunakan gap-x-0 agar garis penghubung kontinu tanpa celah antar kolom", () => {
+    const contentWithFallbackBranch: StrukturOrganisasiContent = {
+      ...DEFAULT_STRUKTUR_ORGANISASI,
+      administrasi: [
+        ...DEFAULT_STRUKTUR_ORGANISASI.administrasi,
+        { id: "admin-3", jabatan: "Staf Operator", personil_id: "bandowi" },
+      ],
+    };
+
+    render(<StrukturOrganisasiClient content={contentWithFallbackBranch} />);
+
+    const desktopTree = screen.getByTestId("org-tree-desktop");
+    const busbarGrids = desktopTree.querySelectorAll("[data-testid='busbar-grid']");
+    expect(busbarGrids.length).toBe(4);
+
+    busbarGrids.forEach((grid) => {
+      expect(grid.className).toContain("gap-x-0");
+      expect(grid.className).not.toMatch(/(?:^|\s)gap-[34](?:\s|$)/);
+    });
+  });
+
+  it("hanya merender BusbarConnectors dan pt-6 pada baris pertama saat administrasi > 4, waka > 6, atau waliGroups > 6", () => {
+    const multiRowContent: StrukturOrganisasiContent = {
+      ...DEFAULT_STRUKTUR_ORGANISASI,
+      administrasi: [
+        { id: "adm-1", jabatan: "Admin 1", personil_id: "novita-nurlia" },
+        { id: "adm-2", jabatan: "Admin 2", personil_id: "dalyani-sri-rahayu" },
+        { id: "adm-3", jabatan: "Admin 3", personil_id: "bandowi" },
+        { id: "adm-4", jabatan: "Admin 4", personil_id: "darminah" },
+        { id: "adm-5", jabatan: "Admin 5", personil_id: "sri-haryani" },
+      ],
+      waka: [
+        { id: "wk-1", jabatan: "Waka 1", personil_id: "warih-agung-sumiwi" },
+        { id: "wk-2", jabatan: "Waka 2", personil_id: "ful-mulana-sidik-jari" },
+        { id: "wk-3", jabatan: "Waka 3", personil_id: "wartini" },
+        { id: "wk-4", jabatan: "Waka 4", personil_id: "sri-asih" },
+        { id: "wk-5", jabatan: "Waka 5", personil_id: "aris-muhtar" },
+        { id: "wk-6", jabatan: "Waka 6", personil_id: "rina-hidayati" },
+        { id: "wk-7", jabatan: "Waka 7", personil_id: "siti-fatimah" },
+      ],
+      wali_kelas: [
+        ...DEFAULT_STRUKTUR_ORGANISASI.wali_kelas,
+        { id: "wali-persiapan", jabatan: "Wali Kelas Persiapan", personil_id: "surani" },
+      ],
+      guru_mapel: [
+        ...DEFAULT_STRUKTUR_ORGANISASI.guru_mapel,
+        { id: "guru-mapel-6", jabatan: "Guru Mapel", personil_id: "bandowi" },
+      ],
+    };
+
+    render(<StrukturOrganisasiClient content={multiRowContent} />);
+
+    const desktopTree = screen.getByTestId("org-tree-desktop");
+
+    const checkMultiRowSlot = (
+      slotId: string,
+      expectTopRow: boolean,
+      edge?: "first" | "last"
+    ) => {
+      const slotCard = desktopTree.querySelector(`[data-slot-id='${slotId}']`);
+      expect(slotCard).not.toBeNull();
+      const cell = slotCard?.closest("[data-busbar-cell]");
+      expect(cell).not.toBeNull();
+
+      if (expectTopRow) {
+        expect(cell?.className).toContain("pt-6");
+        expect(cell?.querySelector("[data-testid='busbar-drop']")).not.toBeNull();
+        if (edge === "first") {
+          expect(cell?.querySelector("[data-testid='busbar-left']")).toBeNull();
+          expect(cell?.querySelector("[data-testid='busbar-right']")).not.toBeNull();
+        } else if (edge === "last") {
+          expect(cell?.querySelector("[data-testid='busbar-left']")).not.toBeNull();
+          expect(cell?.querySelector("[data-testid='busbar-right']")).toBeNull();
+        }
+      } else {
+        expect(cell?.className).not.toContain("pt-6");
+        expect(cell?.querySelector("[data-testid='busbar-drop']")).toBeNull();
+        expect(cell?.querySelector("[data-testid='busbar-left']")).toBeNull();
+        expect(cell?.querySelector("[data-testid='busbar-right']")).toBeNull();
+      }
+    };
+
+    // Administrasi (> 4): index 0..3 top row, index 4 wrapped row 2
+    checkMultiRowSlot("adm-1", true, "first");
+    checkMultiRowSlot("adm-4", true, "last");
+    checkMultiRowSlot("adm-5", false);
+
+    // Waka (> 6): index 0..5 top row, index 6 wrapped row 2
+    checkMultiRowSlot("wk-1", true, "first");
+    checkMultiRowSlot("wk-6", true, "last");
+    checkMultiRowSlot("wk-7", false);
+
+    // Wali Kelas groups (> 6 grades: I..VI + Lainnya): first 6 groups top row, group 7 wrapped row 2
+    checkMultiRowSlot("wali-1a", true, "first");
+    checkMultiRowSlot("wali-6a", true, "last");
+    checkMultiRowSlot("wali-persiapan", false);
+
+    // Guru Mapel (> 5): index 0..4 top row, index 5 wrapped row 2
+    checkMultiRowSlot("guru-mapel-1", true, "first");
+    checkMultiRowSlot("guru-mapel-5", true, "last");
+    checkMultiRowSlot("guru-mapel-6", false);
+  });
 });

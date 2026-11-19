@@ -46,20 +46,94 @@ function BusbarConnectors({ isFirst, isLast }: BusbarConnectorsProps) {
       {!isFirst && (
         <div
           aria-hidden="true"
+          data-testid="busbar-left"
           className="absolute top-0 left-0 right-1/2 h-0.5 bg-primary/30"
         />
       )}
       {!isLast && (
         <div
           aria-hidden="true"
+          data-testid="busbar-right"
           className="absolute top-0 left-1/2 right-0 h-0.5 bg-primary/30"
         />
       )}
       <div
         aria-hidden="true"
+        data-testid="busbar-drop"
         className="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-6 bg-primary/30"
       />
     </>
+  );
+}
+
+interface BusbarGridProps {
+  cols: number;
+  gutter?: "sm" | "md";
+  wrapperClassName?: string;
+  children: React.ReactNode;
+}
+
+function BusbarGrid({
+  cols,
+  gutter = "sm",
+  wrapperClassName,
+  children,
+}: BusbarGridProps) {
+  const grid = (
+    <div
+      data-testid="busbar-grid"
+      className={cn(
+        "grid gap-x-0",
+        gutter === "md" ? "gap-y-4 -mx-2" : "gap-y-3 -mx-1.5"
+      )}
+      style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
+    >
+      {children}
+    </div>
+  );
+
+  if (!wrapperClassName) {
+    return grid;
+  }
+
+  return <div className={wrapperClassName}>{grid}</div>;
+}
+
+interface BusbarCellProps {
+  index: number;
+  cols: number;
+  totalItems: number;
+  gutter?: "sm" | "md";
+  children: React.ReactNode;
+}
+
+function BusbarCell({
+  index,
+  cols,
+  totalItems,
+  gutter = "sm",
+  children,
+}: BusbarCellProps) {
+  const isTopRow = index < cols;
+  const topRowCount = Math.min(totalItems, cols);
+
+  return (
+    <div
+      data-busbar-cell={isTopRow ? "top" : "wrapped"}
+      className={cn(
+        "relative flex flex-col items-center",
+        gutter === "md" ? "px-2" : "px-1.5",
+        isTopRow ? "pt-6" : "pt-1"
+      )}
+    >
+      {isTopRow && (
+        <BusbarConnectors
+          isFirst={index === 0}
+          isLast={index === topRowCount - 1}
+        />
+      )}
+      {children}
+    </div>
   );
 }
 
@@ -119,27 +193,28 @@ function SpineBranchRow({ slots, personil }: SpineBranchRowProps) {
 
   const colCount = Math.min(slots.length, 4);
   return (
-    <div
-      className="grid gap-4 max-w-4xl mx-auto"
-      style={{ gridTemplateColumns: `repeat(${colCount}, minmax(0, 1fr))` }}
+    <BusbarGrid
+      cols={colCount}
+      gutter="md"
+      wrapperClassName="max-w-4xl mx-auto"
     >
       {slots.map((slot, index) => (
-        <div key={slot.id} className="relative flex flex-col items-center pt-6">
-          {index < colCount && (
-            <BusbarConnectors
-              isFirst={index === 0}
-              isLast={index === Math.min(slots.length, colCount) - 1}
-            />
-          )}
+        <BusbarCell
+          key={slot.id}
+          index={index}
+          cols={colCount}
+          totalItems={slots.length}
+          gutter="md"
+        >
           <OrgNodeCard
             slot={slot}
             personil={personil}
             variant="default"
             className="w-full max-w-[220px]"
           />
-        </div>
+        </BusbarCell>
       ))}
-    </div>
+    </BusbarGrid>
   );
 }
 
@@ -323,29 +398,15 @@ export default function StrukturOrganisasiClient({
               {/* Row 3: Waka Columns dengan busbar horizontal & optional sub_unit */}
               {content.waka.length > 0 && (
                 <>
-                  <div
-                    className="grid gap-4"
-                    style={{
-                      gridTemplateColumns: `repeat(${wakaCols}, minmax(0, 1fr))`,
-                    }}
-                  >
+                  <BusbarGrid cols={wakaCols} gutter="md">
                     {content.waka.map((wakaSlot, index) => (
-                      <div
+                      <BusbarCell
                         key={wakaSlot.id}
-                        className="relative flex flex-col items-center pt-6"
+                        index={index}
+                        cols={wakaCols}
+                        totalItems={content.waka.length}
+                        gutter="md"
                       >
-                        {content.waka.length > 1 ? (
-                          <BusbarConnectors
-                            isFirst={index === 0}
-                            isLast={index === content.waka.length - 1}
-                          />
-                        ) : (
-                          <div
-                            aria-hidden="true"
-                            className="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-6 bg-primary/30"
-                          />
-                        )}
-
                         <OrgNodeCard
                           slot={wakaSlot}
                           personil={content.personil}
@@ -367,9 +428,9 @@ export default function StrukturOrganisasiClient({
                             />
                           </>
                         )}
-                      </div>
+                      </BusbarCell>
                     ))}
-                  </div>
+                  </BusbarGrid>
                   <VerticalSpine />
                 </>
               )}
@@ -385,29 +446,15 @@ export default function StrukturOrganisasiClient({
               {/* Row 5: Wali Kelas dikelompokkan per tingkat (I..VI) */}
               {waliGroups.length > 0 && (
                 <>
-                  <div
-                    className="grid gap-3"
-                    style={{
-                      gridTemplateColumns: `repeat(${waliCols}, minmax(0, 1fr))`,
-                    }}
-                  >
+                  <BusbarGrid cols={waliCols} gutter="sm">
                     {waliGroups.map((group, index) => (
-                      <div
+                      <BusbarCell
                         key={group.grade}
-                        className="relative flex flex-col items-center pt-6"
+                        index={index}
+                        cols={waliCols}
+                        totalItems={waliGroups.length}
+                        gutter="sm"
                       >
-                        {waliGroups.length > 1 ? (
-                          <BusbarConnectors
-                            isFirst={index === 0}
-                            isLast={index === waliGroups.length - 1}
-                          />
-                        ) : (
-                          <div
-                            aria-hidden="true"
-                            className="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-6 bg-primary/30"
-                          />
-                        )}
-
                         <span className="mb-2 inline-flex items-center rounded-full bg-primary/10 border border-primary/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
                           Kelas {group.grade}
                         </span>
@@ -430,9 +477,9 @@ export default function StrukturOrganisasiClient({
                             </React.Fragment>
                           ))}
                         </div>
-                      </div>
+                      </BusbarCell>
                     ))}
-                  </div>
+                  </BusbarGrid>
                   <VerticalSpine />
                 </>
               )}
@@ -444,44 +491,24 @@ export default function StrukturOrganisasiClient({
               {content.guru_mapel.length > 0 && (
                 <>
                   <VerticalSpine />
-                  <div
-                    className="grid gap-3"
-                    style={{
-                      gridTemplateColumns: `repeat(${guruMapelCols}, minmax(0, 1fr))`,
-                    }}
-                  >
-                    {content.guru_mapel.map((mapelSlot, index) => {
-                      const isTopRow = index < guruMapelCols;
-                      return (
-                        <div
-                          key={mapelSlot.id}
-                          className={cn(
-                            "relative flex flex-col items-center",
-                            isTopRow ? "pt-6" : "pt-1"
-                          )}
-                        >
-                          {isTopRow &&
-                            (guruMapelCols > 1 ? (
-                              <BusbarConnectors
-                                isFirst={index === 0}
-                                isLast={index === guruMapelCols - 1}
-                              />
-                            ) : (
-                              <div
-                                aria-hidden="true"
-                                className="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-6 bg-primary/30"
-                              />
-                            ))}
-                          <OrgNodeCard
-                            slot={mapelSlot}
-                            personil={content.personil}
-                            variant="compact"
-                            className="w-full"
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
+                  <BusbarGrid cols={guruMapelCols} gutter="sm">
+                    {content.guru_mapel.map((mapelSlot, index) => (
+                      <BusbarCell
+                        key={mapelSlot.id}
+                        index={index}
+                        cols={guruMapelCols}
+                        totalItems={content.guru_mapel.length}
+                        gutter="sm"
+                      >
+                        <OrgNodeCard
+                          slot={mapelSlot}
+                          personil={content.personil}
+                          variant="compact"
+                          className="w-full"
+                        />
+                      </BusbarCell>
+                    ))}
+                  </BusbarGrid>
                 </>
               )}
 
