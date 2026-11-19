@@ -26,21 +26,21 @@ const VARIANT_CONFIG: Record<OrgNodeCardVariant, VariantStyleConfig> = {
   spotlight: {
     outerClass: "ring-1 ring-border/50 bg-muted/20 p-1.5 rounded-2xl shadow-sm",
     cardClass:
-      "bg-card rounded-[calc(1rem-0.25rem)] border border-primary/25 px-5 py-4 flex flex-col items-center text-center shadow-sm",
+      "bg-card rounded-[calc(1rem-0.375rem)] border border-primary/25 px-5 py-4 flex flex-col items-center text-center shadow-sm",
     avatarClass:
       "relative size-20 sm:size-24 rounded-2xl overflow-hidden shrink-0 ring-2 ring-primary/30 bg-muted/40 shadow-md mb-3",
     sizes: "(max-width: 640px) 80px, 96px",
     badgeClass:
-      "inline-flex items-center justify-center rounded-full px-3 py-0.5 text-[11px] font-bold uppercase tracking-wider bg-primary text-primary-foreground shadow-2xs mb-1.5",
+      "inline-flex items-center justify-center rounded-full px-3 py-0.5 text-[11px] font-bold uppercase tracking-wider bg-primary text-primary-foreground shadow-sm mb-1.5",
     nameClass: "font-bold text-sm sm:text-base leading-snug text-balance",
     contentWrapperClass: "flex flex-col items-center min-w-0",
   },
   partner: {
     outerClass: "",
     cardClass:
-      "bg-card/90 border border-dashed border-primary/35 rounded-2xl px-4 py-3.5 flex items-center gap-3.5 text-left shadow-2xs hover:border-primary/55 transition-colors",
+      "bg-card/90 border border-dashed border-primary/35 rounded-2xl px-4 py-3.5 flex items-center gap-3.5 text-left shadow-sm hover:border-primary/55 transition-colors",
     avatarClass:
-      "relative size-14 rounded-full overflow-hidden shrink-0 border-2 border-primary/25 bg-muted/40 shadow-2xs",
+      "relative size-14 rounded-full overflow-hidden shrink-0 border-2 border-primary/25 bg-muted/40 shadow-sm",
     sizes: "56px",
     badgeClass:
       "inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20 mb-1",
@@ -50,9 +50,9 @@ const VARIANT_CONFIG: Record<OrgNodeCardVariant, VariantStyleConfig> = {
   default: {
     outerClass: "",
     cardClass:
-      "bg-card border border-border/70 rounded-2xl px-4 py-3.5 flex flex-col items-center text-center shadow-2xs hover:border-primary/40 hover:shadow-sm transition-all",
+      "bg-card border border-border/70 rounded-2xl px-4 py-3.5 flex flex-col items-center text-center shadow-sm hover:border-primary/40 hover:shadow-sm transition-all",
     avatarClass:
-      "relative size-14 sm:size-16 rounded-full overflow-hidden shrink-0 border-2 border-primary/20 bg-muted/40 shadow-2xs mb-2.5",
+      "relative size-14 sm:size-16 rounded-full overflow-hidden shrink-0 border-2 border-primary/20 bg-muted/40 shadow-sm mb-2.5",
     sizes: "64px",
     badgeClass:
       "inline-flex items-center justify-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold bg-primary/10 text-primary border border-primary/20 mb-1.5 leading-tight",
@@ -62,7 +62,7 @@ const VARIANT_CONFIG: Record<OrgNodeCardVariant, VariantStyleConfig> = {
   compact: {
     outerClass: "",
     cardClass:
-      "bg-card border border-border/60 rounded-xl px-3 py-3 flex flex-col items-center text-center shadow-2xs hover:border-primary/35 transition-colors",
+      "bg-card border border-border/60 rounded-xl px-3 py-3 flex flex-col items-center text-center shadow-sm hover:border-primary/35 transition-colors",
     avatarClass:
       "relative size-12 rounded-full overflow-hidden shrink-0 border border-border/70 bg-muted/40 mb-2",
     sizes: "48px",

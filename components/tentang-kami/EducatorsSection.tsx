@@ -281,7 +281,7 @@ export default function EducatorsSection() {
           </div>
           <Link
             href="/struktur-organisasi"
-            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-xs sm:text-sm font-semibold hover:bg-primary/90 transition-colors shrink-0 shadow-xs"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-xs sm:text-sm font-semibold hover:bg-primary/90 transition-colors shrink-0 shadow-xs text-center"
           >
             <span>Lihat Bagan Struktur Organisasi &amp; Profil Guru</span>
             <ArrowRight className="w-4 h-4" />

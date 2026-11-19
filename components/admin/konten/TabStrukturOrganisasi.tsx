@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Card,
   CardContent,
@@ -71,6 +71,66 @@ const SLOT_ARRAY_GROUPS: readonly SlotArrayGroupConfig[] = [
     jabatanPlaceholder: "Guru Mapel",
   },
 ];
+
+const REQUIRED_SLOT_GROUPS: ReadonlyArray<{
+  key: SlotArrayGroupKey | "waka";
+  title: string;
+  itemPrefix: string;
+}> = [
+  { key: "administrasi", title: "Administrasi", itemPrefix: "Administrasi" },
+  { key: "waka", title: "Wakil Kepala & Sub-Unit", itemPrefix: "Waka" },
+  { key: "penunjang", title: "Penunjang", itemPrefix: "Penunjang" },
+  { key: "wali_kelas", title: "Wali Kelas", itemPrefix: "Wali Kelas" },
+  { key: "guru_mapel", title: "Guru Mapel", itemPrefix: "Guru Mapel" },
+];
+
+function validateStrukturOrganisasiContent(
+  data: StrukturOrganisasiContent
+): string | null {
+  if (!data.hero.judul.trim()) {
+    return "Judul Halaman pada bagian Header & Metadata wajib diisi.";
+  }
+  if (!data.dewan_guru_label.trim()) {
+    return "Label Dewan Guru pada bagian Header & Metadata wajib diisi.";
+  }
+  if (!data.siswa_label.trim()) {
+    return "Label Siswa pada bagian Header & Metadata wajib diisi.";
+  }
+
+  if (data.personil.length < 1) {
+    return "Bagian A (Direktori Profil Guru & Staf) wajib memiliki minimal 1 personil.";
+  }
+  for (let i = 0; i < data.personil.length; i += 1) {
+    if (!data.personil[i].nama.trim()) {
+      return `Nama Lengkap pada Bagian A (Personil #${i + 1}) wajib diisi.`;
+    }
+  }
+
+  if (!data.komite.jabatan.trim()) {
+    return "Nama Jabatan Komite Madrasah pada bagian Pimpinan & Komite wajib diisi.";
+  }
+  if (!data.kamad.jabatan.trim()) {
+    return "Nama Jabatan Kepala Madrasah pada bagian Pimpinan & Komite wajib diisi.";
+  }
+
+  for (const group of REQUIRED_SLOT_GROUPS) {
+    const slots = data[group.key];
+    if (slots.length < 1) {
+      return `Kelompok ${group.title} pada Bagian B wajib memiliki minimal 1 slot jabatan.`;
+    }
+    for (let i = 0; i < slots.length; i += 1) {
+      const slot = slots[i];
+      if (!slot.jabatan.trim()) {
+        return `Nama Jabatan pada ${group.itemPrefix} #${i + 1} wajib diisi.`;
+      }
+      if (group.key === "waka" && slot.sub_unit && !slot.sub_unit.jabatan.trim()) {
+        return `Jabatan Sub-Unit pada Waka #${i + 1} wajib diisi.`;
+      }
+    }
+  }
+
+  return null;
+}
 
 const SELECT_CLASS_NAME =
   "flex h-10 text-sm sm:h-8 sm:text-xs w-full rounded-md border border-input bg-background px-3 py-1 shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring";
@@ -230,8 +290,21 @@ function SlotFields({
  */
 export function TabStrukturOrganisasi({ initialData }: TabStrukturOrganisasiProps) {
   const [content, setContent] = useState<StrukturOrganisasiContent>(initialData);
+  const contentRef = useRef<StrukturOrganisasiContent>(initialData);
   const [isSaving, setIsSaving] = useState(false);
   const nextIdCounterRef = useRef(1);
+
+  useEffect(() => {
+    contentRef.current = content;
+  }, [content]);
+
+  const commitContent = (
+    updater: (prev: StrukturOrganisasiContent) => StrukturOrganisasiContent
+  ) => {
+    const next = updater(contentRef.current);
+    contentRef.current = next;
+    setContent(next);
+  };
 
   const createUniqueId = (prefix: string): string => {
     const seq = nextIdCounterRef.current++;
@@ -245,7 +318,7 @@ export function TabStrukturOrganisasi({ initialData }: TabStrukturOrganisasiProp
     field: keyof StrukturOrganisasiContent["hero"],
     value: string
   ) => {
-    setContent((prev) => ({
+    commitContent((prev) => ({
       ...prev,
       hero: { ...prev.hero, [field]: value },
     }));
@@ -262,7 +335,7 @@ export function TabStrukturOrganisasi({ initialData }: TabStrukturOrganisasiProp
       gender: "P",
     };
 
-    setContent((prev) => ({
+    commitContent((prev) => ({
       ...prev,
       personil: [...prev.personil, newPersonil],
     }));
@@ -273,7 +346,7 @@ export function TabStrukturOrganisasi({ initialData }: TabStrukturOrganisasiProp
     field: K,
     value: PersonilOrganisasi[K]
   ) => {
-    setContent((prev) => ({
+    commitContent((prev) => ({
       ...prev,
       personil: prev.personil.map((person) =>
         person.id === personilId ? { ...person, [field]: value } : person
@@ -282,11 +355,12 @@ export function TabStrukturOrganisasi({ initialData }: TabStrukturOrganisasiProp
   };
 
   const handleRemovePersonil = (personilId: string) => {
-    const { nextContent, clearedCount } = removePersonilAndClearSlots(
-      content,
-      personilId
-    );
-    setContent(nextContent);
+    let clearedCount = 0;
+    commitContent((prev) => {
+      const res = removePersonilAndClearSlots(prev, personilId);
+      clearedCount = res.clearedCount;
+      return res.nextContent;
+    });
 
     if (clearedCount > 0) {
       toast.info(
@@ -303,7 +377,7 @@ export function TabStrukturOrganisasi({ initialData }: TabStrukturOrganisasiProp
     field: "jabatan" | "personil_id",
     value: string
   ) => {
-    setContent((prev) => ({
+    commitContent((prev) => ({
       ...prev,
       [key]: { ...prev[key], [field]: value },
     }));
@@ -317,7 +391,7 @@ export function TabStrukturOrganisasi({ initialData }: TabStrukturOrganisasiProp
       ...(key === "waka" ? { sub_unit: null } : {}),
     };
 
-    setContent((prev) => ({
+    commitContent((prev) => ({
       ...prev,
       [key]: [...prev[key], newSlot],
     }));
@@ -329,7 +403,7 @@ export function TabStrukturOrganisasi({ initialData }: TabStrukturOrganisasiProp
     field: "jabatan" | "personil_id",
     value: string
   ) => {
-    setContent((prev) => ({
+    commitContent((prev) => ({
       ...prev,
       [key]: prev[key].map((slot) =>
         slot.id === slotId ? { ...slot, [field]: value } : slot
@@ -341,26 +415,28 @@ export function TabStrukturOrganisasi({ initialData }: TabStrukturOrganisasiProp
     key: SlotArrayGroupKey | "waka",
     slotId: string
   ) => {
-    setContent((prev) => ({
+    commitContent((prev) => ({
       ...prev,
       [key]: prev[key].filter((slot) => slot.id !== slotId),
     }));
   };
 
   const handleToggleWakaSubUnit = (slotId: string, enable: boolean) => {
-    setContent((prev) => ({
+    const subUnitId = enable ? createUniqueId("sub-unit") : null;
+    commitContent((prev) => ({
       ...prev,
       waka: prev.waka.map((slot) => {
         if (slot.id !== slotId) return slot;
         return {
           ...slot,
-          sub_unit: enable
-            ? {
-                id: createUniqueId("sub-unit"),
-                jabatan: "",
-                personil_id: "",
-              }
-            : null,
+          sub_unit:
+            subUnitId !== null
+              ? {
+                  id: subUnitId,
+                  jabatan: "",
+                  personil_id: "",
+                }
+              : null,
         };
       }),
     }));
@@ -371,7 +447,7 @@ export function TabStrukturOrganisasi({ initialData }: TabStrukturOrganisasiProp
     field: "jabatan" | "personil_id",
     value: string
   ) => {
-    setContent((prev) => ({
+    commitContent((prev) => ({
       ...prev,
       waka: prev.waka.map((slot) => {
         if (slot.id !== slotId || !slot.sub_unit) return slot;
@@ -387,11 +463,18 @@ export function TabStrukturOrganisasi({ initialData }: TabStrukturOrganisasiProp
   // 4. SAVE HANDLER
   // -------------------------------------------------------------
   const handleSave = async () => {
+    const currentContent = contentRef.current;
+    const validationError = validateStrukturOrganisasiContent(currentContent);
+    if (validationError) {
+      toast.error(validationError);
+      return;
+    }
+
     setIsSaving(true);
     const toastId = toast.loading("Menyimpan perubahan Struktur Organisasi...");
 
     try {
-      const res = await saveStrukturOrganisasiAction(content);
+      const res = await saveStrukturOrganisasiAction(currentContent);
       if (!res.success) {
         throw new Error(res.message || "Gagal menyimpan konten Struktur Organisasi");
       }
@@ -415,7 +498,7 @@ export function TabStrukturOrganisasi({ initialData }: TabStrukturOrganisasiProp
       <Card className="border-border/80 bg-card shadow-xs rounded-2xl overflow-hidden">
         <CardHeader className="p-4 sm:p-6 border-b border-border/60 bg-muted/30 dark:bg-muted/15">
           <div className="flex items-start gap-3.5 sm:gap-4">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
               <Sparkles className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
             </div>
             <div className="space-y-1 min-w-0 flex-1">
@@ -508,7 +591,7 @@ export function TabStrukturOrganisasi({ initialData }: TabStrukturOrganisasiProp
                 id="struktur-dewan-guru-label"
                 value={content.dewan_guru_label}
                 onChange={(e) =>
-                  setContent((prev) => ({
+                  commitContent((prev) => ({
                     ...prev,
                     dewan_guru_label: e.target.value,
                   }))
@@ -529,7 +612,7 @@ export function TabStrukturOrganisasi({ initialData }: TabStrukturOrganisasiProp
                 id="struktur-siswa-label"
                 value={content.siswa_label}
                 onChange={(e) =>
-                  setContent((prev) => ({
+                  commitContent((prev) => ({
                     ...prev,
                     siswa_label: e.target.value,
                   }))
@@ -547,7 +630,7 @@ export function TabStrukturOrganisasi({ initialData }: TabStrukturOrganisasiProp
         <CardHeader className="p-4 sm:p-6 border-b border-border/60 bg-muted/30 dark:bg-muted/15">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-start gap-3.5 sm:gap-4">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
                 <Users className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
               </div>
               <div className="space-y-1 min-w-0 flex-1">
@@ -608,7 +691,7 @@ export function TabStrukturOrganisasi({ initialData }: TabStrukturOrganisasiProp
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
-                      <div className="sm:col-span-5">
+                      <div className="sm:col-span-5 space-y-2">
                         <ImageUploader
                           label={`Foto ${displayName}`}
                           value={person.foto_url}
@@ -618,6 +701,20 @@ export function TabStrukturOrganisasi({ initialData }: TabStrukturOrganisasiProp
                           folder="struktur-organisasi"
                           aspectRatio="square"
                         />
+                        {person.foto_url.trim().length > 0 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() =>
+                              handleUpdatePersonil(person.id, "foto_url", "")
+                            }
+                            className="w-full h-8 text-xs text-muted-foreground hover:text-red-600"
+                          >
+                            <Trash2 className="w-3.5 h-3.5 mr-1.5" />
+                            Hapus Foto
+                          </Button>
+                        )}
                       </div>
 
                       <div className="sm:col-span-7 space-y-3">
@@ -676,7 +773,7 @@ export function TabStrukturOrganisasi({ initialData }: TabStrukturOrganisasiProp
       <Card className="border-border/80 bg-card shadow-xs rounded-2xl overflow-hidden">
         <CardHeader className="p-4 sm:p-6 border-b border-border/60 bg-muted/30 dark:bg-muted/15">
           <div className="flex items-start gap-3.5 sm:gap-4">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
               <Network className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
             </div>
             <div className="space-y-1 min-w-0 flex-1">

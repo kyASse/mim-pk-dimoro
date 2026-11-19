@@ -395,4 +395,218 @@ describe("TabStrukturOrganisasi", () => {
     expect(savedPayload.administrasi).toHaveLength(1);
     expect(savedPayload.administrasi[0].jabatan).toBe("Tata Usaha");
   });
+
+  it("menolak simpan dan memanggil toast.error saat ada personil dengan nama kosong atau hanya spasi", async () => {
+    render(<TabStrukturOrganisasi initialData={makeInitialData()} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /Tambah Guru\/Staf/i }));
+
+    const namaInputs = screen.getAllByLabelText(/Nama Lengkap/i) as HTMLInputElement[];
+    fireEvent.change(namaInputs[namaInputs.length - 1], { target: { value: "   " } });
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /Simpan Struktur Organisasi/i })
+    );
+
+    expect(mockedSave).not.toHaveBeenCalled();
+    expect(toast.loading).not.toHaveBeenCalled();
+    expect(toast.error).toHaveBeenCalledTimes(1);
+    const errorMessage = vi.mocked(toast.error).mock.calls[0][0] as string;
+    expect(errorMessage).toMatch(/Personil #6/i);
+    expect(errorMessage).toMatch(/Nama Lengkap/i);
+  });
+
+  it("menolak simpan dan memanggil toast.error saat ada slot jabatan dengan nama jabatan kosong", async () => {
+    render(<TabStrukturOrganisasi initialData={makeInitialData()} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /Tambah Administrasi/i }));
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /Simpan Struktur Organisasi/i })
+    );
+
+    expect(mockedSave).not.toHaveBeenCalled();
+    expect(toast.loading).not.toHaveBeenCalled();
+    expect(toast.error).toHaveBeenCalledTimes(1);
+    const errorMessage = vi.mocked(toast.error).mock.calls[0][0] as string;
+    expect(errorMessage).toMatch(/Administrasi #2/i);
+    expect(errorMessage).toMatch(/Jabatan/i);
+  });
+
+  it("menolak simpan dan memanggil toast.error saat sub_unit Waka diaktifkan tetapi jabatannya kosong", async () => {
+    render(<TabStrukturOrganisasi initialData={makeInitialData()} />);
+
+    const wakaSarprasCard = screen
+      .getByDisplayValue("Waka Sarpras")
+      .closest("[data-slot-card]");
+    expect(wakaSarprasCard).not.toBeNull();
+
+    fireEvent.click(
+      within(wakaSarprasCard as HTMLElement).getByRole("button", {
+        name: /Tambah Sub-Unit/i,
+      })
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /Simpan Struktur Organisasi/i })
+    );
+
+    expect(mockedSave).not.toHaveBeenCalled();
+    expect(toast.loading).not.toHaveBeenCalled();
+    expect(toast.error).toHaveBeenCalledTimes(1);
+    const errorMessage = vi.mocked(toast.error).mock.calls[0][0] as string;
+    expect(errorMessage).toMatch(/Sub-Unit/i);
+    expect(errorMessage).toMatch(/Waka #2/i);
+  });
+
+  it("menolak simpan dan memanggil toast.error saat suatu kelompok slot dikosongkan", async () => {
+    render(<TabStrukturOrganisasi initialData={makeInitialData()} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /Hapus slot Bendahara/i }));
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /Simpan Struktur Organisasi/i })
+    );
+
+    expect(mockedSave).not.toHaveBeenCalled();
+    expect(toast.loading).not.toHaveBeenCalled();
+    expect(toast.error).toHaveBeenCalledTimes(1);
+    const errorMessage = vi.mocked(toast.error).mock.calls[0][0] as string;
+    expect(errorMessage).toMatch(/Administrasi/i);
+    expect(errorMessage).toMatch(/minimal 1/i);
+  });
+
+  it("menolak simpan dan memanggil toast.error saat direktori personil kosong", () => {
+    const initial = makeInitialData();
+    initial.personil = [];
+    render(<TabStrukturOrganisasi initialData={initial} />);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /Simpan Struktur Organisasi/i })
+    );
+
+    expect(mockedSave).not.toHaveBeenCalled();
+    expect(toast.loading).not.toHaveBeenCalled();
+    expect(toast.error).toHaveBeenCalledTimes(1);
+    expect(vi.mocked(toast.error).mock.calls[0][0] as string).toMatch(/Bagian A/i);
+  });
+
+  it("menolak simpan saat salah satu grup slot lainnya (waka, penunjang, wali_kelas, guru_mapel) kosong", () => {
+    const groups: Array<{
+      mutate: (data: StrukturOrganisasiContent) => void;
+      expectedPattern: RegExp;
+    }> = [
+      { mutate: (d) => { d.waka = []; }, expectedPattern: /Wakil Kepala|Waka/i },
+      { mutate: (d) => { d.penunjang = []; }, expectedPattern: /Penunjang/i },
+      { mutate: (d) => { d.wali_kelas = []; }, expectedPattern: /Wali Kelas/i },
+      { mutate: (d) => { d.guru_mapel = []; }, expectedPattern: /Guru Mapel/i },
+    ];
+
+    for (const group of groups) {
+      vi.clearAllMocks();
+      const data = makeInitialData();
+      group.mutate(data);
+      const { unmount } = render(<TabStrukturOrganisasi initialData={data} />);
+
+      fireEvent.click(
+        screen.getByRole("button", { name: /Simpan Struktur Organisasi/i })
+      );
+
+      expect(mockedSave).not.toHaveBeenCalled();
+      expect(toast.error).toHaveBeenCalledTimes(1);
+      expect(vi.mocked(toast.error).mock.calls[0][0] as string).toMatch(
+        group.expectedPattern
+      );
+      unmount();
+    }
+  });
+
+  it("menolak simpan saat judul halaman, komite, kamad, label dewan guru, atau label siswa kosong", () => {
+    const cases: Array<{
+      mutate: (data: StrukturOrganisasiContent) => void;
+      expectedPattern: RegExp;
+    }> = [
+      { mutate: (d) => { d.hero.judul = "   "; }, expectedPattern: /Judul Halaman/i },
+      { mutate: (d) => { d.komite.jabatan = ""; }, expectedPattern: /Komite/i },
+      { mutate: (d) => { d.kamad.jabatan = " "; }, expectedPattern: /Kepala Madrasah/i },
+      { mutate: (d) => { d.dewan_guru_label = ""; }, expectedPattern: /Dewan Guru/i },
+      { mutate: (d) => { d.siswa_label = "  "; }, expectedPattern: /Siswa/i },
+    ];
+
+    for (const testCase of cases) {
+      vi.clearAllMocks();
+      const data = makeInitialData();
+      testCase.mutate(data);
+      const { unmount } = render(<TabStrukturOrganisasi initialData={data} />);
+
+      fireEvent.click(
+        screen.getByRole("button", { name: /Simpan Struktur Organisasi/i })
+      );
+
+      expect(mockedSave).not.toHaveBeenCalled();
+      expect(toast.error).toHaveBeenCalledTimes(1);
+      expect(vi.mocked(toast.error).mock.calls[0][0] as string).toMatch(
+        testCase.expectedPattern
+      );
+      unmount();
+    }
+  });
+
+  it("menampilkan tombol Hapus Foto (type='button') hanya ketika foto_url personil terisi dan mengosongkannya saat diklik", async () => {
+    const initial = makeInitialData();
+    initial.personil[0].foto_url = "https://cdn.test/bandowi.webp";
+
+    render(<TabStrukturOrganisasi initialData={initial} />);
+
+    // Hanya Bandowi yang memiliki foto_url -> tepat 1 tombol Hapus Foto
+    const hapusFotoButtons = screen.getAllByRole("button", {
+      name: /^Hapus Foto$/i,
+    }) as HTMLButtonElement[];
+    expect(hapusFotoButtons).toHaveLength(1);
+    expect(hapusFotoButtons[0].type).toBe("button");
+
+    fireEvent.click(hapusFotoButtons[0]);
+
+    expect(screen.queryByRole("button", { name: /^Hapus Foto$/i })).toBeNull();
+    expect((screen.getByLabelText(/Foto Bandowi/i) as HTMLInputElement).value).toBe("");
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /Simpan Struktur Organisasi/i })
+    );
+
+    await waitFor(() => {
+      expect(mockedSave).toHaveBeenCalledTimes(1);
+    });
+    expect(mockedSave.mock.calls[0][0].personil[0].foto_url).toBe("");
+  });
+
+  it("tetap menjaga kedua penghapusan personil ketika dua tombol hapus diklik berturut-turut dalam satu tick tanpa stale closure", async () => {
+    render(<TabStrukturOrganisasi initialData={makeInitialData()} />);
+
+    const deleteBandowiBtn = screen.getByRole("button", {
+      name: /Hapus personil Bandowi/i,
+    });
+    const deleteAnikBtn = screen.getByRole("button", {
+      name: /Hapus personil Anik Sulistyowati, S\.Ag\./i,
+    });
+
+    fireEvent.click(deleteBandowiBtn);
+    fireEvent.click(deleteAnikBtn);
+
+    expect(toast.info).toHaveBeenCalledTimes(2);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /Simpan Struktur Organisasi/i })
+    );
+
+    await waitFor(() => {
+      expect(mockedSave).toHaveBeenCalledTimes(1);
+    });
+
+    const savedPayload = mockedSave.mock.calls[0][0];
+    expect(savedPayload.personil.some((p) => p.id === "p-bandowi")).toBe(false);
+    expect(savedPayload.personil.some((p) => p.id === "p-anik")).toBe(false);
+    expect(savedPayload.komite.personil_id).toBe("");
+    expect(savedPayload.kamad.personil_id).toBe("");
+  });
 });

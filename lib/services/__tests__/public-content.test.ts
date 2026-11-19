@@ -156,4 +156,37 @@ describe("public-content service", () => {
     expect(struktur.hero.judul).toBe("Struktur Kustom");
     expect(struktur.personil).toHaveLength(20);
   });
+
+  it("getStrukturOrganisasiContent returns default fallback when database returns an error", async () => {
+    mockMaybeSingle.mockResolvedValueOnce({
+      data: {
+        isi: {
+          hero: {
+            badge: "Ignored",
+            judul: "Ignored",
+            subjudul: "Ignored",
+            tahun_ajaran: "Ignored",
+          },
+        },
+      },
+      error: { message: "Database error" },
+    });
+
+    const struktur = await getStrukturOrganisasiContent();
+    expect(struktur.hero.judul).not.toBe("Ignored");
+    expect(struktur.personil).toHaveLength(20);
+    expect(struktur.kamad.jabatan).toContain("Kepala Madrasah");
+  });
+
+  it("getStrukturOrganisasiContent returns default fallback when Supabase query throws", async () => {
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    mockMaybeSingle.mockRejectedValueOnce(new Error("Network failure"));
+
+    const struktur = await getStrukturOrganisasiContent();
+    expect(struktur.personil).toHaveLength(20);
+    expect(struktur.kamad.jabatan).toContain("Kepala Madrasah");
+    expect(consoleErrorSpy).toHaveBeenCalled();
+
+    consoleErrorSpy.mockRestore();
+  });
 });

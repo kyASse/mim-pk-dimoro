@@ -249,7 +249,7 @@ export function AdminKontenHub({
                   Pilih Seksi Konten Halaman
                 </SheetTitle>
                 <SheetDescription className="text-xs text-muted-foreground">
-                  Pilih salah satu dari 5 seksi konten website publik madrasah.
+                  Pilih salah satu dari {CONTENT_TABS.length} seksi konten website publik madrasah.
                 </SheetDescription>
               </SheetHeader>
               <div className="p-4 space-y-2 pb-8">

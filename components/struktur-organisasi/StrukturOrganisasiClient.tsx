@@ -263,7 +263,7 @@ function OrgLandmarkPill({
           compact ? "px-5 py-2 text-xs sm:text-sm" : "px-6 py-2.5 text-sm",
           variant === "dewan"
             ? "bg-primary text-primary-foreground shadow-sm border border-primary/20"
-            : "bg-amber-500/15 border-2 border-amber-500/35 text-amber-900 dark:text-amber-200 shadow-2xs"
+            : "bg-amber-500/15 border-2 border-amber-500/35 text-amber-900 dark:text-amber-200 shadow-sm"
         )}
       >
         <Icon className="size-4 shrink-0" aria-hidden="true" />
@@ -311,7 +311,7 @@ export default function StrukturOrganisasiClient({
         background="bg-primary/15 dark:bg-primary/20"
       >
         {content.hero.tahun_ajaran && (
-          <div className="mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-primary/10 border border-primary/25 text-primary shadow-2xs backdrop-blur-xs">
+          <div className="mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-primary/10 border border-primary/25 text-primary shadow-sm backdrop-blur-sm">
             <Calendar className="size-3.5 shrink-0" aria-hidden="true" />
             <span>{content.hero.tahun_ajaran}</span>
           </div>
@@ -357,7 +357,7 @@ export default function StrukturOrganisasiClient({
             transition={motionTransition}
             className="hidden lg:block"
           >
-            <div className="rounded-3xl border border-border/60 bg-card/40 p-8 xl:p-10 shadow-2xs">
+            <div className="rounded-3xl border border-border/60 bg-card/40 p-8 xl:p-10 shadow-sm">
               {/* Row 1: Komite Madrasah (kiri) -- Kamad Spotlight (tengah) */}
               <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center">
                 <div className="flex items-center justify-end pr-0">
