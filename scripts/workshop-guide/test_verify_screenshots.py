@@ -54,6 +54,21 @@ class TestVerifyScreenshots(unittest.TestCase):
             self.assertTrue(any("pub_beranda" in err for err in errors))
             self.assertTrue(any("auth_login" in err for err in errors))
 
+    def test_validate_manifest_flags_unexpected_route_redirect(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            manifest = self._write_valid_manifest(
+                tmp,
+                {
+                    "adm_pendaftar_detail": {
+                        "route": "/admin/pendaftar/detail/123",
+                        "finalUrl": "http://localhost:3001/admin/pendaftar",
+                    }
+                },
+            )
+            errors = validate_manifest(manifest, tmp)
+            self.assertTrue(any("adm_pendaftar_detail" in err for err in errors))
+
     def test_validate_manifest_passes_valid_entries(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             tmp = Path(tmpdir)

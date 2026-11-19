@@ -36,68 +36,68 @@ def load_env(env_path: Path) -> dict[str, str]:
 
 
 def build_demo_payloads() -> dict[str, list[dict]]:
-    """Return realistic Indonesian sample rows tagged with DEMO_TAG for screenshot capture."""
+    """Return realistic Indonesian sample rows tagged cleanly in non-headline fields."""
     return {
         "kalender_akademik": [
             {
-                "judul": f"{DEMO_TAG} Penilaian Akhir Semester (PAS) Ganjil",
+                "judul": "Rapat Koordinasi Persiapan PAS Ganjil",
                 "tanggal": "2026-12-07",
                 "tanggal_berakhir": "2026-12-12",
                 "waktu": "07.30 - 11.30 WIB",
-                "kategori": "Ujian",
-                "deskripsi": "Pelaksanaan Penilaian Akhir Semester Ganjil seluruh kelas 1 s.d. 6.",
-                "warna": "#059669",
+                "kategori": "Kegiatan Sekolah",
+                "deskripsi": f"Pelaksanaan evaluasi akhir semester seluruh kelas 1 s.d. 6. {DEMO_TAG}",
+                "warna": "#16a34a",
             },
             {
-                "judul": f"{DEMO_TAG} Pembagian Rapor & Pertemuan Wali Murid",
+                "judul": "Pembagian Rapor & Pertemuan Wali Murid",
                 "tanggal": "2026-12-19",
                 "tanggal_berakhir": "2026-12-19",
                 "waktu": "08.00 - 11.00 WIB",
-                "kategori": "Agenda Sekolah",
-                "deskripsi": "Penyerahan laporan hasil belajar siswa semester ganjil di ruang kelas masing-masing.",
-                "warna": "#2563eb",
+                "kategori": "Penerimaan LHB",
+                "deskripsi": f"Penyerahan laporan hasil belajar siswa semester ganjil di ruang kelas. {DEMO_TAG}",
+                "warna": "#059669",
             },
         ],
         "prestasi": [
             {
                 "tahun": 2026,
-                "nama_prestasi": f"{DEMO_TAG} Juara 1 Musabaqah Hifdzil Qur'an Juz 30",
+                "nama_prestasi": "Juara 1 Musabaqah Hifdzil Qur'an Juz 30",
                 "tingkat": "Kabupaten",
                 "nama_siswa": "Ahmad Fauzan Ramadhan",
-                "deskripsi": "Meraih peringkat pertama cabang MHQ Juz 30 tingkat Kabupaten Sukoharjo.",
+                "deskripsi": f"Meraih peringkat pertama cabang MHQ Juz 30 tingkat Kabupaten Sukoharjo. {DEMO_TAG}",
             },
             {
                 "tahun": 2026,
-                "nama_prestasi": f"{DEMO_TAG} Juara 2 Kejuaraan Tapak Suci Pelajar",
+                "nama_prestasi": "Juara 2 Kejuaraan Tapak Suci Pelajar",
                 "tingkat": "Provinsi",
                 "nama_siswa": "Siti Aisyah Putri",
-                "deskripsi": "Medali perak kategori tanding usia dini putri tingkat Jawa Tengah.",
+                "deskripsi": f"Medali perak kategori tanding usia dini putri tingkat Jawa Tengah. {DEMO_TAG}",
             },
         ],
         "pesan_masuk": [
             {
                 "nama_pengirim": "Bpk. Rahmat Hidayat",
-                "email_pengirim": "rahmat.hidayat@example.com",
+                "email_pengirim": "rahmat.hidayat@demo-capture.local",
                 "telepon": "081234567890",
-                "subjek": f"{DEMO_TAG} Informasi Jadwal Observasi PPDB Gelombang 1",
-                "isi_pesan": "Assalamu'alaikum admin, mohon info apakah observasi calon siswa kelas 1 dilaksanakan setiap hari Sabtu?",
+                "subjek": "Informasi Jadwal Observasi PPDB Gelombang 1",
+                "isi_pesan": f"Assalamu'alaikum admin, mohon info apakah observasi calon siswa kelas 1 dilaksanakan setiap hari Sabtu? {DEMO_TAG}",
                 "status": "belum_dibaca",
             },
             {
                 "nama_pengirim": "Ibu Nurul Khasanah",
-                "email_pengirim": "nurul.khasanah@example.com",
+                "email_pengirim": "nurul.khasanah@demo-capture.local",
                 "telepon": "085612349876",
-                "subjek": f"{DEMO_TAG} Pertanyaan Program Ekstrakurikuler Tahfidz",
-                "isi_pesan": "Mohon informasi jadwal bimbingan tahfidz untuk siswa kelas 3 di semester genap.",
-                "status": "sudah_dibaca",
+                "subjek": "Pertanyaan Program Ekstrakurikuler Tahfidz",
+                "isi_pesan": f"Mohon informasi jadwal bimbingan tahfidz untuk siswa kelas 3 di semester genap. {DEMO_TAG}",
+                "status": "dibaca",
             },
         ],
         "opini_perspektif": [
             {
                 "slug": f"{DEMO_SLUG_PREFIX}membentuk-karakter-qurani",
-                "judul": f"{DEMO_TAG} Membentuk Karakter Qurani Sejak Bangku Madrasah",
+                "judul": "Membentuk Karakter Qurani Sejak Bangku Madrasah",
                 "ringkasan": "Sinergi pembiasaan ibadah harian di madrasah dan keteladanan orang tua di rumah.",
-                "isi_lengkap": "Pembinaan karakter Islami pada usia sekolah dasar membutuhkan konsistensi antara guru di madrasah dan wali murid di rumah melalui program muraja'ah dan adab harian.",
+                "isi_lengkap": f"Pembinaan karakter Islami pada usia sekolah dasar membutuhkan konsistensi antara guru dan wali murid. {DEMO_TAG}",
                 "kategori": "Pendidikan & Karakter",
                 "nama_penulis": "Ust. Muhammad Arifin",
                 "peran_penulis": "guru",
@@ -108,9 +108,9 @@ def build_demo_payloads() -> dict[str, list[dict]]:
             },
             {
                 "slug": f"{DEMO_SLUG_PREFIX}literasi-digital-anak",
-                "judul": f"{DEMO_TAG} Mendampingi Anak Berliterasi Digital Secara Sehat",
+                "judul": "Mendampingi Anak Berliterasi Digital Secara Sehat",
                 "ringkasan": "Tips praktis wali murid mengarahkan penggunaan gawai untuk belajar kreatif.",
-                "isi_lengkap": "Pendampingan belajar di era digital menuntut komunikasi aktif orang tua dan madrasah agar anak mampu memanfaatkan teknologi untuk kebaikan.",
+                "isi_lengkap": f"Pendampingan belajar di era digital menuntut komunikasi aktif orang tua dan madrasah. {DEMO_TAG}",
                 "kategori": "Parenting Islami",
                 "nama_penulis": "Ibu Dewi Sartika",
                 "peran_penulis": "wali_murid",
@@ -150,9 +150,9 @@ def cleanup_demo_data(base_url: str, service_key: str) -> dict[str, int]:
     base = base_url.rstrip("/")
     tag_filter = urllib.parse.quote(f"*{DEMO_TAG}*")
     filters = {
-        "kalender_akademik": f"judul=like.{tag_filter}",
-        "prestasi": f"nama_prestasi=like.{tag_filter}",
-        "pesan_masuk": f"subjek=like.{tag_filter}",
+        "kalender_akademik": f"deskripsi=like.{tag_filter}",
+        "prestasi": f"deskripsi=like.{tag_filter}",
+        "pesan_masuk": f"email_pengirim=like.{urllib.parse.quote('*@demo-capture.local')}",
         "opini_perspektif": f"slug=like.{urllib.parse.quote(DEMO_SLUG_PREFIX + '*')}",
     }
     deleted: dict[str, int] = {}

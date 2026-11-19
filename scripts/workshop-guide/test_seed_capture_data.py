@@ -2,6 +2,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -9,6 +10,7 @@ from seed_capture_data import (
     DEMO_TAG,
     DEMO_SLUG_PREFIX,
     build_demo_payloads,
+    cleanup_demo_data,
     load_env,
 )
 
@@ -47,22 +49,27 @@ class TestSeedCaptureData(unittest.TestCase):
             self.assertGreaterEqual(len(rows), 2, f"{table} should have >= 2 sample rows")
 
         for row in payloads["kalender_akademik"]:
-            self.assertIn(DEMO_TAG, row["judul"])
+            self.assertNotIn(DEMO_TAG, row["judul"])
+            self.assertIn(DEMO_TAG, row["deskripsi"])
+            self.assertIn(row["kategori"], {"Kegiatan Sekolah", "Penerimaan LHB", "Libur Semester"})
             self.assertTrue({"judul", "tanggal", "kategori", "deskripsi", "warna"}.issubset(row.keys()))
 
         for row in payloads["prestasi"]:
-            self.assertIn(DEMO_TAG, row["nama_prestasi"])
+            self.assertNotIn(DEMO_TAG, row["nama_prestasi"])
+            self.assertIn(DEMO_TAG, row["deskripsi"])
             self.assertTrue({"tahun", "nama_prestasi", "tingkat", "nama_siswa", "deskripsi"}.issubset(row.keys()))
 
         for row in payloads["pesan_masuk"]:
-            self.assertIn(DEMO_TAG, row["subjek"])
+            self.assertNotIn(DEMO_TAG, row["subjek"])
+            self.assertTrue(row["email_pengirim"].endswith("@demo-capture.local"))
+            self.assertIn(row["status"], {"belum_dibaca", "dibaca", "dibalas"})
             self.assertTrue(
                 {"nama_pengirim", "email_pengirim", "telepon", "subjek", "isi_pesan", "status"}.issubset(row.keys())
             )
 
         for row in payloads["opini_perspektif"]:
             self.assertTrue(row["slug"].startswith(DEMO_SLUG_PREFIX))
-            self.assertIn(DEMO_TAG, row["judul"])
+            self.assertNotIn(DEMO_TAG, row["judul"])
             self.assertTrue(
                 {
                     "slug",
@@ -76,6 +83,23 @@ class TestSeedCaptureData(unittest.TestCase):
                     "status",
                 }.issubset(row.keys())
             )
+
+    def test_cleanup_demo_data_targets_tagged_columns(self):
+        calls: list[tuple[str, str]] = []
+
+        def fake_request(url: str, method: str, service_key: str, body=None):
+            calls.append((method, url))
+            return 200, "[]"
+
+        with patch("seed_capture_data._request", side_effect=fake_request):
+            cleanup_demo_data("http://127.0.0.1:54321", "key")
+
+        urls = dict((url.split("/rest/v1/")[1].split("?")[0], url.split("?")[1]) for _, url in calls)
+        self.assertTrue(all(m == "DELETE" for m, _ in calls))
+        self.assertIn("deskripsi=like.", urls["kalender_akademik"])
+        self.assertIn("deskripsi=like.", urls["prestasi"])
+        self.assertIn("email_pengirim=like.", urls["pesan_masuk"])
+        self.assertIn("slug=like.demo-capture-", urls["opini_perspektif"])
 
 
 if __name__ == "__main__":

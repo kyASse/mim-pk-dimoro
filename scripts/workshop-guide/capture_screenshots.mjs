@@ -94,6 +94,19 @@ async function launchBrowser() {
   return await chromium.launch({ headless: true });
 }
 
+async function createCleanContext(browser) {
+  const ctx = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    deviceScaleFactor: 1.5,
+    colorScheme: "light",
+  });
+  await ctx.route(
+    (url) => url.href.includes("react-scan") || url.hostname.includes("unpkg.com"),
+    (route) => route.fulfill({ status: 200, contentType: "application/javascript", body: "" })
+  );
+  return ctx;
+}
+
 async function main() {
   fs.mkdirSync(OUT_DIR, { recursive: true });
   const manifest = [];
@@ -101,11 +114,7 @@ async function main() {
 
   try {
     // 1. Public & Login pages
-    const pubCtx = await browser.newContext({
-      viewport: { width: 1440, height: 900 },
-      deviceScaleFactor: 1.5,
-      colorScheme: "light",
-    });
+    const pubCtx = await createCleanContext(browser);
     const pubPage = await pubCtx.newPage();
     for (const item of PUBLIC_ROUTES) {
       console.log(`Capturing ${item.key} (${item.route})...`);
@@ -114,11 +123,7 @@ async function main() {
     await pubCtx.close();
 
     // 2. Admin pages (demo seed account on local Supabase)
-    const adminCtx = await browser.newContext({
-      viewport: { width: 1440, height: 900 },
-      deviceScaleFactor: 1.5,
-      colorScheme: "light",
-    });
+    const adminCtx = await createCleanContext(browser);
     const adminPage = await adminCtx.newPage();
     console.log("Logging in as local admin...");
     await loginAs(adminPage, "admin@mimpkdimoro.sch.id", "admin123", "/admin");
@@ -141,11 +146,7 @@ async function main() {
     await adminCtx.close();
 
     // 3. Portal Wali page (demo parent account on local Supabase)
-    const portalCtx = await browser.newContext({
-      viewport: { width: 1440, height: 900 },
-      deviceScaleFactor: 1.5,
-      colorScheme: "light",
-    });
+    const portalCtx = await createCleanContext(browser);
     const portalPage = await portalCtx.newPage();
     console.log("Logging in as local parent for dev_portal_wali...");
     await loginAs(portalPage, "orangtua@example.com", "orangtua123", "/portal");

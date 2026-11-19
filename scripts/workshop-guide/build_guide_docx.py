@@ -226,7 +226,7 @@ def _add_chapter_2(doc: Document, shots: Path) -> None:
             ("Buka Halaman Login:", "Akses https://mimpkdimoro.sch.id/auth/login melalui browser di komputer/laptop atau HP."),
             ("Masukkan Kredensial:", "Ketikkan Email resmi akun admin Anda pada kolom Email dan kata sandi pada kolom Password (klik ikon mata untuk memeriksa ketikan kata sandi)."),
             ("Masuk ke Sistem:", "Klik tombol Login. Jika berhasil, sistem akan langsung mengarahkan Anda ke halaman Dashboard Admin (/admin)."),
-            ("Jika Lupa Kata Sandi:", "Klik tautan Lupa Password? di halaman login untuk mengirimkan tautan pengaturan ulang kata sandi ke email terdaftar."),
+            ("Jika Lupa Kata Sandi:", "Klik tautan Forgot your password? di halaman login untuk mengirimkan tautan pengaturan ulang kata sandi ke email terdaftar."),
         ],
     )
     add_screenshot_figure(doc, shots / "auth_login.png", "Gambar 2.1: Halaman Login Resmi Portal Admin (/auth/login).")
@@ -256,7 +256,7 @@ def _add_chapter_2(doc: Document, shots: Path) -> None:
         "Akses dari Smartphone & Prosedur Logout",
         [
             "Di layar HP, menu sidebar otomatis berubah menjadi tombol navigasi bawah dan header atas agar tetap nyaman dipakai saat memantau PPDB.",
-            "Setelah selesai bekerja (terutama di komputer lab/kantor bersama), selalu klik profil akun Anda di bagian bawah sidebar lalu pilih Keluar (Logout).",
+            "Setelah selesai bekerja (terutama di komputer lab/kantor bersama), selalu klik profil akun Anda di bagian bawah sidebar lalu pilih Keluar (atau tekan tombol Logout di kanan atas Dasbor Utama).",
         ],
     )
     doc.add_page_break()
@@ -276,7 +276,7 @@ def _add_chapter_3(doc: Document, shots: Path) -> None:
             ("Pantau Daftar Masuk:", "Buka menu Kesiswaan & PPDB -> Pendaftar PPDB untuk melihat seluruh calon siswa yang mengisi formulir di /pendaftaran secara real-time."),
             ("Cari & Filter:", "Gunakan kolom pencarian (nama/asal TK) atau filter status pendaftaran untuk memilah pendaftar yang perlu segera ditindaklanjuti, atau ekspor data tabel bila diperlukan."),
             ("Buka Halaman Detail:", "Klik tombol Detail pada baris calon siswa untuk masuk ke lembar biodata lengkap (/admin/pendaftar/detail/[id])."),
-            ("Ubah Status & Hubungi via WhatsApp:", "Pada halaman Detail (sidebar kanan di Desktop atau dock bawah di HP), ubah status seleksi (misal: Pending -> Diproses -> Diterima/Ditolak) dan gunakan tombol WhatsApp untuk menghubungi wali murid dengan format pesan yang sudah disiapkan."),
+            ("Ubah Status & Hubungi via WhatsApp:", "Pada halaman Detail (sidebar kanan di Desktop atau dock bawah di HP), ubah status seleksi (Menunggu Persetujuan -> Diterima / Revisi / Ditolak) dan gunakan tombol WhatsApp atau Terima & Buatkan Akun Portal sesuai prosedur penerimaan."),
         ],
     )
     add_screenshot_figure(doc, shots / "adm_pendaftar_list.png", "Gambar 3.1: Halaman Daftar Pendaftar PPDB (/admin/pendaftar).")
@@ -341,8 +341,8 @@ def _add_chapter_4(doc: Document, shots: Path) -> None:
     add_steps_list(
         doc,
         [
-            ("Unggah Dokumentasi Galeri:", "Buka Galeri Foto -> Tambah Galeri (/admin/galeri/tambah), pilih file foto kegiatan/fasilitas/prestasi, beri keterangan singkat dan kategori, lalu simpan."),
-            ("Kelola Testimoni Wali:", "Buka Testimoni Wali (/admin/testimoni) untuk menambah atau menyunting kutipan testimoni orang tua. Aktifkan sorotan (featured) pada testimoni terbaik agar muncul di halaman Beranda."),
+            ("Unggah Dokumentasi Galeri:", "Buka Galeri Foto -> Tambah Galeri (/admin/galeri/tambah), pilih file foto (maks. 5MB, JPG/PNG/WebP), beri keterangan singkat, dan pilih kategori (Kegiatan Belajar, Bermain, Seni & Kreativitas, Ibadah, atau Acara Khusus), lalu simpan."),
+            ("Kelola Testimoni Wali:", "Buka Testimoni Wali (/admin/testimoni) untuk menambah atau menyunting kutipan testimoni orang tua. Aktifkan sakelar Tampil di Beranda pada testimoni pilihan agar tampil di halaman Beranda."),
         ],
     )
     add_screenshot_figure(doc, shots / "adm_galeri.png", "Gambar 4.4: Halaman Manajemen Galeri Foto (/admin/galeri).")
@@ -362,7 +362,7 @@ def _add_chapter_5(doc: Document, shots: Path) -> None:
         doc,
         [
             ("Buka Daftar Agenda:", "Pilih menu Akademik & Agenda -> Kalender Akademik untuk melihat seluruh agenda yang sudah terjadwal."),
-            ("Tambah Kegiatan Baru:", "Klik Tambah Kegiatan (/admin/kalender/tambah), lalu isi Judul Kegiatan, Tanggal Mulai, Tanggal Berakhir (opsional), Waktu, Kategori (Ujian/Libur/Agenda Sekolah), Deskripsi, dan Warna label."),
+            ("Tambah Kegiatan Baru:", "Klik Tambah Kegiatan (/admin/kalender/tambah), lalu isi Judul Kegiatan, pilih Kategori Kegiatan (seperti Libur Umum, Kegiatan Sekolah, Parenting, Market Day, Libur Semester, Penerimaan LHB, dan lainnya — warna penanda otomatis mengikuti kategori), Tanggal Mulai/Berakhir, serta Deskripsi. Biarkan sakelar Acara Sepanjang Hari aktif atau matikan bila ingin mengisi jam spesifik."),
             ("Perbarui atau Hapus:", "Gunakan aksi Edit bila ada pergeseran jadwal madrasah atau Hapus jika kegiatan dibatalkan. Data otomatis tampil di /kalender-akademik."),
         ],
     )
@@ -372,7 +372,7 @@ def _add_chapter_5(doc: Document, shots: Path) -> None:
     add_steps_list(
         doc,
         [
-            ("Catat Kejuaraan Baru:", "Klik Tambah Prestasi (/admin/akademik/prestasi/tambah), isi Nama Prestasi/Lomba, Tahun, Tingkat (Kecamatan/Kabupaten/Provinsi/Nasional), Nama Siswa/Tim, Deskripsi, serta unggah foto dokumentasi/piagam."),
+            ("Catat Kejuaraan Baru:", "Klik Tambah Prestasi (/admin/akademik/prestasi/tambah), isi Nama Prestasi/Lomba, Tahun, Tingkat (Internasional, Nasional, Provinsi, Kabupaten, Kecamatan, atau Internal Madrasah), Nama Siswa/Tim, Deskripsi, serta unggah foto dokumentasi/piagam."),
             ("Kelola Arsip Prestasi:", "Gunakan filter tahun atau pencarian di halaman daftar untuk meninjau, menyunting, atau menghapus catatan prestasi."),
         ],
     )
@@ -391,8 +391,8 @@ def _add_chapter_6(doc: Document, shots: Path) -> None:
     add_steps_list(
         doc,
         [
-            ("Pantau Kotak Masuk:", "Setiap pertanyaan yang dikirim masyarakat melalui formulir di halaman /kontak otomatis masuk ke menu Komunikasi & Pengaturan -> Pesan Masuk."),
-            ("Baca & Tandai Status:", "Klik pesan untuk membaca nama pengirim, nomor telepon/email, dan isi pertanyaan, lalu tandai statusnya menjadi sudah dibaca/ditindaklanjuti setelah Anda menghubungi penanya."),
+            ("Pantau Kotak Masuk:", "Setiap pertanyaan yang dikirim masyarakat melalui formulir di halaman /kontak otomatis masuk ke menu Komunikasi & Pengaturan -> Pesan Masuk dengan status Belum Dibaca."),
+            ("Baca & Balas Pesan Cepat:", "Klik baris pesan untuk membuka panel detail (otomatis memperbarui status menjadi Sudah Dibaca). Gunakan panel Balas Pesan Cepat dengan tab WhatsApp atau Email beserta template balasan cepat, lalu ubah status ke Dibalas (atau gunakan tombol Tandai Semua Dibaca di bagian atas daftar)."),
         ],
     )
     add_screenshot_figure(doc, shots / "adm_pesan.png", "Gambar 6.1: Halaman Kotak Pesan Masuk (/admin/pesan).")
@@ -400,7 +400,7 @@ def _add_chapter_6(doc: Document, shots: Path) -> None:
     add_section_heading(doc, "6.2 Pusat Konten Halaman (/admin/konten) — 7 Tab Pengelolaan")
     add_body(
         doc,
-        "Menu Konten Halaman adalah pusat pengaturan seluruh teks profil sekolah dan aset halaman publik tanpa perlu menyentuh kode. Di bagian atas halaman terdapat 7 Tab yang masing-masing mengelola bagian berbeda:",
+        "Menu Konten Halaman adalah pusat pengaturan seluruh teks profil sekolah dan aset halaman publik tanpa perlu menyentuh kode. Di bagian atas halaman terdapat 7 Tab yang dapat digeser ke kanan (horizontal scroll pada layar laptop/HP) untuk mengakses Tab 1 hingga Tab 7:",
     )
     add_styled_table(
         doc,
@@ -498,7 +498,7 @@ def _add_chapter_8(doc: Document) -> None:
             ["4", "Temukan artikel '[LATIHAN] Tes Workshop' di daftar Berita Admin, lalu klik Hapus dan konfirmasi.", "Data latihan bersih kembali dari database produksi.", "[  ]"],
             ["5", "Buka Konten Halaman (/admin/konten) dan klik Tab 1 s.d. Tab 7 (tinjau tanpa menyimpan perubahan).", "Memahami lokasi edit profil, PPDB, FAQ, IKWM, dan Struktur Organisasi.", "[  ]"],
             ["6", "Buka Pesan Masuk (/admin/pesan) untuk melihat struktur daftar pesan dari halaman Kontak.", "Mengetahui cara memantau pertanyaan masyarakat yang masuk.", "[  ]"],
-            ["7", "Klik ikon profil di bagian bawah sidebar lalu tekan Keluar (Logout).", "Sesi login tertutup aman dan browser kembali ke halaman login/publik.", "[  ]"],
+            ["7", "Klik ikon profil di bagian bawah sidebar lalu tekan Keluar (atau tombol Logout di kanan atas Dasbor Utama).", "Sesi login tertutup aman dan browser kembali ke halaman login/publik.", "[  ]"],
         ],
         col_widths=[0.4, 2.95, 2.74, 0.6],
     )

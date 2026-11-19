@@ -1,7 +1,8 @@
-import base64
+import struct
 import sys
 import tempfile
 import unittest
+import zlib
 from pathlib import Path
 
 from docx import Document
@@ -12,10 +13,20 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_guide_docx import generate_guide_docx
 from verify_screenshots import REQUIRED_KEYS
 
-# Minimal 1x1 PNG bytes for isolated unit tests
-SAMPLE_PNG = base64.b64decode(
-    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
-)
+
+def _make_png(width: int, height: int) -> bytes:
+    """Create a minimal valid RGBA PNG of the given dimensions using stdlib only."""
+    raw_row = b"\x00" + (b"\x0f\x76\x6e\xff" * width)
+    raw = raw_row * height
+
+    def chunk(tag: bytes, data: bytes) -> bytes:
+        return struct.pack(">I", len(data)) + tag + data + struct.pack(">I", zlib.crc32(tag + data) & 0xFFFFFFFF)
+
+    ihdr = struct.pack(">IIBBBBB", width, height, 8, 6, 0, 0, 0)
+    return b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", ihdr) + chunk(b"IDAT", zlib.compress(raw)) + chunk(b"IEND", b"")
+
+
+SAMPLE_PNG = _make_png(160, 100)
 
 
 def _extract_all_text(doc: Document) -> str:
@@ -24,6 +35,14 @@ def _extract_all_text(doc: Document) -> str:
         for row in table.rows:
             for cell in row.cells:
                 parts.append(cell.text)
+    for section in doc.sections:
+        for container in (section.header, section.footer):
+            for p in container.paragraphs:
+                parts.append(p.text)
+            for table in container.tables:
+                for row in table.rows:
+                    for cell in row.cells:
+                        parts.append(cell.text)
     return "\n".join(parts)
 
 
@@ -97,6 +116,37 @@ class TestBuildGuideDocx(unittest.TestCase):
         max_emu = Inches(6.5)
         for shape in doc.inline_shapes:
             self.assertLessEqual(shape.width, max_emu)
+            ratio = shape.width / shape.height
+            # 160x100 sample screenshots (1.6:1) and logo (160x100) must preserve aspect ratio
+            self.assertAlmostEqual(ratio, 1.6, delta=0.05)
+
+    def test_generated_docx_uses_exact_ui_labels(self):
+        _, doc = self._build_temp_doc()
+        full_text = _extract_all_text(doc)
+        for label in [
+            "Forgot your password?",
+            "Menunggu Persetujuan",
+            "Revisi",
+            "Diterima",
+            "Ditolak",
+            "Tampil di Beranda",
+            "Kegiatan Belajar",
+            "Seni & Kreativitas",
+            "Acara Khusus",
+            "Acara Sepanjang Hari",
+            "Libur Umum",
+            "Kegiatan Sekolah",
+            "Libur Semester",
+            "Internasional",
+            "Internal Madrasah",
+            "Balas Pesan Cepat",
+            "Sudah Dibaca",
+            "Dibalas",
+            "Tandai Semua Dibaca",
+        ]:
+            self.assertIn(label, full_text, f"Expected exact UI label {label!r}")
+        for stale in ["Pending -> Diproses", "kegiatan/fasilitas/prestasi", "Warna label", "Ujian/Libur/Agenda Sekolah", "Keluar (Logout)"]:
+            self.assertNotIn(stale, full_text, f"Stale UI label found: {stale!r}")
 
 
 if __name__ == "__main__":

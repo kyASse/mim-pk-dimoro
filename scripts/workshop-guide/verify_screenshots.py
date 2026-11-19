@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import sys
+import urllib.parse
 from pathlib import Path
 
 MIN_PNG_BYTES = 10_000
@@ -55,8 +56,14 @@ def validate_manifest(manifest_path: Path, screenshots_dir: Path) -> list[str]:
         size = png_path.stat().st_size
         if size < MIN_PNG_BYTES:
             errors.append(f"Screenshot for {key} too small ({size} bytes < {MIN_PNG_BYTES})")
-        if entry.get("requiresAuth") and "/auth/login" in entry.get("finalUrl", ""):
-            errors.append(f"Authenticated route for {key} redirected to /auth/login ({entry.get('finalUrl')})")
+        final_url = entry.get("finalUrl", "")
+        if entry.get("requiresAuth") and "/auth/login" in final_url:
+            errors.append(f"Authenticated route for {key} redirected to /auth/login ({final_url})")
+        expected_route = entry.get("route", "")
+        actual_path = urllib.parse.urlparse(final_url).path.rstrip("/") or "/"
+        norm_expected = expected_route.rstrip("/") or "/"
+        if expected_route and actual_path != norm_expected:
+            errors.append(f"Route mismatch for {key}: expected {norm_expected!r}, got {actual_path!r} ({final_url})")
 
     return errors
 
