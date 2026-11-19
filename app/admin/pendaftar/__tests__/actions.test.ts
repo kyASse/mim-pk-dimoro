@@ -17,6 +17,14 @@ vi.mock('@/lib/auth/recovery', () => ({
   sendCustomRecoveryEmail: vi.fn().mockResolvedValue({ success: true }),
 }));
 
+vi.mock('@/lib/auth/guard', () => ({
+  requireAdminSession: vi.fn().mockResolvedValue({
+    user: { id: 'admin-1', email: 'admin@mim.sch.id' },
+    role: 'admin',
+    profile: { id: 'admin-1', role: 'admin', nama_lengkap: 'Admin' },
+  }),
+}));
+
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { sendCustomRecoveryEmail } from '@/lib/auth/recovery';

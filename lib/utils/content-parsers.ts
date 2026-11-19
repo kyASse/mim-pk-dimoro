@@ -25,6 +25,9 @@ import {
   PPDBFlowContent,
   BerandaKeunggulanContent,
   IKWMContent,
+  PersonilOrganisasi,
+  SlotJabatan,
+  StrukturOrganisasiContent,
 } from "@/lib/types/content";
 
 // 1. Parser Hero Beranda
@@ -496,4 +499,217 @@ export function parseIKWMContent(data: unknown): IKWMContent {
     kegiatan,
   };
 }
+
+// 10. Default & Parser Struktur Organisasi Madrasah
+export const DEFAULT_STRUKTUR_ORGANISASI: StrukturOrganisasiContent = {
+  hero: {
+    badge: "Struktur Kepemimpinan & Pendidik",
+    judul: "Struktur Organisasi MI Muhammadiyah Dimoro",
+    subjudul:
+      "Susunan pimpinan, wali kelas, dewan guru, dan tenaga kependidikan yang bersinergi membimbing peserta didik berakhlak mulia dan berprestasi.",
+    tahun_ajaran: "Tahun Ajaran 2026/2027",
+  },
+  personil: [
+    { id: "bandowi", nama: "Bandowi", foto_url: "", gender: "L" },
+    { id: "anik-sulistyowati", nama: "Anik Sulistyowati, S.Ag.", foto_url: "", gender: "P" },
+    { id: "novita-nurlia", nama: "Novita Nurlia, STP", foto_url: "", gender: "P" },
+    { id: "dalyani-sri-rahayu", nama: "Dalyani Sri Rahayu, S.Pd", foto_url: "", gender: "P" },
+    { id: "warih-agung-sumiwi", nama: "Warih Agung Sumiwi, S.Pd.I", foto_url: "", gender: "P" },
+    { id: "ful-mulana-sidik-jari", nama: "Ful Mulana Sidik Jari, S.Pd.I", foto_url: "", gender: "L" },
+    { id: "wartini", nama: "Wartini, S.Ag", foto_url: "", gender: "P" },
+    { id: "sri-asih", nama: "Sri Asih, S.Sos, S.Pd, M.Si", foto_url: "", gender: "P" },
+    { id: "aris-muhtar", nama: "Aris Muhtar, S.Pd.I", foto_url: "", gender: "L" },
+    { id: "sri-haryani", nama: "Sri Haryani, S.Pd.", foto_url: "", gender: "P" },
+    { id: "darminah", nama: "Darminah", foto_url: "", gender: "P" },
+    { id: "slamet-untoro", nama: "Slamet Untoro, S.Pd.I", foto_url: "", gender: "L" },
+    { id: "rina-hidayati", nama: "Rina Hidayati, S.Ag", foto_url: "", gender: "P" },
+    { id: "siti-fatimah", nama: "Siti Fatimah, S.Pd.I", foto_url: "", gender: "P" },
+    { id: "muhammad-alfandi", nama: "Muhammad Alfandi, S.Pd", foto_url: "", gender: "L" },
+    { id: "emi-dewi-hastuti", nama: "Emi Dewi Hastuti, S.Pd", foto_url: "", gender: "P" },
+    { id: "ervan-adi-saputro", nama: "Ervan Adi Saputro, S.Pd", foto_url: "", gender: "L" },
+    { id: "moh-heri-wibowo", nama: "Moh Heri Wibowo, S.Pd", foto_url: "", gender: "L" },
+    { id: "surani", nama: "Surani, S.Pd.I", foto_url: "", gender: "P" },
+    { id: "sahrul-bm", nama: "Sahrul BM.", foto_url: "", gender: "L" },
+  ],
+  komite: {
+    id: "komite",
+    jabatan: "Komite Madrasah",
+    personil_id: "bandowi",
+  },
+  kamad: {
+    id: "kamad",
+    jabatan: "Kepala Madrasah (Kamad)",
+    personil_id: "anik-sulistyowati",
+  },
+  administrasi: [
+    { id: "tata-usaha", jabatan: "Tata Usaha", personil_id: "novita-nurlia" },
+    { id: "bendahara", jabatan: "Bendahara", personil_id: "dalyani-sri-rahayu" },
+  ],
+  waka: [
+    {
+      id: "waka-kurikulum",
+      jabatan: "Waka Kurikulum",
+      personil_id: "warih-agung-sumiwi",
+      sub_unit: {
+        id: "koord-perpus",
+        jabatan: "Koord. Perpus",
+        personil_id: "dalyani-sri-rahayu",
+      },
+    },
+    { id: "waka-sarpras", jabatan: "Waka Sarpras", personil_id: "ful-mulana-sidik-jari" },
+    { id: "waka-humas", jabatan: "Waka Humas", personil_id: "wartini" },
+    {
+      id: "waka-kesiswaan",
+      jabatan: "Waka Ur. Kesiswaan",
+      personil_id: "sri-asih",
+      sub_unit: {
+        id: "guru-bp",
+        jabatan: "Guru BP",
+        personil_id: "aris-muhtar",
+      },
+    },
+  ],
+  penunjang: [
+    { id: "koor-kop-siswa", jabatan: "Koor. Kop. Siswa", personil_id: "sri-haryani" },
+    { id: "penjaga-sekolah", jabatan: "Penjaga Sekolah", personil_id: "darminah" },
+  ],
+  wali_kelas: [
+    { id: "wali-1a", jabatan: "Wali Kelas I A", personil_id: "sri-asih" },
+    { id: "wali-2a", jabatan: "Wali Kelas II A", personil_id: "sri-haryani" },
+    { id: "wali-2b", jabatan: "Wali Kelas II B", personil_id: "slamet-untoro" },
+    { id: "wali-3a", jabatan: "Wali Kelas III A", personil_id: "warih-agung-sumiwi" },
+    { id: "wali-3b", jabatan: "Wali Kelas III B", personil_id: "ful-mulana-sidik-jari" },
+    { id: "wali-4a", jabatan: "Wali Kelas IV A", personil_id: "rina-hidayati" },
+    { id: "wali-4b", jabatan: "Wali Kelas IV B", personil_id: "siti-fatimah" },
+    { id: "wali-5", jabatan: "Wali Kelas V", personil_id: "muhammad-alfandi" },
+    { id: "wali-6a", jabatan: "Wali Kelas VI A", personil_id: "emi-dewi-hastuti" },
+    { id: "wali-6b", jabatan: "Wali Kelas VI B", personil_id: "aris-muhtar" },
+  ],
+  dewan_guru_label: "Dewan Guru",
+  guru_mapel: [
+    { id: "guru-mapel-1", jabatan: "Guru Mapel", personil_id: "ervan-adi-saputro" },
+    { id: "guru-mapel-2", jabatan: "Guru Mapel", personil_id: "moh-heri-wibowo" },
+    { id: "guru-mapel-3", jabatan: "Guru Mapel", personil_id: "surani" },
+    { id: "guru-mapel-4", jabatan: "Guru Mapel", personil_id: "novita-nurlia" },
+    { id: "guru-mapel-5", jabatan: "Guru Mapel", personil_id: "sahrul-bm" },
+  ],
+  siswa_label: "Siswa",
+};
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function normalizePersonilItem(raw: unknown): PersonilOrganisasi | null {
+  if (!isRecord(raw)) return null;
+  const id = typeof raw.id === "string" ? raw.id.trim() : "";
+  const nama = typeof raw.nama === "string" ? raw.nama.trim() : "";
+  if (!id || !nama) return null;
+
+  const foto_url = typeof raw.foto_url === "string" ? raw.foto_url : "";
+  const gender: "L" | "P" | undefined =
+    raw.gender === "L" || raw.gender === "P" ? raw.gender : undefined;
+
+  return gender ? { id, nama, foto_url, gender } : { id, nama, foto_url };
+}
+
+function normalizeSlotItem(raw: unknown): SlotJabatan | null {
+  if (!isRecord(raw)) return null;
+  const id = typeof raw.id === "string" ? raw.id.trim() : "";
+  const jabatan = typeof raw.jabatan === "string" ? raw.jabatan.trim() : "";
+  if (!id || !jabatan) return null;
+
+  const personil_id = typeof raw.personil_id === "string" ? raw.personil_id : "";
+  const result: SlotJabatan = { id, jabatan, personil_id };
+
+  if (raw.sub_unit === null) {
+    result.sub_unit = null;
+  } else if (raw.sub_unit !== undefined) {
+    const subUnit = normalizeSlotItem(raw.sub_unit);
+    if (subUnit) {
+      result.sub_unit = subUnit;
+    }
+  }
+
+  return result;
+}
+
+function parseSingletonSlot(raw: unknown, fallback: SlotJabatan): SlotJabatan {
+  if (!isRecord(raw)) return { ...fallback };
+  const id = typeof raw.id === "string" && raw.id.trim() ? raw.id.trim() : fallback.id;
+  const jabatan =
+    typeof raw.jabatan === "string" && raw.jabatan.trim() ? raw.jabatan.trim() : fallback.jabatan;
+  const personil_id =
+    typeof raw.personil_id === "string" ? raw.personil_id : fallback.personil_id;
+  return { id, jabatan, personil_id };
+}
+
+function parseSlotArray(raw: unknown, fallback: SlotJabatan[]): SlotJabatan[] {
+  if (!Array.isArray(raw)) return fallback;
+  const valid = raw
+    .map(normalizeSlotItem)
+    .filter((item): item is SlotJabatan => item !== null);
+  return valid.length > 0 ? valid : fallback;
+}
+
+export function parseStrukturOrganisasiContent(raw: unknown): StrukturOrganisasiContent {
+  let parsed = raw;
+  if (typeof raw === "string") {
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      parsed = null;
+    }
+  }
+
+  const obj = isRecord(parsed) ? parsed : {};
+  const rawHero = isRecord(obj.hero) ? obj.hero : {};
+
+  const hero = {
+    badge:
+      typeof rawHero.badge === "string" && rawHero.badge.trim()
+        ? rawHero.badge
+        : DEFAULT_STRUKTUR_ORGANISASI.hero.badge,
+    judul:
+      typeof rawHero.judul === "string" && rawHero.judul.trim()
+        ? rawHero.judul
+        : DEFAULT_STRUKTUR_ORGANISASI.hero.judul,
+    subjudul:
+      typeof rawHero.subjudul === "string" && rawHero.subjudul.trim()
+        ? rawHero.subjudul
+        : DEFAULT_STRUKTUR_ORGANISASI.hero.subjudul,
+    tahun_ajaran:
+      typeof rawHero.tahun_ajaran === "string" && rawHero.tahun_ajaran.trim()
+        ? rawHero.tahun_ajaran
+        : DEFAULT_STRUKTUR_ORGANISASI.hero.tahun_ajaran,
+  };
+
+  const parsedPersonil = Array.isArray(obj.personil)
+    ? obj.personil
+        .map(normalizePersonilItem)
+        .filter((item): item is PersonilOrganisasi => item !== null)
+    : [];
+
+  return {
+    hero,
+    personil:
+      parsedPersonil.length > 0 ? parsedPersonil : DEFAULT_STRUKTUR_ORGANISASI.personil,
+    komite: parseSingletonSlot(obj.komite, DEFAULT_STRUKTUR_ORGANISASI.komite),
+    kamad: parseSingletonSlot(obj.kamad, DEFAULT_STRUKTUR_ORGANISASI.kamad),
+    administrasi: parseSlotArray(obj.administrasi, DEFAULT_STRUKTUR_ORGANISASI.administrasi),
+    waka: parseSlotArray(obj.waka, DEFAULT_STRUKTUR_ORGANISASI.waka),
+    penunjang: parseSlotArray(obj.penunjang, DEFAULT_STRUKTUR_ORGANISASI.penunjang),
+    wali_kelas: parseSlotArray(obj.wali_kelas, DEFAULT_STRUKTUR_ORGANISASI.wali_kelas),
+    dewan_guru_label:
+      typeof obj.dewan_guru_label === "string" && obj.dewan_guru_label.trim()
+        ? obj.dewan_guru_label
+        : DEFAULT_STRUKTUR_ORGANISASI.dewan_guru_label,
+    guru_mapel: parseSlotArray(obj.guru_mapel, DEFAULT_STRUKTUR_ORGANISASI.guru_mapel),
+    siswa_label:
+      typeof obj.siswa_label === "string" && obj.siswa_label.trim()
+        ? obj.siswa_label
+        : DEFAULT_STRUKTUR_ORGANISASI.siswa_label,
+  };
+}
+
 

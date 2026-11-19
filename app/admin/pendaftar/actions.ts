@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
 import { sendCustomRecoveryEmail } from "@/lib/auth/recovery";
+import { requireAdminSession } from "@/lib/auth/guard";
 import type { User } from '@supabase/supabase-js';
 
 type PendaftarData = {
@@ -14,56 +15,78 @@ type PendaftarData = {
     diterima_di_kelas?: string | null;
     diterima_pada_tanggal?: string | null;
 };
-export async function updateStatusPendaftaran(id: string, status: string) {
-    const supabase = await createClient();
-    const { error } = await supabase
-        .from('pendaftar')
-        .update({ status_pendaftaran: status })
-        .eq('id', id);
 
-    if (!error) {
-        revalidatePath('/admin/pendaftar');
-        revalidatePath(`/admin/pendaftar/detail/${id}`);
+export async function updateStatusPendaftaran(id: string, status: string) {
+    try {
+        await requireAdminSession();
+        const supabase = await createClient();
+        const { error } = await supabase
+            .from('pendaftar')
+            .update({ status_pendaftaran: status })
+            .eq('id', id);
+
+        if (!error) {
+            revalidatePath('/admin/pendaftar');
+            revalidatePath(`/admin/pendaftar/detail/${id}`);
+        }
+        return { success: !error, message: error?.message };
+    } catch (err: unknown) {
+        return { success: false, message: err instanceof Error ? err.message : 'Unauthorized' };
     }
-    return { success: !error, message: error?.message };
 }
 
 export async function bulkUpdateStatusPendaftaran(ids: string[], status: string) {
-    if (!ids || ids.length === 0) {
-        return { success: false, message: "Tidak ada pendaftar yang dipilih." };
+    try {
+        await requireAdminSession();
+        if (!ids || ids.length === 0) {
+            return { success: false, message: "Tidak ada pendaftar yang dipilih." };
+        }
+
+        const supabase = await createClient();
+        const { error } = await supabase
+            .from('pendaftar')
+            .update({ status_pendaftaran: status })
+            .in('id', ids);
+
+        if (!error) {
+            revalidatePath('/admin/pendaftar');
+        }
+
+        return { 
+            success: !error, 
+            message: error ? error.message : `${ids.length} pendaftar berhasil diubah statusnya menjadi ${status}.` 
+        };
+    } catch (err: unknown) {
+        return { success: false, message: err instanceof Error ? err.message : 'Unauthorized' };
     }
-
-    const supabase = await createClient();
-    const { error } = await supabase
-        .from('pendaftar')
-        .update({ status_pendaftaran: status })
-        .in('id', ids);
-
-    if (!error) {
-        revalidatePath('/admin/pendaftar');
-    }
-
-    return { 
-        success: !error, 
-        message: error ? error.message : `${ids.length} pendaftar berhasil diubah statusnya menjadi ${status}.` 
-    };
 }
 
 export async function updatePendaftarData(id: string, data: Record<string, unknown>) {
-    const supabase = await createClient();
-    const { error } = await supabase
-        .from('pendaftar')
-        .update(data)
-        .eq('id', id);
+    try {
+        await requireAdminSession();
+        const supabase = await createClient();
+        const { error } = await supabase
+            .from('pendaftar')
+            .update(data)
+            .eq('id', id);
 
-    if (!error) {
-        revalidatePath('/admin/pendaftar');
-        revalidatePath(`/admin/pendaftar/detail/${id}`);
+        if (!error) {
+            revalidatePath('/admin/pendaftar');
+            revalidatePath(`/admin/pendaftar/detail/${id}`);
+        }
+        return { success: !error, message: error?.message };
+    } catch (err: unknown) {
+        return { success: false, message: err instanceof Error ? err.message : 'Unauthorized' };
     }
-    return { success: !error, message: error?.message };
 }
 
 export async function acceptAndCreatePortalAccountAction(pendaftar: PendaftarData) {
+    try {
+        await requireAdminSession();
+    } catch (err: unknown) {
+        return { success: false, message: err instanceof Error ? err.message : 'Unauthorized' };
+    }
+
     const supabase = await createClient();
     const supabaseAdmin = await createAdminClient();
 
@@ -129,6 +152,6 @@ export async function acceptAndCreatePortalAccountAction(pendaftar: PendaftarDat
         
         await supabase.from('pendaftar').update({ status_pendaftaran: 'Menunggu Konfirmasi' }).eq('id', pendaftar.id);
         revalidatePath(`/admin/pendaftar/detail/${pendaftar.id}`);
-        return { success: false, message: (error as Error).message || "Terjadi kesalahan yang tidak diketahui." };
+        return { success: false, message: error instanceof Error ? error.message : "Terjadi kesalahan yang tidak diketahui." };
     }
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import React from 'react';
 import Footer from '../Footer';
 import { SCHOOL_FULL_NAME } from '@/lib/school-config';
@@ -60,12 +60,14 @@ describe('Redesigned Footer Component', () => {
 
     await waitFor(() => {
       // Core explore links
-      expect(screen.getByRole('link', { name: /beranda/i }).getAttribute('href')).toBe('/');
-      expect(screen.getByRole('link', { name: /tentang kami/i }).getAttribute('href')).toBe('/tentang-kami');
-      expect(screen.getByRole('link', { name: /program & kurikulum/i }).getAttribute('href')).toBe('/program');
-      expect(screen.getByRole('link', { name: /ikatan wali murid/i }).getAttribute('href')).toBe('/ikatan-wali-murid');
-      expect(screen.getByRole('link', { name: /galeri/i }).getAttribute('href')).toBe('/galeri');
-      expect(screen.getByRole('link', { name: /berita/i }).getAttribute('href')).toBe('/berita');
+      const exploreSection = screen.getByRole('heading', { name: /jelajah madrasah/i }).parentElement!;
+      expect(within(exploreSection).getByRole('link', { name: /beranda/i }).getAttribute('href')).toBe('/');
+      expect(within(exploreSection).getByRole('link', { name: /tentang kami/i }).getAttribute('href')).toBe('/tentang-kami');
+      expect(within(exploreSection).getByRole('link', { name: /struktur organisasi/i }).getAttribute('href')).toBe('/struktur-organisasi');
+      expect(within(exploreSection).getByRole('link', { name: /program & kurikulum/i }).getAttribute('href')).toBe('/program');
+      expect(within(exploreSection).getByRole('link', { name: /ikatan wali murid/i }).getAttribute('href')).toBe('/ikatan-wali-murid');
+      expect(within(exploreSection).getByRole('link', { name: /galeri/i }).getAttribute('href')).toBe('/galeri');
+      expect(within(exploreSection).getByRole('link', { name: /berita/i }).getAttribute('href')).toBe('/berita');
 
       // Service & Academic links
       expect(screen.getByRole('link', { name: /pendaftaran/i }).getAttribute('href')).toBe('/pendaftaran');

@@ -28,6 +28,7 @@ import {
   ChevronRight,
   Check,
   Users2,
+  Network,
 } from "lucide-react";
 import { TabBeranda } from "./TabBeranda";
 import { TabProfil } from "./TabProfil";
@@ -35,6 +36,7 @@ import { TabProgram } from "./TabProgram";
 import { TabPPDB } from "./TabPPDB";
 import { TabKontakFAQ } from "./TabKontakFAQ";
 import { TabIKWM } from "./TabIKWM";
+import { TabStrukturOrganisasi } from "./TabStrukturOrganisasi";
 import {
   HeroContent,
   BerandaKeunggulanContent,
@@ -47,6 +49,7 @@ import {
   MainStatItem,
   EkstrakurikulerItem,
   IKWMContent,
+  StrukturOrganisasiContent,
 } from "@/lib/types/content";
 
 export const CONTENT_TABS = [
@@ -98,6 +101,14 @@ export const CONTENT_TABS = [
     icon: Users2,
     description: "Kata pengantar, susunan pengurus, kegiatan, & video paguyuban",
   },
+  {
+    id: "struktur",
+    number: "7",
+    shortLabel: "Struktur",
+    fullLabel: "7. Struktur Organisasi",
+    icon: Network,
+    description: "Direktori guru & staf, pimpinan, wali kelas, dan bagan organisasi",
+  },
 ] as const;
 
 interface AdminKontenHubProps {
@@ -116,6 +127,7 @@ interface AdminKontenHubProps {
   kontak: any;
   faqList: FAQItem[];
   ikwmContent: IKWMContent;
+  strukturOrganisasi: StrukturOrganisasiContent;
 }
 
 export function AdminKontenHub({
@@ -134,6 +146,7 @@ export function AdminKontenHub({
   kontak,
   faqList,
   ikwmContent,
+  strukturOrganisasi,
 }: AdminKontenHubProps) {
   const [activeTab, setActiveTab] = useState("beranda");
   const [isMobileSheetOpen, setIsMobileSheetOpen] = useState(false);
@@ -236,7 +249,7 @@ export function AdminKontenHub({
                   Pilih Seksi Konten Halaman
                 </SheetTitle>
                 <SheetDescription className="text-xs text-muted-foreground">
-                  Pilih salah satu dari 5 seksi konten website publik madrasah.
+                  Pilih salah satu dari {CONTENT_TABS.length} seksi konten website publik madrasah.
                 </SheetDescription>
               </SheetHeader>
               <div className="p-4 space-y-2 pb-8">
@@ -362,6 +375,11 @@ export function AdminKontenHub({
         {/* Tab 6: Ikatan Wali Murid (IKWM) */}
         <TabsContent value="ikwm" className="space-y-6 focus-visible:outline-none">
           <TabIKWM initialData={ikwmContent} />
+        </TabsContent>
+
+        {/* Tab 7: Struktur Organisasi */}
+        <TabsContent value="struktur" className="space-y-6 focus-visible:outline-none">
+          <TabStrukturOrganisasi initialData={strukturOrganisasi} />
         </TabsContent>
       </Tabs>
 

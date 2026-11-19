@@ -10,6 +10,7 @@ import Link from "next/link";
 import PageHeader from "@/components/shared/PageHeader";
 import ShareSection from "@/components/berita/ShareSection";
 import { SCHOOL_NAME } from "@/lib/school-config";
+import { sanitizeHtml } from "@/lib/utils/sanitize-html";
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -119,7 +120,7 @@ export default async function BeritaDetailPage({ params }: PageProps) {
                         {/<[a-z][\s\S]*>/i.test(berita.isi_lengkap || '') ? (
                             <div 
                                 className="prose prose-base sm:prose-lg prose-emerald dark:prose-invert max-w-none text-foreground/90 leading-relaxed overflow-hidden prose-headings:text-foreground prose-strong:text-foreground prose-a:text-primary hover:prose-a:underline prose-blockquote:border-primary prose-blockquote:text-muted-foreground prose-img:rounded-xl prose-img:border prose-img:border-border/60 [&_[style*='text-align:center']]:text-center [&_[style*='text-align:right']]:text-right [&_[style*='text-align:justify']]:text-justify [&_[style*='text-align:left']]:text-left"
-                                dangerouslySetInnerHTML={{ __html: berita.isi_lengkap }}
+                                dangerouslySetInnerHTML={{ __html: sanitizeHtml(berita.isi_lengkap || '') }}
                             />
                         ) : (
                             <div className="prose prose-base sm:prose-lg prose-emerald dark:prose-invert max-w-none text-foreground/90 leading-relaxed">

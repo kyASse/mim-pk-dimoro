@@ -5,15 +5,19 @@ import {
   searchParentProfilesAction,
   linkExistingParentAccountAction,
   unlinkParentAccountAction,
-  createSiswaAction,
-  deleteSiswaAction,
-  importSiswaFromPendaftarAction,
-  linkOrCreateParentAccountAction,
 } from '../actions';
 
 // Mock next/cache
 vi.mock('next/cache', () => ({
   revalidatePath: vi.fn(),
+}));
+
+vi.mock('@/lib/auth/guard', () => ({
+  requireAdminSession: vi.fn().mockResolvedValue({
+    user: { id: 'admin-1', email: 'admin@mim.sch.id' },
+    role: 'admin',
+    profile: { id: 'admin-1', role: 'admin', nama_lengkap: 'Admin' },
+  }),
 }));
 
 // Mock Supabase clients
